@@ -1,0 +1,42 @@
+#labels Phase-Implementation
+#Links to References
+
+= Introduction =
+
+True Trade uses many technologies that may not be familiar to all Java developers.  In order to get up to speed, this is a a collection of the best tutorials, examples and reference documents.
+
+
+= Details =
+
+== IB's API ==
+  * [http://www.interactivebrokers.com/php/webhelp/webhelp.htm#Interoperability/About_DDE.htm IB's API documentation]
+
+  * [http://finance.groups.yahoo.com/group/twsapi/ TWSAPI] on Yahoo! Groups
+
+== SWT/JFace ==
+  * [http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/CatalogSWT-JFace-Eclipse.htm SWT and JFace Examples] on java2s
+  * [http://help.eclipse.org/help32/topic/org.eclipse.platform.doc.isv/reference/api/index.html Eclipse Javadoc API]
+  * [http://www.eclipse.org/articles/Article-Understanding-Layouts/Understanding-Layouts.htm Understanding SWT Layouts]
+
+== Eclipse RCP ==
+  * [http://www.eclipse.org/articles/Article-RCP-1/tutorial1.html RCP Tutorial]
+  * [http://www.eclipse.org/articles/Article-Properties-View/properties-view.html RCP Properties]
+  * [http://www.eclipse.org/articles/Article-WorkbenchSelections/article.html Using the Selection Service]
+  * [http://www.eclipse.org/articles/viewArticle/ViewArticle2.html Creating an Eclipse View]
+  * [http://help.eclipse.org/help32/index.jsp?topic=/org.eclipse.draw2d.doc.isv/reference/api/index.html Draw2D API]
+
+
+== JFreeChart ==
+  * [http://www.jfree.org/jfreechart/api/gjdoc/index.html JFreeChart API]
+  * [http://www.java2s.com/Code/Java/Chart/CatalogChart.htm JFreeChart examples]
+
+== MySQL ==
+  * [http://www.mysql.org/doc/refman/5.0/en/index.html MySQL 5 Reference]
+
+== iBATIS ==
+  * [http://people.apache.org/dist/ibatis/ibatis.java/docs/iBATIS-SqlMaps-2_en.pdf Sql Maps 2 Guide (PDF)]
+
+== Related Opensource Trading Projects ==
+  * [http://eclipsetrader.sourceforge.net/ Eclipse Trader]
+  * [http://www.myjavaserver.com/~nonlinear/JSystemTrader/JSystemTrader.html JSystemTrader]
+  * [http://www.ta-lib.org/ TA LIB], Technical Analysis Software
