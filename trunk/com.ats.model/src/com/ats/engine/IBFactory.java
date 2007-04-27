@@ -3,11 +3,16 @@ package com.ats.engine;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+
+import com.ats.engine.Factory.RuntimeMode;
 import com.ats.platform.Instrument;
 
 public class IBFactory {
+	private static final Logger logger = Logger.getLogger(IBFactory.class);
 
-	public static void runBacktest(StrategyDefinition definition) {
+	public static void runIB(StrategyDefinition definition) {
+		Factory.getInstance().setMode(RuntimeMode.live);
 		IBOrderManager orderManager = (IBOrderManager)Factory.getInstance().getOrderManager();
 		IBDataManager dataMgr = (IBDataManager)Factory.getInstance().getDataManager();
 		PositionManager.getInstance().reset();
@@ -15,12 +20,15 @@ public class IBFactory {
 		Iterator<Instrument> it = instrs.iterator();
 		while( it.hasNext() ) {
 			Instrument instr = it.next();
-			// need to add the backtest order manager as a tick listener, but
-			// where best to do this?
-			dataMgr.addTickListener(instr, orderManager);
-			BacktestStrategyEngine bse = new BacktestStrategyEngine(definition, instr, orderManager, dataMgr);
-			Thread t = new Thread(bse);
-			t.start();
+			try {
+				IBStrategyEngine bse = new IBStrategyEngine(definition, instr, orderManager, dataMgr);
+	//			dataMgr.addTickListener(instr, orderManager);
+				Thread t = new Thread(bse);
+				t.start();
+			} catch( Exception e) {
+				logger.error("Could not start strategy [" + definition + "] for [" + instr + "]: " + e, e);
+			}
 		}
+	}
 
 }

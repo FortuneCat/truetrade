@@ -11,7 +11,6 @@ import com.ats.platform.JOrder.OrderState;
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.Execution;
-import com.ib.client.Order;
 
 /**
  * Base class to manage orders.  Subclass this to handle simulated orders
@@ -23,31 +22,26 @@ import com.ib.client.Order;
 public class IBOrderManager extends OrderManager {
 	private static final Logger logger = Logger.getLogger(IBOrderManager.class);
 	
-    private final String host = "";
-    private final int port = 7496;
-    private final int clientID = 0;
-
-    private EClientSocket socket;
     protected final Map<Integer, JOrder> orders = new HashMap<Integer, JOrder>();
 
-    private String accountCode; // used to determine if TWS is running against real or paper trading account
-    private int serverVersion;
-    
     private static int orderID = 0;
     
-
+    public IBOrderManager() {
+    	IBWrapperAdapter.setIBOrderManager(this);
+    }
     
     public void placeOrder(Strategy strategy, JOrder order) {
     	super.placeOrder(strategy, order);
     	orderID++;
+    	orders.put(orderID, order);
     	order.setState(OrderState.pendingSubmit);
-    	socket.placeOrder(orderID, order.getContract(), order.buildIBOrder());
+    	IBHelper.getInstance().placeOrder(orderID, order.getInstrument().getContract(), order.buildIBOrder());
     	String msg = order.getStrategy() + ": Placed order " + orderID;
     	logger.info(msg);
 	}
     
     public synchronized void cancelOrder(JOrder order) {
-    	socket.cancelOrder(order.getOrderId());
+    	IBHelper.getInstance().cancelOrder(order.getOrderId());
     	logger.info(order.getStrategy() + ": Submitted cancel order " + orderID);
 	}
 
@@ -66,7 +60,7 @@ public class IBOrderManager extends OrderManager {
 		}
 		
 		order.addExecution(execution);
-		order.getStrategy().getPositionManager().addExecution(execution);
+		PositionManager.getInstance().execution(order, new JExecution(execution));
 
 		if( order.isFilled() ) {
 			double avgFillPrice = order.getAvgPrice();
@@ -78,13 +72,6 @@ public class IBOrderManager extends OrderManager {
 			}
 			orders.remove(orderId2);
 			logger.info(msg);
-
-			// TODO: update position manager
-			PositionManager positionManager = order.getStrategy().getPositionManager();
-			synchronized (positionManager) {
-				positionManager.setAvgFillPrice(avgFillPrice);
-				positionManager.notifyAll();
-			}
 		}
 	}
 

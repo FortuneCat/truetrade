@@ -66,6 +66,17 @@ public class PlatformDAO {
 		return ret;
 	}
 	
+	public static final List<StrategyDefinition> getRuntimeStrategyDefinitions() {
+		List<StrategyDefinition> ret = null;
+		try {
+			SqlMapClient sqlMap = SqlMapUtil.getInstance().getSqlClient();
+			ret = (List<StrategyDefinition>)sqlMap.queryForList("getRuntimeStrategies");
+		} catch( Exception e) {
+			logger.error("Error retrieving strategy definitions", e);
+		}
+		return ret;
+	}
+	
 	public static StrategyDefinition getStrategyDefinition(int id) {
 		StrategyDefinition ret = null;
 		try {

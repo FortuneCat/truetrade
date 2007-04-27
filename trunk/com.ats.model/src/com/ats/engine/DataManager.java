@@ -44,8 +44,7 @@ public abstract class DataManager {
 			listeners.put(instrument, l);
 		}
 		if( l.contains(listener)) {
-			logger.error("attempted to add a duplicate listener");
-			new Exception().printStackTrace();
+			logger.warn("attempted to add a duplicate listener");
 		} else {
 			l.add(listener);
 		}

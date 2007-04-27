@@ -28,6 +28,13 @@
 		order by classname
 	</select>
 	
+	<select id="getRuntimeStrategies" resultMap="get-stratdef">
+		select * 
+		from strat_def
+		where runtime=1
+		order by classname
+	</select>
+	
 	<insert id="insertStrategy" parameterClass="StrategyDefinition">
 		insert into strat_def (
 			data_timespan_id,

@@ -86,6 +86,11 @@ public class IBDataManager extends DataManager {
 		return instance;
 	}
 	
+	@Override
+	protected void reqMktData(Instrument instrument) {
+		reqMktData(instrument, null);
+	}
+
 	public synchronized void reqMktData(Instrument instrument, TickListener runner) {
 		int id = tickInstruments.indexOf(instrument);
 		if( id < 0 ) {
@@ -94,13 +99,15 @@ public class IBDataManager extends DataManager {
 			instrumentQuotes.put(instrument, new IBQuote());
 			instrumentStrategies.put(instrument, new ArrayList<TickListener>());
 		}
-		instrumentStrategies.get(instrument).add(runner);
+		if( runner != null ) {
+			instrumentStrategies.get(instrument).add(runner);
+		}
 		IBHelper.getInstance().reqMktData(id, instrument);
 	}
 
 	void tickSize(int tickerId, int field, int size) {
-		Instrument c = tickInstruments.get(tickerId);
-		IBQuote quote = instrumentQuotes.get(c);
+		Instrument instr = tickInstruments.get(tickerId);
+		IBQuote quote = instrumentQuotes.get(instr);
 		
 		boolean isDirty = false;
 		switch( field ) {
@@ -108,6 +115,7 @@ public class IBDataManager extends DataManager {
 			break;
 		case TICK_TYPE_LAST_SIZE:
 			quote.setLastSize(size);
+			quote.setDateTime(new Date());
 			isDirty = true;
 			break;
 		case TICK_TYPE_BID_SIZE:
@@ -118,12 +126,8 @@ public class IBDataManager extends DataManager {
 			break;
 		}
 		if( isDirty ) {
-			List<TickListener> strats = instrumentStrategies.get(c);
-			for(TickListener runner : strats ) {
-				Trade trade = new Trade(quote.getDateTime(),quote.getLast(), quote.getLastSize());
-				//runner.onTrade(trade);
-				fireTrade(c, trade);
-			}
+			Trade trade = new Trade(instr, quote.getDateTime(), quote.getLast(), quote.getLastSize());
+			fireTrade(instr, trade);
 		}
 	}
 	void tickPrice(int tickerId, int field, double price, int canAutoExecute ) {
@@ -236,17 +240,5 @@ public class IBDataManager extends DataManager {
 		bar.setVolume(volume);
 		
 		series.addHistory(bar);
-	}
-
-	public static void main(String args[]) {
-		Instrument instrument = new Instrument();
-		instrument.setSymbol("GOOG");
-		instrument.setCurrency("USD");
-		instrument.setExchange("SMART");
-		instrument.setInstrumentType(InstrumentType.stock);
-		BarSeries series = new BarSeries(instrument, BarType.time, TimeSpan.daily);
-		IBDataManager.getInstance().reqHistData(instrument, series);
-
-		System.out.println("Series: " + series);
 	}
 }

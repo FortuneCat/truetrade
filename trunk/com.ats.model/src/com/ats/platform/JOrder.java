@@ -89,7 +89,9 @@ public class JOrder {
         order.m_totalQuantity = quantity;
         order.m_orderType = getType().getIbCmd();//"MKT";
         order.m_tif = tif.getIbCmd();
-        order.m_rthOnly = rthOnly;
+        if( getInstrument().isStock() ) {
+        	order.m_rthOnly = rthOnly;
+        }
         order.m_lmtPrice = price;
         order.m_auxPrice = stopPrice;
         return order;
