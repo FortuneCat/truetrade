@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Client Plug-in
+Bundle-SymbolicName: com.ats.client; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.ats.client.Activator
+Bundle-Vendor: ATS
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.draw2d,
+ com.ats.model,
+ org.eclipse.ui.views,
+ org.eclipse.gef,
+ org.apache.lucene,
+ org.eclipse.help.appserver,
+ org.eclipse.help.base,
+ org.eclipse.help.ui,
+ org.eclipse.help.webapp,
+ org.eclipse.tomcat,
+ org.eclipse.ui.forms
+Eclipse-LazyStart: true
+Bundle-ClassPath: .,
+ lib/jfreechart-1.0.2.jar,
+ lib/jcommon-1.0.5.jar,
+ lib/itext-1.4.3.jar,
+ lib/swt-datepicker.jar

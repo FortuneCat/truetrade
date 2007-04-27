@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Working with MySQL</title>
+</head>
+
+<body>
+<h1>Working with MySQL</h1>
+By default, TrueTrade comes configured to use Apache Derby, a lightweight, Open Source database
+that Sun will soon be shipping with Java by default.  It is a 2Mb JAR file so is easy to deploy,
+but some users will want the extra speed and power that a bigged database can provide.  A popular
+choice is the Open Source database engine MySQL.<p/>
+
+To configure TrueTrade to run with MySQL, open the database preferences window and set
+the following properties:
+<ul>
+<li>User name = guest</li>
+<li>Password = guest</li>
+<li>Provider = com.mysql.jdbc.Driver</li>
+<li>URL = jdbc:mysql://localhost/ats?enable-named-pipe&socketFactory=com.mysql.jdbc.NamedPipeSocketFactory</li>
+</ul>
+
+</body>
+</html>
