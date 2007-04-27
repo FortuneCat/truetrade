@@ -11,6 +11,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import com.ats.client.runtime.views.StrategyStatusView;
 import com.ats.db.PlatformDAO;
+import com.ats.engine.IBFactory;
 import com.ats.engine.StrategyDefinition;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
@@ -26,7 +27,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     @Override
     public void postWindowOpen() {
         int instanceNum = 0;
-		for(StrategyDefinition stratDef : PlatformDAO.getAllStrategyDefinitions()) {
+		for(StrategyDefinition stratDef : PlatformDAO.getRuntimeStrategyDefinitions()) {
 			if( stratDef.isRuntime() ) {
 				// create a view for it
 				IViewPart view;
@@ -37,6 +38,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
+				// run that puppy
+				IBFactory.runIB(stratDef);
 			}
 		}
 

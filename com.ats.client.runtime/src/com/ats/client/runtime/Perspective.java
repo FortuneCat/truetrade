@@ -23,7 +23,7 @@ public class Perspective implements IPerspectiveFactory {
 		//folder.addView(StrategyStatusView.ID);
 		
 
-		//layout.getViewLayout(MessageView.ID).setCloseable(false);
+		//layout.getViewLayout(StrategyStatusView.ID).setCloseable(false);
 		
 
 	}
