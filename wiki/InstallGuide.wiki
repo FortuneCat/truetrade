@@ -7,16 +7,16 @@ This is the install guide.  *A work in progress*
 
 = Details =
 
-1.  Download and install Java 5+ (http://java.sun.com/)
-2.  Download and install eclipse v3.2 (http://www.eclipse.org)
-3.  Install Subclipse plugin (http://subclipse.tigris.org/) and Draw2d and GEF from eclipse.org
-4.  Download and install MySQL v5 (http://www.mysql.org)
-5.  Connect to the Google Subversion repository and load the projects:
-    ** com.ats.client
-    ** com.ats.client.runtime
-    ** com.ats.model
-6.  Create the MySQL database and tables using com.ats.model/create_tables.sql
-7.  Run the com.ats.client as an Eclipse Application.  When you get errors,
+  # Download and install Java 5+ (http://java.sun.com/)
+  # Download and install eclipse v3.2 (http://www.eclipse.org)
+  # Install Subclipse plugin (http://subclipse.tigris.org/) and Draw2d and GEF from eclipse.org
+  # Download and install MySQL v5 (http://www.mysql.org)
+  # Connect to the Google Subversion repository and load the projects:
+    * com.ats.client
+    * com.ats.client.runtime
+    * com.ats.model
+  # Create the MySQL database and tables using com.ats.model/create_tables.sql
+  # Run the com.ats.client as an Eclipse Application.  When you get errors,
     edit the runtime configuration to add VM argument "-Xmx256m" and the plugins:
   ** com.ats.client
   ** com.ats.model
