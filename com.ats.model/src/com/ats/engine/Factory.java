@@ -35,6 +35,7 @@ public class Factory {
 			case simulation:
 				break;
 			case live:
+				orderManager = new IBOrderManager();
 				break;
 			}
 		}

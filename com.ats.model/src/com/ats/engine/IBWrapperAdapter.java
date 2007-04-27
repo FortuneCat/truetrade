@@ -7,7 +7,9 @@ import org.apache.log4j.Logger;
 
 import com.ats.platform.MessageListener;
 import com.ib.client.Contract;
+import com.ib.client.ContractDetails;
 import com.ib.client.Execution;
+import com.ib.client.Order;
 
 /**
  * This class acts as a "wrapper" in IB's API terminology.
@@ -97,8 +99,13 @@ public class IBWrapperAdapter extends EWrapperAdapter {
             logger.error("Error getting execution details", t);
         }
     }
+    
+    @Override
+	public void tickSize(int tickerId, int field, int size) {
+    	IBDataManager.getInstance().tickSize(tickerId, field, size);
+    }
 
-    public void tickPrice(int reqId, int tickType, double price, int canAutoExecute) {
+	public void tickPrice(int reqId, int tickType, double price, int canAutoExecute) {
     	IBDataManager.getInstance().tickPrice(reqId, tickType, price, canAutoExecute);
     }
 
@@ -138,6 +145,12 @@ public class IBWrapperAdapter extends EWrapperAdapter {
         }
     }
     
+	@Override
+	public void error(String str) {
+		fireError(0, 0, str);
+	}
+
+    
     @Override
 	public void orderStatus(int orderId, String status, int filled, int remaining, double avgFillPrice, int permId, int parentId, double lastFillPrice, int clientId) {
     	if( ibOrderManager == null ) {
@@ -145,10 +158,57 @@ public class IBWrapperAdapter extends EWrapperAdapter {
     	}
     	ibOrderManager.orderStatus(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId);
 	}
+    
+	@Override
+	public void openOrder(int orderId, Contract contract, Order order) {
+		logger.debug("open order: " + contract + ", order=" + order);
+	}
+
+
 
 
     public void nextValidId(int orderID) {
         //traderAssitant.setOrderID(orderID);
     	IBOrderManager.setOrderID(orderID);
     }
+
+	@Override
+	public void connectionClosed() {
+		// TODO Auto-generated method stub
+		super.connectionClosed();
+	}
+
+	@Override
+	public void contractDetails(ContractDetails contractDetails) {
+		// TODO Auto-generated method stub
+		super.contractDetails(contractDetails);
+	}
+
+	@Override
+	public void tickString(int tickerId, int tickType, String value) {
+	}
+
+	@Override
+	public void updateMktDepth(int tickerId, int position, int operation, int side, double price, int size) {
+		// TODO Auto-generated method stub
+		super.updateMktDepth(tickerId, position, operation, side, price, size);
+	}
+
+	@Override
+	public void updateMktDepthL2(int tickerId, int position, String marketMaker, int operation, int side, double price, int size) {
+		// TODO Auto-generated method stub
+		super.updateMktDepthL2(tickerId, position, marketMaker, operation, side, price,
+				size);
+	}
+
+	@Override
+	public void updatePortfolio(Contract contract, int position, double marketPrice, double marketValue, double averageCost, double unrealizedPNL, double realizedPNL, String accountName) {
+		// TODO Auto-generated method stub
+		super.updatePortfolio(contract, position, marketPrice, marketValue,
+				averageCost, unrealizedPNL, realizedPNL, accountName);
+	}
+
+	public static void setIBOrderManager(IBOrderManager manager) {
+		ibOrderManager = manager;
+	}
 }

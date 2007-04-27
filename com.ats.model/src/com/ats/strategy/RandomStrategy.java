@@ -28,15 +28,14 @@ public class RandomStrategy extends Strategy {
 	
 	@Override
 	public void init() {
-		requestTimeSeries(TimeSpan.min5);
+		requestTimeSeries(TimeSpan.min1);
 		
 		// TODO: allow default size calculation to come from the strategy
-		defaultSize = 100;
+		defaultSize = 1;
 	}
 	
 	@Override
 	public void onTrade(Trade trade) {
-		// do anything? 
 	}
 	
 	@Override
@@ -48,7 +47,8 @@ public class RandomStrategy extends Strategy {
 			// haven't been fully filled yet, so return
 			return;
 		}
-		if( rand.nextBoolean() ) {
+		//if( rand.nextBoolean() ) {
+		if( true ) {
 			// trade!
 			if( !hasPosition() ) {
 				// start long, why the hell not?

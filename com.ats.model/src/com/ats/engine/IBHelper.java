@@ -15,6 +15,7 @@ import com.ats.utils.Utils;
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.ExecutionFilter;
+import com.ib.client.Order;
 
 public class IBHelper {
 	private static final Logger logger = Logger.getLogger(IBHelper.class);
@@ -25,9 +26,10 @@ public class IBHelper {
     private EClientSocket socket;
     private final Map<Integer, Strategy> strategies;
     protected static int strategyID, orderID;
-    private String accountCode; // used to determine if TWS is running against real or paper trading account
     private int serverVersion;
-    private static final IBWrapperAdapter wrapper = IBWrapperAdapter.getWrapper();
+
+	private String accountCode;
+//    private static final IBWrapperAdapter wrapper = IBWrapperAdapter.getWrapper();
     
     private static final IBHelper instance = new IBHelper();
     
@@ -171,5 +173,13 @@ public class IBHelper {
 //            }
 //        }
     }
+
+	public void placeOrder(int orderID2, Contract contract, Order order) {
+		getSocket().placeOrder(orderID2, contract, order);
+	}
+
+	public void cancelOrder(int orderId2) {
+		getSocket().cancelOrder(orderId2);
+	}
 
 }
