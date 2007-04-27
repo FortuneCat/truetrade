@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Bar">
+
+	<typeAlias alias="Bar" type="com.ats.platform.Bar"/>
+	<typeAlias alias="BarSeries" type="com.ats.platform.BarSeries"/>
+
+	<resultMap id="get-bar" class="Bar">
+		<result property="id" column="id"/>
+		<result property="timespanId" column="timespan_id"/>
+		<result property="open" column="open"/>
+		<result property="high" column="high"/>
+		<result property="low" column="low"/>
+		<result property="close" column="close"/>
+		<result property="volume" column="volume"/>
+		<result property="beginTime" column="begin_time"/>
+		<result property="endTime" column="end_time"/>
+	</resultMap>
+
+	<resultMap id="get-barseries" class="BarSeries">
+		<result property="id" column="id"/>
+		<result property="timespanId" column="timespan_id"/>
+		<result property="instrument.id" column="instrument_id"/>
+		<result property="bars" column="ID" select="getBarsBySeriesId"/>
+	</resultMap>
+	
+	<select id="getBarsBySeriesId" resultMap="get-bar">
+		select * 
+		from bar
+		where bar_series_id = #value#
+		order by begin_time asc
+	</select>
+
+	<select id="getBarSelectionBySeriesId" resultMap="get-bar">
+		select * 
+		from bar
+		where bar_series_id = #value#
+		order by begin_time asc
+		limit 1, 20;
+	</select>
+
+	<select id="getSeriesByInstrumentAndTime" resultMap="get-barseries">
+		select * 
+		from bar_series
+		where instrument_id = #instrumentId#
+			and timespan_id = #timespanId#
+	</select>
+	
+	<select id="getSeriesOverview" parameterClass="int" resultClass="java.util.HashMap">
+		select 
+			bs.id as seriesId, 
+			bs.timespan_id as timespanId,
+			count(bar.id) as barCount,
+			min(bar.begin_time) as beginTime,
+			max(bar.end_time) as endTime
+		from bar_series bs, bar bar
+			where bs.id = bar.bar_series_id
+			and bs.instrument_id = #instrumentId#
+		group by bs.id
+		order by bs.timespan_id
+	</select>
+	
+	
+
+	<insert id="insertBarSeries" parameterClass="BarSeries">
+		insert into bar_series (
+			instrument_id,
+			timespan_id
+		) values (
+			#instrument.id#,
+			#timespanId#
+		)
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT LAST_INSERT_ID() as id
+		</selectKey>
+	</insert>
+	
+	<insert id="insertBar" >
+		insert into bar (
+			timespan_id,
+			open,
+			high,
+			low,
+			close,
+			volume,
+			begin_time,
+			end_time,
+			bar_series_id
+		) values (
+			#bar.timespanId#,
+			#bar.open#,
+			#bar.high#,
+			#bar.low#,
+			#bar.close#,
+			#bar.volume#,
+			#bar.beginTime#,
+			#bar.endTime#,
+			#barSeries.id#
+		)
+	</insert>
+	
+</sqlMap>
