@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Instrument">
+
+	<typeAlias alias="Instrument" type="com.ats.platform.Instrument" />
+
+	<resultMap id="get-instrument" class="Instrument">
+		<result property="id" column="id"/>
+		<result property="symbol" column="symbol"/>
+		<result property="instrumentTypeString" column="sec_type"/>
+		<result property="exchange" column="exchange"/>
+		<result property="currency" column="currency"/>
+		<result property="tickSize" column="tick_size"/>
+		<result property="multiplier" column="multiplier"/>
+	</resultMap>
+	
+	<!--
+	   gets all historical data for a given stock
+	 -->
+	<select id="getAllInstruments" resultMap="get-instrument">
+		select * 
+		from instrument
+		order by symbol
+	</select>
+
+	<select id="getInstrumentsByStrategyId" resultMap="get-instrument">
+		select instrument.* 
+		from instrument, stdef_instr_pr
+		where instrument.id = stdef_instr_pr.instrument_id
+		and stdef_instr_pr.strat_def_id = #value#
+	</select>
+	
+
+	<insert id="insertInstrument" parameterClass="Instrument">
+		insert into instrument (
+			symbol,
+			sec_type,
+			exchange,
+			currency,
+			tick_size,
+			multiplier
+		) values (
+			#symbol#,
+			#instrumentType.ibType#,
+			#exchange#,
+			#currency#,
+			#tickSize#,
+			#multiplier#
+		)
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT LAST_INSERT_ID() as id
+		</selectKey>
+	</insert>
+	
+	<update id="updateInstrument" parameterClass="Instrument">
+		update instrument
+			set exchange = #exchange#,
+				tick_size = #tickSize#,
+				multiplier = #multiplier#
+		where
+			id = #id#
+	</update>
+	
+</sqlMap>
