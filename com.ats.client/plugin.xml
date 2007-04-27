@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.ats.client.ATSApp">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Data"
+            class="com.ats.client.perspectives.DataPerspective"
+            id="com.ats.client.perspectives.dataPerspective">
+      </perspective>
+      <perspective
+            name="Backtest"
+            class="com.ats.client.perspectives.BacktestPerspective"
+            id="com.ats.client.perspectives.backtestPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Message"
+            allowMultiple="true"
+            icon="icons/sample2.gif"
+            class="com.ats.client.View"
+            id="com.ats.client.view">
+      </view>
+      <view
+            name="Instruments"
+            allowMultiple="true"
+            icon="icons/sample3.gif"
+            class="com.ats.client.views.InstrumentView"
+          	id="com.ats.client.views.instrumentView">
+      </view>
+      <view
+            name="Results"
+            allowMultiple="false"
+            class="com.ats.client.views.StrategyResultsView"
+          	id="com.ats.client.views.strategyResultsView">
+      </view>
+      <view
+            name="Strategies"
+            class="com.ats.client.views.StrategyView"
+	    	id="com.ats.client.views.strategyView">
+      </view>
+      <view
+            name="Strategy Summary"
+            class="com.ats.client.views.StrategySummaryView"
+	    	id="com.ats.client.views.strategySummaryView">
+      </view>
+      <view
+       		class="com.ats.client.views.AvailableDataView"
+       		id="com.ats.client.views.availableDataView"
+            name="Available Data">
+      </view>
+      <view
+       		class="com.ats.client.views.ChartView"
+       		id="com.ats.client.views.chartView"
+            name="Chart">
+      </view>
+      <view
+       		class="com.ats.client.views.EquityView"
+       		id="com.ats.client.views.equityView"
+            name="P&amp;L">
+      </view>
+      <view
+       		class="com.ats.client.views.ExecutionView"
+       		id="com.ats.client.views.executionView"
+            name="Executions">
+      </view>
+      <view
+       		class="com.ats.client.views.TradeView"
+       		id="com.ats.client.views.tradeView"
+            name="Trades">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Mail"
+            id="com.ats.client.category">
+      </category>
+      <command
+            name="Open Preferences"
+            description="Opens the system preferences"
+            categoryId="com.ats.client.category"
+            id="com.ats.client.actions.openPreferencesAction">
+      </command>
+      <command
+            name="Open Mailbox"
+            description="Opens a mailbox"
+            categoryId="com.ats.client.category"
+            id="com.ats.client.open">
+      </command>
+      <command
+            name="Open Message Dialog"
+            description="Open a message dialog"
+            categoryId="com.ats.client.category"
+            id="com.ats.client.openMessage">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.ats.client.open"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+2">
+      </key>
+      <key
+            commandId="com.ats.client.openMessage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+3">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.exit"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+X">
+      </key>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.ats.client.application"
+            name="ATS Client">
+         <property
+               name="aboutText"
+               value="%aboutText">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/sample2.gif">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_lg.gif">
+         </property>
+         <property
+			  name="preferenceCustomization"
+			  value="plugin_customization.ini"/>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+      <toc file="tocconcepts.xml"/>
+      <toc file="tocgettingstarted.xml"/>
+      <toc file="tocreference.xml"/>
+      <toc file="tocsamples.xml"/>
+      <toc file="toctasks.xml"/>
+   </extension>
+
+</plugin>

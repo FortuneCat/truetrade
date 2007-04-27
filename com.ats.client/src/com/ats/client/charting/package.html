@@ -1,0 +1,77 @@
+<html>
+<head></head>
+<body>
+
+
+To create:
+- model classes (already have the base model, but may need to extend these to provide for
+	property listener support)
+	
+- Edit parts:
+	- all editpart viewers require a "root"
+	- ScalableFreeformRootEditPart - allows diagram extend into negative co-ordinates (up & left)
+		Is most commonly used
+
+	- EditPartFactory - takes contents and construts appropriate EditPart
+		- sets EditParts on to root edit part
+	
+	- Contents EditPart
+		- usually doesn't needto paint
+		- backdrop for rest of diagram
+		- has layout manager and figure type based on root editpart
+		- override createFigure().  The FreeformLayer figure will suffice
+	
+		- will construct its children based on list returned when calling getModelChildren() on itself
+		- override getModelChildren()
+		- by default, editparts use viewer's factory to create each child
+		
+	
+	- Children EditParts (aka Nodes)
+		- display info to user
+		- refreshVisuals() - reflects model's props in view
+			- override
+		- createFigure() - creates the view or figure.  
+			-Does not reflect model's state (this in refreshVisuals)
+		- if has children, needs to override getModelChildren()
+		- AbstractGraphicalEditPart
+
+- EditPolicies:
+	- used by EditParts to do editing.  EditParts don't edit directly.
+	
+
+- EditPart lifecycle:
+	1.  Creation
+		setModel()
+		
+	2.  Get added to diagram
+		setParent()  - path back to viewer
+		createFigure()	- both parent & model are known
+		addNotify()	- signals completion of being added.  Child must:
+			- register itself with viewer using view & model
+			- create any editpolicies
+			- update its own view & construct children or connections
+		activate()	- should become active for editing
+	
+	3.  Normal use
+		- shows feedback, returns commands, etc.
+	
+	4.  Becoming garbage
+		- deactivate() - only one guaranteed
+		- removeNotify()
+		- setParent(null)
+
+
+
+	
+		
+- Figure
+	- graphical representation.  Already created these?
+	
+
+
+
+Notes:
+- Use ScrollingGraphicalViewer to provide for scroll bars
+
+
+</body>
