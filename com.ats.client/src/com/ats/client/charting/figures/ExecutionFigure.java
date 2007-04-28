@@ -66,9 +66,6 @@ public class ExecutionFigure extends Figure {
 		graphics.setForegroundColor(COLOR_BORDER);
 		if( OrderSide.BUY.equals(execution.getSide()) ) {
 			graphics.setBackgroundColor(COLOR_BUY);
-			if( isSelected ) {
-				graphics.setBackgroundColor(ColorConstants.yellow);
-			}
 			PointList points = new PointList();
 			points.addPoint(size.width/2, (int)drawHigh);
 			points.addPoint(size.width/4, (int)drawHigh+(size.width/2));
@@ -77,15 +74,16 @@ public class ExecutionFigure extends Figure {
 			graphics.drawPolygon(points);
 		} else {
 			graphics.setBackgroundColor(COLOR_SELL);
-			if( isSelected ) {
-				graphics.setBackgroundColor(ColorConstants.yellow);
-			}
 			PointList points = new PointList();
 			points.addPoint(size.width/2, (int)drawHigh);
 			points.addPoint(size.width/4, (int)drawHigh-(size.width/2));
 			points.addPoint(3*size.width/4, (int)drawHigh-(size.width/2));
 			graphics.fillPolygon(points);
 			graphics.drawPolygon(points);
+		}
+		
+		if( isSelected ) {
+			graphics.fillOval(0, (int)drawHigh, size.width, size.width);
 		}
 	}
 
