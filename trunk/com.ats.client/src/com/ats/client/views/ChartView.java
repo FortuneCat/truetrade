@@ -72,6 +72,7 @@ public class ChartView extends ViewPart {
 	
 	private BarSeriesFigure seriesFigure;
 	private List<ExecutionFigure> executionFigures = Collections.emptyList();
+	private List<ExecutionFigure> selectedFigures = new ArrayList<ExecutionFigure>();
 	
 	private void createActions() {
 		zoomInAction = new Action() {
@@ -237,6 +238,7 @@ public class ChartView extends ViewPart {
 
 	private void setPosition(Position pos) {
 		this.position = pos;
+		this.executionFigures.clear();
 		timeSpanControl.update();
 		renderChart();
 	}
@@ -296,10 +298,24 @@ public class ChartView extends ViewPart {
 	
 	
 
+	private void clearSelections() {
+		for(final ExecutionFigure fig : selectedFigures ) {
+			fig.setSelected(false);
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					fig.repaint();
+				}
+			});
+		}
+		selectedFigures.clear();
+	}
 	private void selectExecution(JExecution execution) {
+		clearSelections();
 		for(final ExecutionFigure fig : executionFigures ) {
 			if( fig.getExecution().equals(execution) ) {
 				fig.setSelected(true);
+				selectedFigures.add(fig);
+				scrollpane.scrollHorizontalTo(fig.getBounds().x);
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						fig.repaint();
@@ -310,6 +326,7 @@ public class ChartView extends ViewPart {
 	}
 	
 	private void selectTrade(TradeSummary trade) {
+		clearSelections();
 		final List<ExecutionFigure> buyFigs = new ArrayList<ExecutionFigure>();
 		final List<ExecutionFigure> sellFigs = new ArrayList<ExecutionFigure>();
 		ExecutionFigure firstFig = null;
@@ -320,14 +337,17 @@ public class ChartView extends ViewPart {
 				if( fig.getExecution().equals(execution) ) {
 					if( firstFig == null ) {
 						firstFig = fig;
+						scrollpane.scrollHorizontalTo(fig.getBounds().x);
 					}
 					lastFig = fig;
 					if( execution.getSide() == OrderSide.BUY ) {
 						fig.setSelected(true);
+						selectedFigures.add(fig);
 						buyFigs.add(fig);
 					} else {
 						fig.setSelected(true);
 						sellFigs.add(fig);
+						selectedFigures.add(fig);
 					}
 				}
 			}
