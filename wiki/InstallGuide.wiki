@@ -15,6 +15,7 @@ This is the install guide.  *A work in progress*
     * com.ats.client
     * com.ats.client.runtime
     * com.ats.model
+  # extract the files labelled "Missing lib" from the "Downloads" tab on Google Code and add them to the lib directories in your com.ats.model package.  (Files of this size cannot be added to source code control.)
   # Create the MySQL database and tables using com.ats.model/create_tables.sql
   # Run the com.ats.client as an Eclipse Application.  When you get errors,
     edit the runtime configuration to add VM argument "-Xmx256m" and the plugins:
@@ -54,4 +55,3 @@ This is the install guide.  *A work in progress*
   ** org.eclipse.ui.workbench
 
 Run again
-
