@@ -67,8 +67,8 @@ public class BarSeriesFigure extends Figure {
 		int firstFig = viewLocation.x / width;
 		int lastFig = firstFig + (clientArea.width / width);
 		
-		highestHigh = series.highestHigh(series.size() - firstFig, series.size() - lastFig).getHigh(); 
-		lowestLow = series.lowestLow(series.size() - firstFig, series.size() - lastFig).getLow(); 
+		highestHigh = series.highestHigh(series.size() - firstFig - 1, series.size() - lastFig - 1).getHigh(); 
+		lowestLow = series.lowestLow(series.size() - firstFig - 1, series.size() - lastFig - 1).getLow(); 
 		double delta = highestHigh - lowestLow;
 		highestHigh += (delta * 0.1);
 		lowestLow -= (delta * 0.1);

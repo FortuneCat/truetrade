@@ -18,10 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.ui,
  org.eclipse.help.webapp,
  org.eclipse.tomcat,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ com.ats.resources
 Eclipse-LazyStart: true
-Bundle-ClassPath: .,
- lib/jfreechart-1.0.2.jar,
- lib/jcommon-1.0.5.jar,
- lib/itext-1.4.3.jar,
- lib/swt-datepicker.jar
+Bundle-ClassPath: .
