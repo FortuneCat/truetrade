@@ -102,6 +102,14 @@ abstract class OrderManager {
 		completedOrders.add(order);
 		outstandingOrders.get(order.getInstrument()).remove(order);
 		outstandingStrategyOrders.get(order.getStrategy()).remove(order);
+		
+		// issue stop order
+		// TODO: handle partial fills. Only significant for trailing stop orders
+		if( order.getStopOrder() != null ) {
+			JOrder stp = order.getStopOrder();
+			stp.setQuantity(order.getFilledSize());
+			placeOrder(order.getStrategy(), stp);
+		}
 	}
 	
 	public synchronized final void addExecutionListener(ExecutionListener listener) {

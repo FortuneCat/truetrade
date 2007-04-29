@@ -34,6 +34,8 @@ public class JOrder {
 		}
 	}
 	
+	private JOrder stopOrder;
+	
 	private double avgPrice;
 	private int filledSize = 0;
 	
@@ -49,6 +51,7 @@ public class JOrder {
 	private OrderType type;
 	private OrderTif tif = OrderTif.day;
 	private boolean rthOnly = true;
+	private String oneCancelsAllGroup;
 	
 	/** when transmitted, the IB order id */
 	private int orderId;
@@ -92,6 +95,7 @@ public class JOrder {
         if( getInstrument().isStock() ) {
         	order.m_rthOnly = rthOnly;
         }
+        order.m_ocaGroup = oneCancelsAllGroup;
         order.m_lmtPrice = price;
         order.m_auxPrice = stopPrice;
         return order;
@@ -140,6 +144,12 @@ public class JOrder {
 	public boolean isFilled() {
 		return state == OrderState.filled;
 	}
+//	public String getOneCancelsAllGroup() {
+//		return oneCancelsAllGroup;
+//	}
+//	public void setOneCancelsAllGroup(String oneCancelsAllGroup) {
+//		this.oneCancelsAllGroup = oneCancelsAllGroup;
+//	}
 	public boolean isPartiallyFilled() {
 		return state == OrderState.partiallyFilled;
 	}
@@ -249,6 +259,12 @@ public class JOrder {
 
 	public void setInstrument(Instrument instrument) {
 		this.instrument = instrument;
+	}
+	public JOrder getStopOrder() {
+		return stopOrder;
+	}
+	public void setStopOrder(JOrder exitOrder) {
+		this.stopOrder = exitOrder;
 	}
 
 

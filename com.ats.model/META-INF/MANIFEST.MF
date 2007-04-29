@@ -9,7 +9,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt,
  org.eclipse.draw2d,
- org.eclipse.jface
+ org.eclipse.jface,
+ com.ats.resources
 Eclipse-LazyStart: true
 Export-Package: com.ats.client.model,
  com.ats.db,
@@ -18,19 +19,6 @@ Export-Package: com.ats.client.model,
  com.ats.providers,
  com.ats.strategy,
  com.ats.utils,
- com.ib.client,
- org.apache.log4j
-Bundle-ClassPath: lib/itext-1.4.3.jar,
- lib/jcommon-1.0.0.jar,
- lib/jfreechart-1.0.2.jar,
- lib/liquidlnf.jar,
- lib/servlet.jar,
- .,
- lib/log4j-1.2.13.jar,
- lib/httpunit.jar,
- lib/js.jar,
- lib/Tidy.jar,
- lib/OTFeed.jar,
- lib/commons-lang-2.2.jar,
- lib/mysql-connector-java-5.0.3-bin.jar,
+ com.ib.client
+Bundle-ClassPath: .,
  lib/ibatis-2.3.0.677.jar
