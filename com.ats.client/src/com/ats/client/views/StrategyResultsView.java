@@ -240,7 +240,7 @@ public class StrategyResultsView extends ViewPart implements ISelectionProvider 
 				return objList.size() <= 0;
 			}
 			public Object getFirstElement() {
-				return objList.get(0);
+				return objList.size() > 0 ? objList.get(0) : null;
 			}
 			public Iterator iterator() {
 				return objList.iterator();

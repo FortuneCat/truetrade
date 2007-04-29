@@ -32,7 +32,8 @@ public class TreeViewLabelProvider  extends LabelProvider {
 		if( obj instanceof Instrument ) {
 			return ((Instrument)obj).getSymbol();
 		} else if( obj instanceof StrategyDefinition ) {
-			return ((StrategyDefinition)obj).getStrategyClass().getSimpleName();
+			StrategyDefinition def = ((StrategyDefinition)obj); 
+			return def.getStrategyClass() != null ? def.getStrategyClass().getSimpleName() : "<undefined>";
 		}
 		return obj.toString();
 	}
