@@ -143,12 +143,14 @@ public class BarSeries {
 	}
 	
 	/**
-	 * from &lt; to, where to == 0 is the most recent, and from == size() is the oldest
+	 * from &lt; to, where to == 0 is the most recent, and from == size()-1 is the oldest
 	 * @param from
 	 * @param to
 	 * @return
 	 */
 	public synchronized Bar highestHigh(int from, int to) {
+		from = Math.min(from, bars.size()-1);
+		to = Math.max(to, 0);
 		Bar ret = ago(from);
 		for( int i = from; i > to; i-- ) {
 			Bar curr = ago(i);
@@ -178,6 +180,8 @@ public class BarSeries {
 	 * @return
 	 */
 	public synchronized Bar lowestLow(int from, int to) {
+		from = Math.min(from, bars.size()-1);
+		to = Math.max(to, 0);
 		Bar ret = ago(from);
 		for( int i = from; i > to; i-- ) {
 			Bar curr = ago(i);
