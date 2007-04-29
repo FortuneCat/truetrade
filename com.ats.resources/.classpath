@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry path="src" kind="src"/>
+	<classpathentry path="lib/commons-lang-2.2.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/gnujaxp.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/httpunit.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/itext-1.4.3.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/jcommon-1.0.0.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/jcommon-1.0.5.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/jfreechart-1.0.2.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/js.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/log4j-1.2.13.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/mysql-connector-java-5.0.3-bin.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/OTFeed.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/servlet.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/swt-datepicker.jar" exported="true" kind="lib"/>
+	<classpathentry path="lib/Tidy.jar" exported="true" kind="lib"/>
+	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
+	<classpathentry path="org.eclipse.pde.core.requiredPlugins" kind="con"/>
+	<classpathentry path="bin" kind="output"/>
+</classpath>
