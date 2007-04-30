@@ -7,4 +7,4 @@ A: In a full release, users will create a standard Java JAR which will be placed
 
 *Q: I get a message which says "An error has occurred.  See error log for more details."  What does this mean?  Where is the error log?*
 
-A:  This means that an exception has been thrown which was not caught and filtered back to the Eclipse RCP framework.  The exception and all associated stack traces are stored in the {{runtime-EclipseApplication/.metadata/.log}} file which will be located in which ever directory your eclipse workspace is found.
+A:  This means that an exception has been thrown which was not caught and filtered back to the Eclipse RCP framework.  The exception and all associated stack traces are stored in the {{ runtime-EclipseApplication/.metadata/.log }} file which will be located in which ever directory your eclipse workspace is found.
