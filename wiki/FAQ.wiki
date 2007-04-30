@@ -1,0 +1,10 @@
+#Frequently Asked Questions
+
+*Q: Where do I put my custom Strategies?*
+
+A: In a full release, users will create a standard Java JAR which will be placed in the com.ats.resources plugin.  During development, it is more convenient to place them in the com.ats.model plugin so that Eclipse can perform incremental builds.  If you wish to avoid having your custom strategies placed in SVS, add an SVS ignore rule.
+
+
+*Q: I get a message which says "An error has occurred.  See error log for more details."  What does this mean?  Where is the error log?*
+
+A:  This means that an exception has been thrown which was not caught and filtered back to the Eclipse RCP framework.  The exception and all associated stack traces are stored in the {{runtime-EclipseApplication/.metadata/.log}} file which will be located in which ever directory your eclipse workspace is found.
