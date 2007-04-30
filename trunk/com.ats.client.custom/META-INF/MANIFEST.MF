@@ -5,4 +5,7 @@ Bundle-SymbolicName: com.ats.client.custom
 Bundle-Version: 1.0.0
 Bundle-Vendor: ATS
 Bundle-Localization: plugin
-Require-Bundle: com.ats.model
+Require-Bundle: com.ats.model,
+ com.ats.resources,
+ org.eclipse.ui,
+ org.eclipse.draw2d
