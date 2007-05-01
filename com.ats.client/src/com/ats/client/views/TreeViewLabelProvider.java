@@ -30,7 +30,12 @@ public class TreeViewLabelProvider  extends LabelProvider {
 	public String getText(Object base) {
 		Object obj = ((TreeObject)base).getObject();
 		if( obj instanceof Instrument ) {
-			return ((Instrument)obj).getSymbol();
+			Instrument instr = (Instrument)obj;
+			if( instr.isForex() ) {
+				return instr.getSymbol() + "." + instr.getCurrency();
+			} else {
+				return instr.getSymbol();
+			}
 		} else if( obj instanceof StrategyDefinition ) {
 			StrategyDefinition def = ((StrategyDefinition)obj); 
 			return def.getStrategyClass() != null ? def.getStrategyClass().getSimpleName() : "<undefined>";

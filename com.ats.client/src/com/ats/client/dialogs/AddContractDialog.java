@@ -1,5 +1,6 @@
 package com.ats.client.dialogs;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -18,6 +19,7 @@ import com.ats.platform.Instrument;
 import com.ats.platform.Instrument.InstrumentType;
 
 public class AddContractDialog extends Dialog {
+	private static final Logger logger = Logger.getLogger(AddContractDialog.class);
 	
 
 	private Combo typeCombo;
@@ -40,26 +42,6 @@ public class AddContractDialog extends Dialog {
         content.setLayout(gridLayout);
         content.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
 
-        typeCombo = new Combo(content, SWT.READ_ONLY);
-        typeCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
-        for( InstrumentType type : InstrumentType.values() ) {
-        	typeCombo.add(type.getIbType());
-        	typeCombo.setData(type.getIbType(), type);
-        }
-        typeCombo.setText("STK");
-
-        exchangeCombo = new Combo(content, SWT.READ_ONLY);
-        exchangeCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
-        for( String exch : Instrument.EXCHANGES ) {
-        	exchangeCombo.add(exch);
-        }
-        exchangeCombo.setText("SMART");
-        
-        currencyCombo = new Combo(content, SWT.READ_ONLY);
-        currencyCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
-        currencyCombo.add("USD");
-        currencyCombo.setText("USD");
-        
         Label label = new Label(content, SWT.NONE);
         label.setText("Symbol: ");
         label.setLayoutData(new GridData(60, SWT.DEFAULT));
@@ -75,6 +57,27 @@ public class AddContractDialog extends Dialog {
 				getOKButton().setEnabled(symbol != null && symbol.trim().length() > 0);
 			}
         });
+        
+
+        typeCombo = new Combo(content, SWT.READ_ONLY);
+        typeCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
+        for( InstrumentType type : InstrumentType.values() ) {
+        	typeCombo.add(type.toString());
+        	typeCombo.setData(type.toString(), type);
+        }
+        typeCombo.setText(InstrumentType.stock.toString());
+
+        exchangeCombo = new Combo(content, SWT.READ_ONLY);
+        exchangeCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
+        for( String exch : Instrument.EXCHANGES ) {
+        	exchangeCombo.add(exch);
+        }
+        exchangeCombo.setText("SMART");
+        
+        currencyCombo = new Combo(content, SWT.NONE);
+        currencyCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
+        currencyCombo.add("USD");
+        currencyCombo.setText("USD");
         
         label = new Label(content, SWT.NONE);
         GridData gdata = new GridData();
@@ -116,7 +119,8 @@ public class AddContractDialog extends Dialog {
 		// create and store the contract
 		try {
 			instrument = new Instrument();
-			instrument.getContract().m_secType = typeCombo.getText();
+			InstrumentType instrumentType = InstrumentType.valueOf(typeCombo.getText());
+			instrument.getContract().m_secType = instrumentType.getIbType();
 			instrument.setExchange(exchangeCombo.getText());
 			instrument.setCurrency(currencyCombo.getText());
 			instrument.setSymbol(symbolText.getText().toUpperCase());
@@ -124,9 +128,11 @@ public class AddContractDialog extends Dialog {
 				instrument.setMultiplier(Integer.parseInt(multiplierText.getText()));
 				instrument.setTickSize(Double.parseDouble(tickSizeText.getText()));
 			} catch( Exception e ) {
-				// TODO: popup message 
+				// TODO: popup message
+				logger.error("Could not parse multiplier or tick size", e);
 			}
 		} catch( Exception e) {
+			logger.error("Could not create instrument", e);
 			instrument = null;
 		}
 		

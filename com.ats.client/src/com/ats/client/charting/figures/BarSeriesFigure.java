@@ -16,6 +16,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 
+import com.ats.client.views.ChartView;
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
 
@@ -64,6 +65,8 @@ public class BarSeriesFigure extends Figure {
 	}
 	
 	public void resetConstraints(Point viewLocation, Rectangle clientArea ) {
+		//height = getParent().getBounds().height;
+		
 		int firstFig = viewLocation.x / width;
 		int lastFig = firstFig + (clientArea.width / width);
 		
@@ -76,6 +79,10 @@ public class BarSeriesFigure extends Figure {
 	}
 
 	public void resetConstraints() {
+		//height = getParent().getBounds().height;
+		height = Math.max( height, ChartView.getInstance().getBounds().height);
+		System.out.println("Height = " + height + ", bounds = " + ChartView.getInstance().getBounds() );
+
 		List<Figure> children = (List<Figure>)getChildren();
 		List<BarFigure> barFigures = new ArrayList<BarFigure>();
 		List<ExecutionFigure> executionFigures = new ArrayList<ExecutionFigure>();
