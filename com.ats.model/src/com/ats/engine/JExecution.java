@@ -69,9 +69,9 @@ public class JExecution {
 		} catch (ParseException ex) {
 			logger.error("Could not parse execution time[" + e.m_time + "]", ex);
 		}
-		if( "BUY".equals(e.m_side) ) {
+		if( "BOT".equals(e.m_side) ) {
 			side = OrderSide.BUY;
-		} else if( "SELL".equals(e.m_side)) {
+		} else if( "SLD".equals(e.m_side)) {
 			side = OrderSide.SELL;
 		}
 	}

@@ -64,7 +64,7 @@ public class StrategyDefinition {
 //	public Class getStrategyClass() {
 //		return strategy.getClass();
 //	}
-	public Strategy getStrategy(Instrument instrument) {
+	public Strategy instantiateStrategy(Instrument instrument) {
 		Strategy strategy = null;
 		try {
 			strategy = (Strategy)strategyClass.newInstance();

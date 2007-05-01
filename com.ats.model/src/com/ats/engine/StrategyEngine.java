@@ -63,7 +63,7 @@ public abstract class StrategyEngine implements Runnable, TickListener, Executio
     	this.dataManager = dataManager;
     	
     	try {
-    		this.strategy = (Strategy)definition.getStrategy(instrument);
+    		this.strategy = (Strategy)definition.instantiateStrategy(instrument);
     		this.strategy.setStrategyEngine(this);
     		// TODO: remove duplication between engine & strategy
     		this.strategy.setInstrument(instrument);

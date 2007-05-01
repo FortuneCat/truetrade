@@ -60,7 +60,9 @@ public class IBOrderManager extends OrderManager {
 		}
 		
 		order.addExecution(execution);
-		PositionManager.getInstance().execution(order, new JExecution(execution));
+		JExecution jexec = new JExecution(execution);
+		jexec.setInstrument(order.getInstrument());
+		PositionManager.getInstance().execution(order, jexec);
 
 		if( order.isFilled() ) {
 			double avgFillPrice = order.getAvgPrice();
