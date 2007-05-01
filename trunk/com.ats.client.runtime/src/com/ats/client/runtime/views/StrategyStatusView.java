@@ -9,6 +9,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -18,8 +20,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
@@ -31,9 +36,11 @@ import com.ats.engine.JExecution;
 import com.ats.engine.PositionManager;
 import com.ats.engine.StrategyDefinition;
 import com.ats.platform.Position;
+import com.ats.platform.Strategy;
 import com.ats.utils.Utils;
 
 public class StrategyStatusView extends ViewPart {
+	private static final Logger logger = Logger.getLogger(StrategyStatusView.class);
 
 	public static final String ID = "com.ats.client.runtime.views.strategyStatusView";
 	
@@ -44,6 +51,9 @@ public class StrategyStatusView extends ViewPart {
 	private List<JExecution> executions;
 	
 	private StrategyDefinition strategyDefinition;
+	
+	// TODO: remove, only for debugging
+	private Strategy strategy;
 	
 	public void setStrategyDefinition(StrategyDefinition stratDef) {
 		this.strategyDefinition = stratDef;
@@ -135,6 +145,124 @@ public class StrategyStatusView extends ViewPart {
 	    column.setWidth(60);
 	    
 	    initPositionListener();
+	    
+	    
+	    // TODO: remove, only for debugging
+		TabItem debugItem = new TabItem(tabFolder, SWT.NONE);
+		debugItem.setText("Debugging");
+		final Composite debugComp = new Composite(tabFolder, SWT.NONE);
+		debugComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout glayout = new GridLayout();
+		glayout.numColumns = 2;
+		debugComp.setLayout(glayout);
+		debugItem.setControl(debugComp);
+		
+		Button btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("BUY");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				getStrategy().buy(1);
+			}
+		});
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("SELL");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				getStrategy().sell(1);
+			}
+		});
+
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("BUY Limit");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				InputDialog id = new InputDialog(debugComp.getShell(), "Limit", "Limit buy price", "0.0", null);
+				if( id.open() == id.OK ) {
+					try {
+						double limit = Double.parseDouble(id.getValue());
+						getStrategy().buyLimit(1, limit);
+					} catch( Exception e ) {}
+				}
+			}
+		});
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("SELL Limit");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				InputDialog id = new InputDialog(debugComp.getShell(), "Limit", "Limit sell price", "0.0", null);
+				if( id.open() == id.OK ) {
+					try {
+						double limit = Double.parseDouble(id.getValue());
+						getStrategy().sellLimit(1, limit);
+					} catch( Exception e ) {}
+				}
+			}
+		});
+
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("BUY Stop");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				InputDialog id = new InputDialog(debugComp.getShell(), "Limit", "Stop buy price", "0.0", null);
+				if( id.open() == id.OK ) {
+					try {
+						double limit = Double.parseDouble(id.getValue());
+						getStrategy().buyStop(1, limit);
+					} catch( Exception e ) {}
+				}
+			}
+		});
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("SELL Stop");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				InputDialog id = new InputDialog(debugComp.getShell(), "Limit", "Stop sell price", "0.0", null);
+				if( id.open() == id.OK ) {
+					try {
+						double limit = Double.parseDouble(id.getValue());
+						getStrategy().sellStop(1, limit);
+					} catch( Exception e ) {}
+				}
+			}
+		});
+
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("BUY Trailing Stop");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				try {
+					InputDialog id = new InputDialog(debugComp.getShell(), "Limit", "Stop buy price", "0.0", null);
+					id.open();
+					double stopPrice = Double.parseDouble(id.getValue());
+					id = new InputDialog(debugComp.getShell(), "Trail", "Trail amount", "0.0", null);
+					id.open();
+					double trailAmt = Double.parseDouble(id.getValue());
+					getStrategy().buyTrailingStop(1, stopPrice, trailAmt);
+				} catch( Exception e ) {}
+			}
+		});
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("SELL Trailing Stop");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				try {
+					InputDialog id = new InputDialog(debugComp.getShell(), "Limit", "Stop sell price", "0.0", null);
+					id.open();
+					double stopPrice = Double.parseDouble(id.getValue());
+					id = new InputDialog(debugComp.getShell(), "Trail", "Trail amount", "0.0", null);
+					id.open();
+					double trailAmt = Double.parseDouble(id.getValue());
+					getStrategy().sellTrailingStop(1, stopPrice, trailAmt);
+				} catch( Exception e ) {}
+			}
+		});
+
+	}
+	
+	/** debugging */
+	// TODO: debugging
+	private Strategy getStrategy() {
+		return strategy;
 	}
 	
 	private void initPositionListener() {
@@ -148,6 +276,10 @@ public class StrategyStatusView extends ViewPart {
 					executionTable.setInput(executions);
 				} else if( PROP_ADD_POSITION.equals(evt.getPropertyName()) ) {
 					final Position pos = (Position)evt.getNewValue();
+					// TODO: remove, only for debugging
+					if( strategy == null ) {
+						strategy = pos.getStrategy();
+					}
 					positions.add(pos);
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
@@ -161,9 +293,15 @@ public class StrategyStatusView extends ViewPart {
 					executions.add(exec);
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							positionTable.refresh(pos);
-							executionTable.add(exec);
-							executionTable.refresh(exec);
+							try {
+								if( positionTable != null && !positionTable.getTable().isDisposed()) {
+									positionTable.refresh(pos);
+								}
+								if( executionTable != null && !executionTable.getTable().isDisposed()) {
+									executionTable.add(exec);
+									executionTable.refresh(exec);
+								}
+							} catch( Exception e) {}
 						}
 					});
 				}
@@ -228,6 +366,7 @@ public class StrategyStatusView extends ViewPart {
 			JExecution exec = (JExecution)element;
 			switch(columnIndex) {
 			case 0:
+				logger.debug("For symbol: " + exec + " + " + exec.getInstrument());
 				return exec.getInstrument().getSymbol();
 			case 1:
 				return exec.getSide().toString();
