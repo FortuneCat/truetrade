@@ -176,3 +176,4 @@ Export-Package: com.keypoint,
  org.xml.sax,
  org.xml.sax.ext,
  org.xml.sax.helpers
+Require-Bundle: org.eclipse.swt
