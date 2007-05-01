@@ -35,12 +35,13 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 					view = getWindowConfigurer().getWindow().getActivePage().showView(
 							StrategyStatusView.ID, Integer.toString(instanceNum++), IWorkbenchPage.VIEW_ACTIVATE);
 					((StrategyStatusView)view).setStrategyDefinition(stratDef);
+
+					// run that puppy
+					IBFactory.runIB(stratDef);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
-				// run that puppy
-				IBFactory.runIB(stratDef);
 			}
 		}
 
