@@ -1,5 +1,6 @@
 package com.ats.client.views;
 
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class AvailableDataView extends ViewPart {
 	private Table detailTable;
 	
 	private ISelectionListener listener;
+	private Instrument instrument;
 
 	@Override
 	public void init(IViewSite site) throws PartInitException {
@@ -120,18 +122,19 @@ public class AvailableDataView extends ViewPart {
 		getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(listener);
 	}
 
-	private void setInstrument(final Instrument instrument) {
+	private void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				if( instrument == null ) {
+				if( AvailableDataView.this.instrument == null ) {
 					setPartName("Data");
 					seriesTable.removeAll();
 					detailTable.removeAll();
 				} else {
-					setPartName("Data: " + instrument.getSymbol());
+					setPartName("Data: " + AvailableDataView.this.instrument.getSymbol());
 					seriesTable.removeAll();
 					detailTable.removeAll();
-					List<Map<String, Object>> seriesData = PlatformDAO.getSeriesOverview(instrument);
+					List<Map<String, Object>> seriesData = PlatformDAO.getSeriesOverview(AvailableDataView.this.instrument);
 					for(Map<String, Object> curr : seriesData) {
 						TableItem item = new TableItem(seriesTable, SWT.NONE);
 						item.setData(curr.get("seriesId"));
@@ -184,12 +187,13 @@ public class AvailableDataView extends ViewPart {
 				List<Bar> bars = PlatformDAO.getSampleBarsForSeries(seriesId);
 				for( Bar bar : bars ) {
 					TableItem item = new TableItem(detailTable, SWT.NONE);
+					NumberFormat nf = instrument.isForex() ? Utils.quadDecForm : Utils.doubleDecForm;
 					item.setText(new String[]{
 							Utils.timeAndDateFormat.format(bar.getBeginTime()),
-							Utils.doubleDecForm.format(bar.getHigh()),
-							Utils.doubleDecForm.format(bar.getLow()),
-							Utils.doubleDecForm.format(bar.getOpen()),
-							Utils.doubleDecForm.format(bar.getClose()),
+							nf.format(bar.getHigh()),
+							nf.format(bar.getLow()),
+							nf.format(bar.getOpen()),
+							nf.format(bar.getClose()),
 							Utils.thousandsForm.format(bar.getVolume())
 							});
 				}

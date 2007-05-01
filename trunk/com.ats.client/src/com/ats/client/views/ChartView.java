@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FlowLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.LineBorder;
@@ -24,7 +25,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -73,6 +77,19 @@ public class ChartView extends ViewPart {
 	private BarSeriesFigure seriesFigure;
 	private List<ExecutionFigure> executionFigures = Collections.emptyList();
 	private List<ExecutionFigure> selectedFigures = new ArrayList<ExecutionFigure>();
+	
+	private static ChartView instance;
+	private Canvas canvas;
+	public Rectangle getBounds() {
+		return canvas.getBounds();
+	}
+	public static ChartView getInstance() {
+		return instance;
+	}
+	
+	public ChartView() {
+		instance = this;
+	}
 	
 	private void createActions() {
 		zoomInAction = new Action() {
@@ -197,13 +214,22 @@ public class ChartView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		Canvas canvas = new Canvas(parent, SWT.NO_BACKGROUND);
+		this.canvas = canvas;
 		canvas.setLayout(new FillLayout());
+//		canvas.setLayout(new GridLayout());
+//		GridData gdata = new GridData();
+//		gdata.horizontalSpan = GridData.FILL;
+//		gdata.verticalSpan = GridData.FILL;
+//		gdata.grabExcessHorizontalSpace = true;
+//		gdata.grabExcessVerticalSpace = true;
+//		canvas.setLayoutData(gdata);
 
 		lws = new LightweightSystem(canvas);
 		
 		IFigure panel = new Figure();
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setStretchMinorAxis(true);
+		layout.setMatchWidth(true);
 		layout.setVertical(true);
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
 		panel.setLayoutManager(layout);
@@ -243,6 +269,7 @@ public class ChartView extends ViewPart {
 		renderChart();
 	}
 	private void renderChart() {
+		System.out.println("scrollpane bounds: " + scrollpane.getBounds());
 		if( position == null ) {
 			//lws.setContents(new PriceSeriesFigure());
 			seriesFigure = new BarSeriesFigure();

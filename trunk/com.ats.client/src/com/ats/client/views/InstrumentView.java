@@ -77,7 +77,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
                 }
 			}
 		};
-		addContractAction.setText("Add contract...");
+		addContractAction.setText("Add Instrument...");
 		
 		importDataAction = new Action() {
 			public void run() {

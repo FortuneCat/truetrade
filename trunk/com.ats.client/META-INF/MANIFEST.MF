@@ -6,10 +6,11 @@ Bundle-Version: 1.0.0
 Bundle-Activator: com.ats.client.Activator
 Bundle-Vendor: ATS
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: com.ats.model,
+ com.ats.resources,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.draw2d,
- com.ats.model,
  org.eclipse.ui.views,
  org.eclipse.gef,
  org.apache.lucene,
@@ -18,7 +19,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.ui,
  org.eclipse.help.webapp,
  org.eclipse.tomcat,
- org.eclipse.ui.forms,
- com.ats.resources
+ org.eclipse.ui.forms
 Eclipse-LazyStart: true
 Bundle-ClassPath: .
