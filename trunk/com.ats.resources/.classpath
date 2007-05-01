@@ -5,7 +5,6 @@
 	<classpathentry path="lib/gnujaxp.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/httpunit.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/itext-1.4.3.jar" exported="true" kind="lib"/>
-	<classpathentry path="lib/jcommon-1.0.0.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/jcommon-1.0.5.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/jfreechart-1.0.2.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/js.jar" exported="true" kind="lib"/>
