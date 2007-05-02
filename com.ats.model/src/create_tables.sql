@@ -12,7 +12,7 @@ create table instrument (
 	id int not null AUTO_INCREMENT,
 	symbol char(7) not null,
 	sec_type char(4) not null,
-	exchange char(6) not null,
+	exchange char(10) not null,
 	currency char(4) not null,
 	multiplier int,
 	tick_size double,

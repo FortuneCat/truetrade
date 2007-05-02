@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.log4j.Logger;
+
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;
@@ -19,6 +21,7 @@ import com.ats.platform.Trade;
 import com.ats.platform.Bar.BarType;
 import com.ats.platform.Instrument.InstrumentType;
 public class IBDataManager extends DataManager {
+	private static final Logger logger = Logger.getLogger(IBDataManager.class);
 	
 	public static final String SHOW_TRADES = "TRADES";
 	public static final String SHOW_MIDPOINT = "MIDPOINT";
@@ -184,6 +187,7 @@ public class IBDataManager extends DataManager {
 		Calendar nyCal = new GregorianCalendar(TimeZone.getTimeZone("America/New_York"));
 		String endDateString = ibDateFormat.format(nyCal.getTime());
 		String priceType = instrument.isForex() ? SHOW_MIDPOINT : SHOW_TRADES;
+		logger.info("Requesting historical data for " + instrument + ", id=" + id);
 		IBHelper.getInstance().reqHistoricalData(id,
 				instrument,
 				endDateString,
@@ -194,6 +198,8 @@ public class IBDataManager extends DataManager {
 				2);
 		
 		// wait for the request to complete
+		// TODO: also stop when errors occur
+		// TODO: add timeouts
 		while( ! requestIsDone.get(id) ) {
 			try {
 				wait();
@@ -220,9 +226,11 @@ public class IBDataManager extends DataManager {
 			double close, int volume, double WAP, boolean hasGaps) {
 		
 		BarSeries series = requestData.get(reqId);
-		
-		if( high <= 0 ) {
+		//logger.debug("historical data for " + series.getInstrument());
+		if( date.startsWith("finished")) {
+//		if( high <= 0 ) {
 			// completed this series
+			logger.info("Completed historical data request for " + series.getInstrument() + ", id=" + reqId);
 			requestIsDone.set(reqId, Boolean.TRUE);
 			notifyAll();
 			return;

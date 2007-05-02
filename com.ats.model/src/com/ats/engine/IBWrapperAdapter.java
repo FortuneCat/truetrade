@@ -119,7 +119,22 @@ public class IBWrapperAdapter extends EWrapperAdapter {
     public void error(int id, int errorCode, String errorMsg) {
         try {
             String msg = id + " | " + errorCode + ": " + errorMsg;
-            logger.info(msg);
+            logger.info("Error: " + msg);
+
+            // check for a code which renders an order null
+            if( errorCode >= 103 && errorCode <= 161  ) {
+            	// a problem occured with the order
+            	if( ibOrderManager != null ) {
+            		ibOrderManager.orderError(id, errorCode);
+            	}
+            	return;
+            }
+            if( errorCode >= 162 && errorCode <= 200 ) {
+            	// historical data problem
+            	return;
+            }
+            
+            
 
             // Error 1101 is fired when connection between IB and TWS is restored
             // after a temporary connection loss and the data is "lost". In this case,

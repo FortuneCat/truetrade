@@ -16,6 +16,7 @@ public class Utils {
 	
 	public static final NumberFormat currencyForm = new DecimalFormat("#,###.00");
 	public static final NumberFormat doubleDecForm = new DecimalFormat("#.00");
+	public static final NumberFormat quadDecForm = new DecimalFormat("#.0000");
 	public static final NumberFormat thousandsForm = new DecimalFormat("#,###");
 	
 	private static PreferenceStore prefStore = null;
