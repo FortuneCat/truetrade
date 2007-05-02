@@ -11,15 +11,18 @@ public class Instrument {
 	private static final Logger logger = Logger.getLogger(Instrument.class);
 	
 	public static final String EXCHANGES[] = new String[]{"SMART", 
-		"GLOBEX", "ECBOT", "CBOE", "NYSE", "NASDAQ", "AMEX",
-        "NYMEX", "LIFFE", "IDEALPRO"};
+		"GLOBEX", "ECBOT", "CBOE", "IDEALPRO", "IDEAL",
+		"NYSE", "NASDAQ", "AMEX",
+		"NYMEX", "LIFFE"};
 
 	public enum InstrumentType {
 		stock("STK"),
 		option("OPT"),
 		future("FUT"),
 		futureOption("FOP"),
-		index("IND")
+		index("IND"),
+		forex("CASH"),
+		bond("BAG")
 		;
 		
 		private String ibType;
@@ -78,9 +81,7 @@ public class Instrument {
 		return getInstrumentType().equals(InstrumentType.future);
 	}
 	public boolean isForex() {
-		// TODO: what type is forex
-		return ("IDEAL".equalsIgnoreCase(getExchange()) 
-				|| "IDEALPRO".equalsIgnoreCase(getExchange()));
+		return getInstrumentType().equals(InstrumentType.forex);
 	}
 
 	

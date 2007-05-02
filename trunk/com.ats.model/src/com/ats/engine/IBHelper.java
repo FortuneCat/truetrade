@@ -99,6 +99,7 @@ public class IBHelper {
     }
 
     void reqMktData(int id, Instrument instrument) {
+    	logger.info("Requesting market data for " + instrument + " with id " + id);
         try {
             getSocket().reqMktData(id, instrument.getContract(), null);
         } catch (Throwable t) {

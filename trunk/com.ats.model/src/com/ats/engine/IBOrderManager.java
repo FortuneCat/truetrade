@@ -72,7 +72,7 @@ public class IBOrderManager extends OrderManager {
 			if( order.getText() != null && order.getText().length() > 0 ) {
 				msg += ".  Msg: [" + order.getText() + "]";
 			}
-			orders.remove(orderId2);
+			completeOrder(order);
 			logger.info(msg);
 		}
 	}
@@ -82,14 +82,33 @@ public class IBOrderManager extends OrderManager {
 		JOrder order = orders.get(orderId2);
 		
 		if( order == null ) {
-			// must have come from outside of the system
+			logger.info("External order status change: " + orderId2 + " " + status + " clientid = " + clientId2);
 			return;
 		}
+		logger.info("Order id " + orderId2 + " status changed to " + status);
 		if( "Submitted".equals(status) ) {
 			order.setSubmitted();
 		} else if( "Cancelled".equals(status) ) {
 			order.setCancelled();
+		} else if( "PreSubmitted".equals(status) ) {
+			order.setState(OrderState.pendingSubmit);
+		} 
+	}
+
+	public synchronized void orderError(int orderId2, int code) {
+		JOrder order = orders.get(orderId2);
+		
+		if( order == null ) {
+			logger.info("External order error: " + orderId2 + " " + code);
+			return;
 		}
+		logger.info("Order id " + orderId2 + " error with code " + code);
+		// TODO: cancelled or a full error state?
+		order.setCancelled();
+		
+		// remove it from all outstanding lists
+		orders.remove(orderId2);
+		completeOrder(order);
 	}
 
 
