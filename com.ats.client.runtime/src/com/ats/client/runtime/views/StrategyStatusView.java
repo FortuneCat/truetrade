@@ -8,8 +8,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+import org.eclipse.jface.action.ControlContribution;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -17,11 +22,15 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -32,11 +41,13 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.ViewPart;
 
+import com.ats.db.PlatformDAO;
 import com.ats.engine.JExecution;
 import com.ats.engine.PositionManager;
 import com.ats.engine.StrategyDefinition;
 import com.ats.platform.Position;
 import com.ats.platform.Strategy;
+import com.ats.platform.TimeSpan;
 import com.ats.utils.Utils;
 
 public class StrategyStatusView extends ViewPart {
@@ -60,7 +71,6 @@ public class StrategyStatusView extends ViewPart {
 	    this.setPartName(strategyDefinition.getStrategyClass().getSimpleName());
 	}
 	
-
 	@Override
 	public void createPartControl(Composite parent) {
 		
@@ -161,6 +171,7 @@ public class StrategyStatusView extends ViewPart {
 		btn.setText("BUY");
 		btn.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
+				
 				getStrategy().buy(1);
 			}
 		});
@@ -257,6 +268,15 @@ public class StrategyStatusView extends ViewPart {
 			}
 		});
 
+		
+		btn = new Button(debugComp, SWT.PUSH);
+		btn.setText("Erroneous Order");
+		btn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				getStrategy().buyLimit(1, -12.3);
+			}
+		});
+
 	}
 	
 	/** debugging */
@@ -268,7 +288,6 @@ public class StrategyStatusView extends ViewPart {
 	private void initPositionListener() {
 		PositionManager.getInstance().addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
-				
 				if( PROP_RESET.equals(evt.getPropertyName()) ) {
 					positions = new ArrayList<Position>();
 					executions = new ArrayList<JExecution>();
@@ -276,6 +295,10 @@ public class StrategyStatusView extends ViewPart {
 					executionTable.setInput(executions);
 				} else if( PROP_ADD_POSITION.equals(evt.getPropertyName()) ) {
 					final Position pos = (Position)evt.getNewValue();
+					if( ! strategyDefinition.getStrategyClass().equals(pos.getStrategy().getClass()) ) {
+						// not for us
+						return;
+					}
 					// TODO: remove, only for debugging
 					if( strategy == null ) {
 						strategy = pos.getStrategy();
@@ -289,6 +312,10 @@ public class StrategyStatusView extends ViewPart {
 					});
 				} else if( PROP_EXECUTION.equals(evt.getPropertyName()) ) {
 					final Position pos = (Position)evt.getOldValue();
+					if( ! strategyDefinition.getStrategyClass().equals(pos.getStrategy().getClass()) ) {
+						// not for us
+						return;
+					}
 					final JExecution exec = (JExecution)evt.getNewValue();
 					executions.add(exec);
 					Display.getDefault().asyncExec(new Runnable() {
