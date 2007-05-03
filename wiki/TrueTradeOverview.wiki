@@ -1,3 +1,4 @@
+#labels Phase-Design
 #Overview of the screens and functions
 
 = Introduction =
@@ -10,21 +11,10 @@ For new users, this is an overview of the functions and pages of TrueTrade.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/main_client_window.png
 
 Clockwise from upper-left, the views are:
-  * Instrument View: displays a list of all of the stocks,
-	futures, and forex instruments which have been defined
-  * Available Data View: for the selected instrument, the upper
-	table displays a summary of all of the data series which have been
-	imported.  The lower table shows snippets of the data for the
-	selected series.
-  * Strategies View: displays all of the strategies which have
-	been configured, and all of the instruments which will be used in
-	backtesting and in runtime mode.  Strategies with a green dot will
-	be run in the runtime mode.  By clicking the "Run Strategy"
-	button at the top of the view, the backtest simulator will be
-	executed
-  * Properties View: for the currently selected strategy or
-	instrument, displays all of the configured properties and allows
-	users to change them after addition.
+  * Instrument View: displays a list of all of the stocks, futures, and forex instruments which have been defined
+  * Available Data View: for the selected instrument, the upper table displays a summary of all of the data series which have been imported.  The lower table shows snippets of the data for the selected series.
+  * Strategies View: displays all of the strategies which have been configured, and all of the instruments which will be used in backtesting and in runtime mode.  Strategies with a green dot will be run in the runtime mode.  By clicking the "Run Strategy" button at the top of the view, the backtest simulator will be executed
+  * Properties View: for the currently selected strategy or instrument, displays all of the configured properties and allows users to change them after addition.
 
 To add new instruments, right-click on the "Instrument pane
 > Add Instrument..." which will bring up the new instrument
