@@ -135,7 +135,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="com.ats.client.application"
-            name="ATS Client">
+            name="TrueTrade Client">
          <property
                name="aboutText"
                value="%aboutText">

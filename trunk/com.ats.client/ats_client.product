@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.1"?>
 
-<product name="ATS Client" id="com.ats.client.product" application="com.ats.client.application" useFeatures="false">
+<product name="TrueTrade Client" id="com.ats.client.product" application="com.ats.client.application" useFeatures="false">
 
    <aboutInfo>
       <image path="product_lg.gif"/>
@@ -12,7 +12,19 @@
 
    <configIni use="default"/>
 
+   <launcherArgs>
+      <vmArgs>-Xmx256m</vmArgs>
+   </launcherArgs>
+
    <windowImages i16="icons/sample2.gif"/>
+
+
+   <launcher name="TrueTrade">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
 
 
    <plugins>
