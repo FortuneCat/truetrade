@@ -1,4 +1,4 @@
-#labels Phase-Design
+#labels Phase-Design,Featured
 #Overview of the screens and functions
 
 = Introduction =
@@ -98,4 +98,3 @@ change the priority of messages, from DEBUG level through INFO and
 ERROR, depending on the stage of development and confidence.
 
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/runtime.png
-
