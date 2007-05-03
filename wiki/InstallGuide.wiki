@@ -12,8 +12,8 @@ This is the install guide.  *A work in progress*
   # Download and install [http://java.sun.com/ Java 5+]
   # Download and install [http://www.mysql.org/ MySQL v5+]
   # Configure the MySQL Database using the [http://truetrade.googlecode.com/svn/trunk/com.ats.model/src/create_tables.sql create_tables.sql] script
-  # Download and unzip latest TrueTrade.zip file from the Downloads
-  # Run TrueTrade/eclipse.exe
+  # Download and unzip latest [http://code.google.com/p/truetrade/downloads/detail?name=TrueTradeClient.zip&can=2&q= TrueTrade Client Builder] file from the Downloads
+  # Unpack the zip file and run {{{TrueTrade/TrueTrade.exe}}}.  It will probably generate lots of errors because your database hasn't been configured yet.
   # Run Windows > Preferences > Databases and set the following:
     * JDBC URL: {{{jdbc:mysql://localhost/ats?enable-named-pipe&socketFactory=com.mysql.jdbc.NamedPipeSocketFactory }}}
     * JDBC Provider: {{{ com.mysql.jdbc.Driver }}}
