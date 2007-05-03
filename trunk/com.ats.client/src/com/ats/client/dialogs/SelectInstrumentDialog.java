@@ -35,7 +35,13 @@ public class SelectInstrumentDialog extends Dialog {
 		super(parentShell);
 	}
 	
+	@Override
+	protected void configureShell(Shell shell) {
+		super.configureShell(shell);
+		shell.setText("Select Instrument");
+	}
 	
+
 	
 	@Override
 	protected Control createDialogArea(Composite parent) {

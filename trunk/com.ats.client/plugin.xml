@@ -67,6 +67,11 @@
             name="Chart">
       </view>
       <view
+       		class="com.ats.client.views.JFreeChartView"
+       		id="com.ats.client.views.jfreeChartView"
+            name="Chart">
+      </view>
+      <view
        		class="com.ats.client.views.EquityView"
        		id="com.ats.client.views.equityView"
             name="P&amp;L">

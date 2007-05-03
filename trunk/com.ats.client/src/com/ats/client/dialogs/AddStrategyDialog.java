@@ -32,6 +32,14 @@ public class AddStrategyDialog extends org.eclipse.jface.dialogs.Dialog {
 	}
 
 	@Override
+	protected void configureShell(Shell shell) {
+		super.configureShell(shell);
+		shell.setText("Add Strategy");
+	}
+	
+
+
+	@Override
 	protected Control createDialogArea(Composite parent) {
 
 		Composite content = new Composite(parent, SWT.NONE);

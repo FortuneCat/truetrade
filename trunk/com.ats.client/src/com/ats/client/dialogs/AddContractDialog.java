@@ -1,8 +1,10 @@
 package com.ats.client.dialogs;
 
 import org.apache.log4j.Logger;
+import org.eclipse.gef.ui.palette.SettingsAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -30,6 +32,12 @@ public class AddContractDialog extends Dialog {
 	private Text multiplierText;
 	
 	private Instrument instrument;
+	
+	@Override
+	protected void configureShell(Shell shell) {
+		super.configureShell(shell);
+		shell.setText("Add Instrument");
+	}
 	
 	@Override
 	protected Control createDialogArea(Composite parent) {
@@ -109,7 +117,6 @@ public class AddContractDialog extends Dialog {
         gdata = new GridData(GridData.BEGINNING, GridData.BEGINNING, false, false, 2, 1);
         gdata.widthHint = 80;
         multiplierText.setLayoutData(gridData);
-        
         
         return content;
     }
