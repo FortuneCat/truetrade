@@ -17,7 +17,7 @@ This is the install guide.  *A work in progress*
   # Run Windows > Preferences > Databases and set the following:
     * JDBC URL: {{{jdbc:mysql://localhost/ats?enable-named-pipe&socketFactory=com.mysql.jdbc.NamedPipeSocketFactory }}}
     * JDBC Provider: {{{ com.mysql.jdbc.Driver }}}
-  # Click Apply and then restart.  The client should come up without any errors
+  # Click Apply or OK.  You will probably get an error message saying that there was a problem, but it shouldn't affect the saving of your preferences (defect 26).  Exit and then restart.  The client should come up without any errors
   
 
 == Install from Source ==
