@@ -26,6 +26,7 @@ A: There is.  My goal is to drop JFreeChart for the candlestick chart for the ne
 
 A: Thanks for your interest, we love to grow the community!  You can start by installing the source and running it on your own system.  Then:
   * file clear, easy to replicate defects
+  * create new test cases
   * find some defects or features that you want to fix and then fix them.  When you're done, generate a patch file from SVN and e-mail it to the current defect owner.
+  * review the RoadMap and send in additional suggestions or pick a feature, e-mail the feature owner and start working on it
   * When you've had a few defects and features added, e-mail the project owner and ask to be added as an official member
-
