@@ -1,0 +1,21 @@
+#A wishlist of features with their targeted releases
+
+= Wishlist =
+
+To start, these are a brainstorm of ideas for future versions:
+  * JUnit support
+  * ANT build script
+  * Full OpenTick support
+  * improved IB Data download support (more than just 3weeks of data)
+  * auto-saving trade data to database
+  * Runtime reliability enhancements, allowing strategies to be run with real money
+  * memory improvement so handling large datasets doesn't hurt the system
+  * speed improvements so backtesting large datasets runs faster and smoother
+  * smoother install
+    * DB configuration wizard
+    * classpath wizard
+    * embedded DB support
+    * install shield?
+
+
+= Milestones =
