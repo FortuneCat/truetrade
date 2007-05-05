@@ -138,15 +138,22 @@ public class BacktestOrderPage extends PreferencePage  {
 	public boolean performOk() {
 		IPreferenceStore prefStore = getPreferenceStore();
 
-		prefStore.setValue(SLIPPAGE_PERCENT, percBtn.getSelection());
-		prefStore.setValue(SLIPPAGE_PERCENT_VALUE, Double.parseDouble(percText.getText()));
-		prefStore.setValue(SLIPPAGE_TICK, tickBtn.getSelection());
-		prefStore.setValue(SLIPPAGE_TICK_VALUE, Double.parseDouble(tickText.getText()));
-		
-		prefStore.setValue(COMMISSION_SHARE, perShareBtn.getSelection());
-		prefStore.setValue(COMMISSION_SHARE_VALUE, Double.parseDouble(perShareText.getText()));
-		prefStore.setValue(COMMISSION_ORDER, perOrderBtn.getSelection());
-		prefStore.setValue(COMMISSION_ORDER_VALUE, Double.parseDouble(perOrderText.getText()));
+		try {
+			prefStore.setValue(SLIPPAGE_PERCENT, percBtn.getSelection());
+			prefStore.setValue(SLIPPAGE_PERCENT_VALUE, Double.parseDouble(percText.getText()));
+		} catch( Exception e ) {}
+		try {
+			prefStore.setValue(SLIPPAGE_TICK, tickBtn.getSelection());
+			prefStore.setValue(SLIPPAGE_TICK_VALUE, Double.parseDouble(tickText.getText()));
+		} catch( Exception e) {}
+		try {
+			prefStore.setValue(COMMISSION_SHARE, perShareBtn.getSelection());
+			prefStore.setValue(COMMISSION_SHARE_VALUE, Double.parseDouble(perShareText.getText()));
+		} catch( Exception e) {}
+		try {
+			prefStore.setValue(COMMISSION_ORDER, perOrderBtn.getSelection());
+			prefStore.setValue(COMMISSION_ORDER_VALUE, Double.parseDouble(perOrderText.getText()));
+		} catch( Exception e) {}
 		
 		return true;
 	}

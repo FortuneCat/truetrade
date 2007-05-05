@@ -179,21 +179,21 @@ public class TemplatePage extends WizardPage {
 		
 		for(int col : colSelections.keySet()) {
 			String title = colSelections.get(col);
-			if("Date".equals(title)) {
+			if(COL_DATE.equals(title)) {
 				template.setDateCol(col);
-			} else if("Begin Time".equals(title)) {
+			} else if(COL_BEGIN_TIME.equals(title)) {
 				template.setBeginTimeCol(col);
-			} else if("End Time".equals(title)) {
+			} else if(COL_END_TIME.equals(title)) {
 				template.setEndTimeCol(col);
-			} else if("High".equals(title)) {
+			} else if(COL_HIGH.equals(title)) {
 				template.setHighCol(col);
-			} else if("Low".equals(title)) {
+			} else if(COL_LOW.equals(title)) {
 				template.setLowCol(col);
-			} else if("Open".equals(title)) {
+			} else if(COL_OPEN.equals(title)) {
 				template.setOpenCol(col);
-			} else if("Close".equals(title)) {
+			} else if(COL_CLOSE.equals(title)) {
 				template.setCloseCol(col);
-			} else if("Volume".equals(title)) {
+			} else if(COL_VOL.equals(title)) {
 				template.setVolumeCol(col);
 			}
 		}
@@ -228,15 +228,15 @@ public class TemplatePage extends WizardPage {
 		}
 		
 		// check to see if the table columns have all been defined
-		boolean allColsDefined = colSelections.containsValue("Date") && 
-			colSelections.containsValue("High") &&
-			colSelections.containsValue("Low") &&
-			colSelections.containsValue("Open") &&
-			colSelections.containsValue("Close") &&
-			colSelections.containsValue("Volume");
+		boolean allColsDefined = colSelections.containsValue(COL_DATE) && 
+			colSelections.containsValue(COL_HIGH) &&
+			colSelections.containsValue(COL_LOW) &&
+			colSelections.containsValue(COL_OPEN) &&
+			colSelections.containsValue(COL_CLOSE) &&
+			colSelections.containsValue(COL_VOL);
 		if( getTimeSpan() != TimeSpan.daily ) {
 			// don't need begin time with daily chart
-			allColsDefined &= colSelections.containsValue("BeginTime");
+			allColsDefined &= colSelections.containsValue(COL_BEGIN_TIME);
 		}
 		
 		if( ! allColsDefined ) {
