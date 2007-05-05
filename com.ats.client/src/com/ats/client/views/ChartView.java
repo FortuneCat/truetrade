@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FlowLayout;
 import org.eclipse.draw2d.IFigure;
@@ -25,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -34,6 +36,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
@@ -57,6 +61,7 @@ import com.ats.platform.TimeSpan;
 import com.ats.utils.Utils;
 
 public class ChartView extends ViewPart {
+	private static final Logger logger = Logger.getLogger(ChartView.class);
 	public static final String ID = "com.ats.client.views.chartView";
 	
 	private TimeSpan span = TimeSpan.daily;
@@ -216,14 +221,17 @@ public class ChartView extends ViewPart {
 		Canvas canvas = new Canvas(parent, SWT.NO_BACKGROUND);
 		this.canvas = canvas;
 		canvas.setLayout(new FillLayout());
-//		canvas.setLayout(new GridLayout());
-//		GridData gdata = new GridData();
-//		gdata.horizontalSpan = GridData.FILL;
-//		gdata.verticalSpan = GridData.FILL;
-//		gdata.grabExcessHorizontalSpace = true;
-//		gdata.grabExcessVerticalSpace = true;
-//		canvas.setLayoutData(gdata);
-
+		canvas.addListener(SWT.Resize, new Listener() {
+			public void handleEvent(final Event event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						Point point = ChartView.this.canvas.getSize();
+						scrollpane.setSize(point.x, point.y);
+					}
+				});
+			}
+		});
+		
 		lws = new LightweightSystem(canvas);
 		
 		IFigure panel = new Figure();
@@ -236,7 +244,7 @@ public class ChartView extends ViewPart {
 		lws.setContents(panel);
 		
 		scrollpane = new ScrollPane();
-//		scrollpane.setBounds(new Rectangle(0,0,510,320));
+		scrollpane.setSize(canvas.getSize().x, canvas.getSize().y);
 		scrollpane.setHorizontalScrollBarVisibility(ScrollPane.ALWAYS);
 		scrollpane.setVerticalScrollBarVisibility(ScrollPane.ALWAYS);
 		scrollpane.getViewport().setBorder(new LineBorder());
@@ -263,13 +271,16 @@ public class ChartView extends ViewPart {
 	}
 
 	private void setPosition(Position pos) {
+		if( this.position != null && this.position.equals(pos) ) {
+			// don't need to do anything
+			return;
+		}
 		this.position = pos;
 		this.executionFigures.clear();
 		timeSpanControl.update();
 		renderChart();
 	}
 	private void renderChart() {
-		System.out.println("scrollpane bounds: " + scrollpane.getBounds());
 		if( position == null ) {
 			//lws.setContents(new PriceSeriesFigure());
 			seriesFigure = new BarSeriesFigure();
@@ -342,12 +353,24 @@ public class ChartView extends ViewPart {
 			if( fig.getExecution().equals(execution) ) {
 				fig.setSelected(true);
 				selectedFigures.add(fig);
-				scrollpane.scrollHorizontalTo(fig.getBounds().x);
+				int x = fig.getBounds().x;
+				x += scrollpane.getViewport().getHorizontalRangeModel().getValue();
+				// center it
+				x -= (scrollpane.getViewport().getBounds().width/2);
+				logger.debug("Selected figure has bounds.x=" + fig.getBounds().x
+						+ ", viewport.bounds().width=" + scrollpane.getViewport().getBounds().width
+						+ ", normalized amount=" + (fig.getBounds().x + scrollpane.getViewport().getHorizontalRangeModel().getValue())
+						);
+				// check for boundary cases
+				x = Math.max(5, x);
+//				x = Math.min(x, scrollpane.getViewport().getHorizontalRangeModel().getMaximum());
+				scrollpane.scrollHorizontalTo(x);
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						fig.repaint();
 					}
 				});
+				return;
 			}
 		}
 	}
@@ -379,6 +402,8 @@ public class ChartView extends ViewPart {
 				}
 			}
 		}
+		// TODO: doesn't work.  Why not?
+/*		
 		// connect the first and last
 		final PolylineConnection connection = new PolylineConnection();
 		connection.setSourceAnchor(firstFig.getConnectionAnchor());
@@ -396,6 +421,7 @@ public class ChartView extends ViewPart {
 				}
 			}
 		});
+*/		
 	}
 
 	private boolean canConvert(TimeSpan baseSpan, TimeSpan target) {
