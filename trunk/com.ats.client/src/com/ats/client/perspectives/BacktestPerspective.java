@@ -25,7 +25,7 @@ public class BacktestPerspective implements IPerspectiveFactory {
 
 		folder = layout.createFolder("strategyView", IPageLayout.TOP, 0.75f,
 				editorArea);
-		folder.addView(JFreeChartView.ID);
+		folder.addView(ChartView.ID);
 		folder.addView(EquityView.ID);
 		folder.addView(StrategySummaryView.ID);
 		
