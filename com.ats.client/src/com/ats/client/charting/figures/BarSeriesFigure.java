@@ -81,7 +81,6 @@ public class BarSeriesFigure extends Figure {
 	public void resetConstraints() {
 		//height = getParent().getBounds().height;
 		height = Math.max( height, ChartView.getInstance().getBounds().height);
-		System.out.println("Height = " + height + ", bounds = " + ChartView.getInstance().getBounds() );
 
 		List<Figure> children = (List<Figure>)getChildren();
 		List<BarFigure> barFigures = new ArrayList<BarFigure>();
