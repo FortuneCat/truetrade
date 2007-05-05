@@ -9,6 +9,11 @@ To start, these are a brainstorm of ideas for future versions:
   * improved IB Data download support (more than just 3weeks of data)
   * auto-saving trade data to database
   * Runtime reliability enhancements, allowing strategies to be run with real money
+    * extensive testing
+    * remove defects
+    * save positions with entries & exits to DB
+    * support stopping & restarting
+    * support internet interruptions
   * memory improvement so handling large datasets doesn't hurt the system
   * speed improvements so backtesting large datasets runs faster and smoother
   * smoother install
@@ -16,6 +21,10 @@ To start, these are a brainstorm of ideas for future versions:
     * classpath wizard
     * embedded DB support
     * install shield?
+  * Strategy enhancements
+    * allow exit (target and stoploss) orders to be attached to the entry order
+    * helper functions for sizing and risk management
+    * Portfolio utilities to gather current margin levels and current portfolio balance
 
 
 = Milestones =
