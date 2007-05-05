@@ -55,7 +55,7 @@ public class Utils {
 			try {
 				prefStore.load();
 			} catch( IOException e) {
-				logger.error("Could not retrieve preference store", e);
+				logger.debug("Could not retrieve preference store");
 			}
 			
 			// set defaults
@@ -66,8 +66,10 @@ public class Utils {
 //			prefStore.setDefault(DB_URL, "jdbc:mysql://localhost/ats?enable-named-pipe&socketFactory=com.mysql.jdbc.NamedPipeSocketFactory");
 			prefStore.setDefault(DB_USER, "guest");
 			prefStore.setDefault(DB_PASSWORD, "guest");
-			prefStore.setDefault(DB_PROVIDER, "org.apache.derby.jdbc.EmbeddedDriver");
-			prefStore.setDefault(DB_URL, "jdbc:derby://localhost/ats;create=true");
+			prefStore.setDefault(DB_PROVIDER, "com.mysql.jdbc.Driver");
+			prefStore.setDefault(DB_URL, "jdbc:mysql://localhost/ats?enable-named-pipe&socketFactory=com.mysql.jdbc.NamedPipeSocketFactory");
+//			prefStore.setDefault(DB_PROVIDER, "org.apache.derby.jdbc.EmbeddedDriver");
+//			prefStore.setDefault(DB_URL, "jdbc:derby://localhost/ats;create=true");
 			
 			prefStore.setDefault(INTERACTIVE_BROKERS_HOST, "127.0.0.1");
 			prefStore.setDefault(INTERACTIVE_BROKERS_CLIENTID, 0);
