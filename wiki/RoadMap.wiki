@@ -39,6 +39,7 @@ To start, these are a brainstorm of ideas for future versions:
     * Strategy guide with samples
     * Developer's guide
     * Architecture overview with diagrams
+  * synchronizing two different data sources simultaneously, e.g.: ES data with the TICK or VIX
 
 Some external suggestions:
   * Pluggable data feeds (acknowledging performance hit taken by having the flexibility)
