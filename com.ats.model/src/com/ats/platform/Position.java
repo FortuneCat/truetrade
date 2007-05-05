@@ -42,6 +42,20 @@ public class Position {
 				+ ", instrument=" + instrument + "]";
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null || !(obj instanceof Position)) {
+			return false;
+		}
+		Position that = (Position)obj;
+		
+		boolean equals = this.instrument.equals(that.instrument)
+			&& this.strategy.equals(that.strategy)
+			&& this.entryDate.equals(that.entryDate)
+			&& this.side.equals(that.side);
+		return equals;
+	}
+	
 	public List<JExecution> getExecutions() {
 		return executions;
 	}

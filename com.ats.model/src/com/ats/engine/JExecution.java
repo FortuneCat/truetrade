@@ -56,7 +56,9 @@ public class JExecution {
 		JExecution that = (JExecution)o;
 		return this.order.getOrderId() == that.getOrder().getOrderId()
 			&& this.dateTime.equals(that.dateTime)
-			&& this.instrument.equals(that.instrument);
+			&& this.instrument.equals(that.instrument)
+			&& this.price == that.price
+			&& this.quantity == that.quantity;
 	}
 	
 	
