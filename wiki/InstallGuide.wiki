@@ -31,6 +31,7 @@ This is the install guide.  *A work in progress*
     * com.ats.client.runtime
     * com.ats.model
     * com.ats.resources
+  Developers that want the latest and bleeding-edgiest code can extract from {{{HEAD}}}, users that want something a little more stable should extract code from the latest tag/branch (currently "{{{v0.5 Alpha release}}}").
   # extract the files labelled "Missing lib" from the "Downloads" tab on Google Code and add them to the lib directories in your {{{com.ats.resources\lib}}} folder.  (Files of this size cannot be added to source code control.)  The currently missing libs are:
     * js.jar
     * itext-1.4.3.jar
