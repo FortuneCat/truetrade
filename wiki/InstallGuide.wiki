@@ -34,7 +34,7 @@ This is the install guide.  *A work in progress*
     * js.jar
     * itext-1.4.3.jar
     * jfreechart-1.0.2.jar
-    * ibatis-2.3.0.677.jar
+  # Extract and copy the "Missing lib" file {{{ibatis-2.3.0.677.jar}}} into your {{{com.ats.resources\lib}}} directory
   # Create the MySQL database and tables using com.ats.model/create_tables.sql
   # Run the com.ats.client as an Eclipse Application.  When you get errors,
     edit the runtime configuration to add VM argument "-Xmx256m" and the plugins:
