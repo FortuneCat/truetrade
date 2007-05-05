@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime Plug-in
+Bundle-SymbolicName: com.ats.client.runtime; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.ats.client.runtime.Activator
+Bundle-Vendor: ATS
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.ats.model,
+ org.eclipse.tomcat,
+ org.eclipse.draw2d,
+ org.eclipse.gef,
+ org.eclipse.ui.forms,
+ org.eclipse.jface.text,
+ com.ats.resources
+Eclipse-LazyStart: true
