@@ -2,6 +2,7 @@ package com.ats.platform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -160,6 +161,40 @@ public class BarSeries {
 		}
 		return ret;
 	}
+	
+	public double highestHigh(Date minimumDate, Date maximumDate) {
+		// TODO: optimize the initial seek?  This method is called a lot
+		double high = 0;
+		for( int i = 0; i < bars.size(); i++) {
+			Bar bar = bars.get(i);
+			if( bar.getEndTime().after(maximumDate) ) {
+				return high;
+			}
+			if( bar.getBeginTime().after(minimumDate) || bar.getBeginTime().equals(minimumDate)) {
+				high = Math.max(high, bar.getHigh());
+			}
+		}
+		return high;
+	}
+	public double lowestLow(Date minimumDate, Date maximumDate) {
+		// TODO: optimize the initial seek?  This method is called a lot
+		double low = -1;
+		for( int i = 0; i < bars.size(); i++ ) {
+			Bar bar = bars.get(i);
+			if( bar.getEndTime().after(maximumDate) ) {
+				return low;
+			}
+			if( bar.getBeginTime().after(minimumDate) || bar.getBeginTime().equals(minimumDate)) {
+				if( low < 0 ) { 
+					low = bar.getLow();
+				} else {
+					low = Math.min(low, bar.getLow());
+				}
+			}
+		}
+		return low;
+	}
+
 
 	/**
 	 * returns the lowest low in this series
@@ -271,10 +306,10 @@ public class BarSeries {
 		this.bars = bars;
 	}
 
-public BarSeries convertTimeSpan(TimeSpan tmpSpan) {
+	public BarSeries convertTimeSpan(TimeSpan tmpSpan) {
 		BarSeries series = new BarSeries(instrument, type, tmpSpan);
-		for( Bar bar : bars ) {
-			if( series.size() > 0 && series.getMostRecent().canAdd(bar)) {
+		for (Bar bar : bars) {
+			if (series.size() > 0 && series.getMostRecent().canAdd(bar)) {
 				series.getMostRecent().add(bar);
 			} else {
 				Bar tmpBar = new Bar(type, tmpSpan, bar.getBeginTime());
@@ -284,4 +319,5 @@ public BarSeries convertTimeSpan(TimeSpan tmpSpan) {
 		}
 		return series;
 	}
+
 }
