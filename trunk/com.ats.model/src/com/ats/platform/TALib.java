@@ -1,8 +1,5 @@
 package com.ats.platform;
 
-import java.util.Arrays;
-
-import com.ats.platform.Bar.BarField;
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MAType;
 import com.tictactec.ta.lib.MInteger;
