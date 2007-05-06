@@ -136,7 +136,7 @@ public class Bar implements Comparable {
     	volume += bar.getVolume();
     	if( open <= 0 ) {
     		open = bar.getOpen();
-    		setBeginTimeDate(bar.getBeginTime());
+    		setBeginTime(bar.getBeginTime());
     	}
     }
     
@@ -149,7 +149,7 @@ public class Bar implements Comparable {
     	if( open <= 0 ) {
     		open = trade.getPrice();
     		close = trade.getPrice();
-    		setBeginTimeDate(trade.getDateTime());
+    		setBeginTime(trade.getDateTime());
     		setEndTime(trade.getDateTime());
     	} else if( segmentEnd.after(trade.getDateTime()) ) {
     		endTime = trade.getDateTime();
@@ -202,8 +202,8 @@ public class Bar implements Comparable {
         this.close = close;
     }
 
-    public void setBeginTime(long date) {
-    	setBeginTimeDate(new Date(date));
+    public void setBeginTimeLong(long date) {
+    	setBeginTime(new Date(date));
     }
     
     public int getVolume() {
@@ -281,7 +281,7 @@ public class Bar implements Comparable {
 		return beginTime;
 	}
 
-	public void setBeginTimeDate(Date beginTime) {
+	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
     	this.segmentStart = getSegmentStart(beginTime, span); 
     	this.segmentEnd = new Date(segmentStart.getTime() + span.getSpanInMillis() - 1);
