@@ -95,9 +95,9 @@ public class ImportTemplate implements java.io.Serializable {
 					}
 				}
 				if( beginTime != null ) {
-					bar.setBeginTimeDate( dateFormat.parse(date + " " + beginTime ));
+					bar.setBeginTime( dateFormat.parse(date + " " + beginTime ));
 				} else {
-					bar.setBeginTimeDate( dateFormat.parse(date + " 00:00"));
+					bar.setBeginTime( dateFormat.parse(date + " 00:00"));
 				}
 				if( endTime != null ) {
 					bar.setEndTime(dateFormat.parse(date + " " + endTime));
