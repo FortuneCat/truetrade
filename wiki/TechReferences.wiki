@@ -32,6 +32,7 @@ True Trade uses many technologies that may not be familiar to all Java developer
 
 == MySQL ==
   * [http://www.mysql.org/doc/refman/5.0/en/index.html MySQL 5 Reference]
+  * [http://www.pantz.org/database/mysql/mysqlcommands.shtml MySQL Commands]
 
 == iBATIS ==
   * [http://people.apache.org/dist/ibatis/ibatis.java/docs/iBATIS-SqlMaps-2_en.pdf Sql Maps 2 Guide (PDF)]
