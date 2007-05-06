@@ -22,49 +22,48 @@ This is the install guide.  *A work in progress*
 
 == Install from Source ==
 
-  # Download and install Java 5+ (http://java.sun.com/)
-  # Download and install eclipse v3.2 (http://www.eclipse.org)
-  # Install Subclipse plugin (http://subclipse.tigris.org/) and Draw2d and GEF from eclipse.org
-  # Download and install MySQL v5 (http://www.mysql.org)
-
-  # Start Eclipse and select a new directory for the ATS workspace:
+  * Download and install Java 5+ (http://java.sun.com/)
+  * Download and install eclipse v3.2 (http://www.eclipse.org)
+  * Install Subclipse plugin (http://subclipse.tigris.org/) and Draw2d and GEF from eclipse.org
+  * Download and install MySQL v5 (http://www.mysql.org)
+  * Start Eclipse and select a new directory for the ATS workspace:
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/1-select-workspace.png
   When Eclipse starts, you will have a blank workspace:
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/2-blank-workspace.png
-
-  # In the Package Explorer, "Right Click > Import > Other > Checkout Projects from SVN"
-http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/import-projects.png
-  Select "Create a new repository location" and in the "Select/Create Location" field, enter "{{{http://truetrade.googlecode.com/svn/trunk/}}}" and click Next.  (Google tells you to use "{{{http://truetrade.googlecode.com/svn/trunk/truetrade}}}" but I have not been able to get this to work, -t.)  You should see a listing of the different projects stored in SVN:
+  * In the Package Explorer, "Right Click > Import > Other > Checkout Projects from SVN" http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/import-projects.png
+  Select "Create a new repository location" and in the "Select/Create Location" field, enter "{{{http://truetrade.googlecode.com/svn/trunk/}}}" and click Next.  (_Google tells you to use "{{{http://truetrade.googlecode.com/svn/trunk/truetrade}}}" but I have not been able to get this to work, -t._)  You should see a listing of the different projects stored in SVN:
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/select-folder.png
-
-  # Select {{{com.ats.resources}}} and click "Next".  In the "Check Out As" page, you can select "Revision" then click "Show Log" to see which versions exist.  Select v0.5Alpha or the latest version similar to this.  If you want the latest code, select "Head Revision" (I haven't figured out versioning yet, so you'll have to start with Head until I do, sorry. -t.)  Click Finish.
+  * Select {{{com.ats.resources}}} and click "Next".  In the "Check Out As" page, you can select "Revision" then click "Show Log" to see which versions exist.  Select v0.5Alpha or the latest version similar to this.  If you want the latest code, select "Head Revision" (_I haven't figured out versioning yet, so you'll have to start with Head until I do, sorry. -t._)  Click Finish.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/check-out-as.png
     * When it completes, you will have errors in the project.  Ignore this for the moment, we will fix the errors in a couple steps
-http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/import-com-ats-resources.png
-
-  # Repeat this process with the projects  (ignore 'com.ats.client.custom'):
+    http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/import-com-ats-resources.png
+  * Repeat this process with the projects  (ignore 'com.ats.client.custom'):
     * {{{com.ats.model}}}
     * {{{com.ats.client}}}
-    * {{{com.ats.client.runtime}}}
+    * {{com.ats.client.runtime}}}
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/all-imported.png
-
-  # The compile errors occur because we are still missing some JAR files.  Go to http://code.google.com/p/truetrade/downloads/list and download the "Missing lib" JARS into a temp directory:
+  * The compile errors occur because we are still missing some JAR files.  Go to http://code.google.com/p/truetrade/downloads/list and download the "Missing lib" JARS into a temp directory:
     * js.jar
     * itext-1.4.3.jar
     * jfreechart-1.0.2.jar
     * ibatis-2.3.0.677.jar
-  # move the ibatis jar to the {{{lib}}} directory under the {{{com.ats.model}}} project, move all of the others to the {{{lib}}} directory under the {{{com.ats.resources}}} project.
-  # Many errors will go away, but some remain.  To fix these, go to "Window > Preferences > Java > Compiler" and set the "Compiler compliance level" to 5.0.  When you click OK, it will ask to do a full rebuild, click OK.
+  * move the ibatis jar to the {{{lib}}} directory under the {{{com.ats.model}}} project, move all of the others to the {{{lib}}} directory under the {{{com.ats.resources}}} project.
+  * Many errors will go away, but some remain.  To fix these, go to "Window > Preferences > Java > Compiler" and set the "Compiler compliance level" to 5.0.  When you click OK, it will ask to do a full rebuild, click OK.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/java-compiler-prefs.png
   If you still have any errors, do a "Team > Update" to get the latest source.
 
-  # Create the MySQL database and tables using com.ats.model/create_tables.sql
-
+  * Create the MySQL database and tables using com.ats.model/create_tables.sql
 Now that you have the Source, you can run the client.  To do this, you will need to configure the Eclipse runtime.
-  # Right-click the "com.ats.client" project and select "Run As > Eclipse Application".  You will get a splash screen and then the TrueTrade Client will come up with nothing in it.
+  * Right-click the "com.ats.client" project and select "Run As > Eclipse Application".  You will get a splash screen and then the TrueTrade Client will come up with nothing in it.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/true-trade-client.png
-  # Exit the TrueTrade Client and, back in Eclipse, open "Run > Run..." to get the Run dialog.  Select "Eclipse Application > Eclipse Application".  This is the client builder, so change the name to "TrueTrade Client builder" and in the Arguments tab add the VM argument "-Xmx256m".
+
+  * Exit the TrueTrade Client and, back in Eclipse, open "Run > Run..." to get the Run dialog.  Select "Eclipse Application > Eclipse Application".  This is the client builder, so change the name to "TrueTrade Client builder" and in the Arguments tab add the VM argument -Xmx256m".
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/run-dlg.png
-  Click "Apply" and "Close".  Now the Run button should have the TrueTrade client ready to run.
+    Click "Apply" and "Close".  Now the Run button should have the TrueTrade client ready to run.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/run-pulldown.png
-  Now you can add instruments and strategies (there are sample strategies in the com.ats.model project under com.ats.strategy).
+    
+  * Now you can add instruments and strategies (there are sample strategies in the com.ats.model project under com.ats.strategy).
+
+
+
+
