@@ -1,13 +1,13 @@
 /*
 For MySQL:
+*/
+drop database ats;
 create database ats;
 use ats;
 grant SELECT,INSERT,UPDATE,DELETE on * to 'guest'@'localhost' identified by 'guest';
 
-*/
 
 
-drop table instrument;
 create table instrument (
 	id int not null AUTO_INCREMENT,
 	symbol char(7) not null,
@@ -20,7 +20,6 @@ create table instrument (
 	unique(symbol, sec_type, exchange, currency)
 );
 
-drop table strat_def;
 create table strat_def (
 	id int not null AUTO_INCREMENT,
 	data_timespan_id int not null,
@@ -30,7 +29,6 @@ create table strat_def (
 	primary key(id)
 );
 
-drop table strat_props;
 create table strat_props (
 	id int not null AUTO_INCREMENT,
 	strat_def_id int not null,
@@ -40,14 +38,12 @@ create table strat_props (
 	unique(strat_def_id, param_key)
 );
 
-drop table stdef_instr_pr;
 create table stdef_instr_pr (
 	instrument_id int not null,
 	strat_def_id int not null,
 	primary key(instrument_id, strat_def_id)
 );
 
-drop table bar_series;
 create table bar_series (
 	id int not null AUTO_INCREMENT,
 	instrument_id int not null,
@@ -56,7 +52,6 @@ create table bar_series (
 	unique(instrument_id, timespan_id)
 );
 
-drop table bar;
 create table bar (
 	id int not null AUTO_INCREMENT,
 	timespan_id int,
