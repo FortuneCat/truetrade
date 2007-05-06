@@ -79,7 +79,7 @@ public class YahooHistDataBuilder {
 				// start at 2nd row (data) and skip last row (disclaimer)
 				for (int i = 1; i < table.getRowCount()-1; i++) {
 					Bar hist = new Bar(BarType.time, TimeSpan.daily);
-					hist.setBeginTime(yahooDateForm.parse(table.getCellAsText(i, 0)));
+					hist.setBeginTimeDate(yahooDateForm.parse(table.getCellAsText(i, 0)));
 					hist.setEndTime(
 							new Date(hist.getBeginTime().getTime() + TimeSpan.daily.getSpanInMillis() - 1));
 					hist.setOpen(Double.parseDouble(table.getCellAsText(i, 1)));
