@@ -1,9 +1,7 @@
 package com.ats.client.tools;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,9 +14,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.ats.db.PlatformDAO;
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
+import com.ats.platform.BarType;
 import com.ats.platform.Instrument;
 import com.ats.platform.TimeSpan;
-import com.ats.platform.Bar.BarType;
 
 public class ImportTemplate implements java.io.Serializable {
 	private static final Logger logger = Logger.getLogger(ImportTemplate.class);
