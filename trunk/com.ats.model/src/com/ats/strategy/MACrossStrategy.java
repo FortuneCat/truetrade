@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 
 import com.ats.platform.Bar;
+import com.ats.platform.BarField;
 import com.ats.platform.BarSeries;
 import com.ats.platform.ChartContribution;
 import com.ats.platform.JOrder;
 import com.ats.platform.Strategy;
 import com.ats.platform.TALib;
 import com.ats.platform.TimeSpan;
-import com.ats.platform.Trade;
-import com.ats.platform.Bar.BarField;
 
 public class MACrossStrategy extends Strategy {
 	private static final Logger logger = Logger.getLogger(MACrossStrategy.class);
@@ -100,13 +100,13 @@ public class MACrossStrategy extends Strategy {
 		ChartContribution contrib = new ChartContribution();
 		contrib.setData(TALib.sma(series, BarField.close, slowPeriod));
 		contrib.setLabel("SMA(" + slowPeriod + ")");
-		contrib.setColor(ColorConstants.red);
+		contrib.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 		ret.add(contrib);
 		
 		contrib = new ChartContribution();
 		contrib.setData(TALib.sma(series, BarField.close, fastPeriod));
 		contrib.setLabel("SMA(" + slowPeriod + ")");
-		contrib.setColor(ColorConstants.blue);
+		contrib.setColor(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
 		ret.add(contrib);
 		
 		return ret;
