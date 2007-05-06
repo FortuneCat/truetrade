@@ -13,12 +13,12 @@ import org.apache.log4j.Logger;
 
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
+import com.ats.platform.BarType;
 import com.ats.platform.Instrument;
 import com.ats.platform.JOrder;
 import com.ats.platform.Strategy;
 import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
-import com.ats.platform.Bar.BarType;
 
 /**
  * Runs a trading strategy. There is a one-to-one map between the strategy class

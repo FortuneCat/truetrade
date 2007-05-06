@@ -16,10 +16,7 @@ import org.apache.log4j.Logger;
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;
-import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
-import com.ats.platform.Bar.BarType;
-import com.ats.platform.Instrument.InstrumentType;
 public class IBDataManager extends DataManager {
 	private static final Logger logger = Logger.getLogger(IBDataManager.class);
 	

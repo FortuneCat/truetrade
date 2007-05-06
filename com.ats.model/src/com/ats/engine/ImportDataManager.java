@@ -1,20 +1,14 @@
 package com.ats.engine;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.ats.db.PlatformDAO;
 import com.ats.platform.BarSeries;
+import com.ats.platform.BarType;
 import com.ats.platform.Instrument;
 import com.ats.platform.TimeSpan;
-import com.ats.platform.Bar.BarType;
 import com.ats.providers.OpenTickProvider;
 import com.ats.providers.YahooHistDataBuilder;
 

@@ -1,7 +1,6 @@
 package com.ats.engine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +9,10 @@ import org.apache.log4j.Logger;
 
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
+import com.ats.platform.BarType;
 import com.ats.platform.Instrument;
 import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
-import com.ats.platform.Bar.BarType;
 
 public abstract class DataManager {
 	private static final Logger logger = Logger.getLogger(DataManager.class);
