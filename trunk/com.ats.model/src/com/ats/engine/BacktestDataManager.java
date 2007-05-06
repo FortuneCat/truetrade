@@ -8,7 +8,6 @@ import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;
 import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
-import com.ats.platform.Bar.BarType;
 
 /**
  * Uses stored data to generate simulated ticks.
