@@ -6,18 +6,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.draw2d.ColorConstants;
 
 import com.ats.platform.Bar;
+import com.ats.platform.BarField;
 import com.ats.platform.BarSeries;
 import com.ats.platform.ChartContribution;
 import com.ats.platform.JOrder;
-import com.ats.platform.OrderType;
 import com.ats.platform.Strategy;
 import com.ats.platform.TALib;
 import com.ats.platform.TimeSpan;
-import com.ats.platform.Bar.BarField;
-import com.ats.platform.Position.PositionSide;
 
 public class NR7Strategy extends Strategy {
 	private static final String LONG_STOP = "Long Stop";
