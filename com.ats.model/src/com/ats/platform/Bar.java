@@ -9,19 +9,6 @@ import com.ats.utils.Utils;
  * Encapsulates the price bar information.
  */
 public class Bar implements Comparable {
-	public enum BarType {
-		time,
-		tick,
-		volume
-	}
-	
-	public enum BarField {
-		open,
-		high,
-		low,
-		close,
-		volume
-	}
 	
 	private BarType barType;
 	

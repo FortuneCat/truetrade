@@ -1,16 +1,10 @@
 package com.ats.platform;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
-
-import com.ats.platform.Bar.BarField;
-import com.ats.platform.Bar.BarType;
 
 /**
  * A handy class to store PriceBars in, together with the most common operations
