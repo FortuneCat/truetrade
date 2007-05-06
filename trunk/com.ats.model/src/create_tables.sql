@@ -72,18 +72,6 @@ create table bar (
 );
 
 
-insert into instrument (id, symbol, sec_type, exchange, currency) values
-(1, 'AAPL', 'STK', 'SMART', 'USD'),
-(2, 'GOOG', 'STK', 'SMART', 'USD');
-
-insert into strat_def (id, data_timespan_id, simu_timespan_id, classname) values
-(1, 10, 10, 'com.jsystemtrader.strategy.RandomStrategy');
-
-insert into stdef_instr_pr (strat_def_id, instrument_id) values
-(1, 1),
-(1, 2);
-
-
 
 /*
 		select 
