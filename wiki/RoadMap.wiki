@@ -1,5 +1,30 @@
 #A wishlist of features with their targeted releases
 
+= v0.6 Targeted Features =
+  * Runtime reliability enhancements
+    * extensive testing
+    * save positions with entries & exits to DB to allow restarts
+    * supporting stopping & restarting
+    * support timeouts and resubmission of all requests
+    * support internet interruptions
+    * differentiate between SELL and SHORT
+    * add TIF
+    * add OCA groups
+  * Sample "gapper" strategies which use external hotlists and datasources to gather stocks to trade
+  * Usability enhancements
+    * deleting imported data series
+    * charting price & time indications
+  * DB enhancements
+    * performance tuning, query optimization
+    * in-memory table
+    * indexing
+  * Optimization
+    * simple brute-force against max two parameters with fixed steps
+    * simple table output
+
+Estimated release date: 14 June 2007
+
+
 = Wishlist =
 
 To start, these are a brainstorm of ideas for future versions:
