@@ -9,9 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.ats.model,
- org.eclipse.tomcat,
- org.eclipse.draw2d,
- org.eclipse.gef,
  org.eclipse.ui.forms,
  org.eclipse.jface.text,
  com.ats.resources
