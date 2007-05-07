@@ -141,7 +141,7 @@ public abstract class StrategyEngine implements Runnable, TickListener, Executio
     	if( inTradingInterval(trade.getDateTime())) {
     		strategy.onTrade(trade);
     	} else {
-    		strategy.goFlat();
+    		strategy.goFlat("End of trading day");
     	}
     }
     

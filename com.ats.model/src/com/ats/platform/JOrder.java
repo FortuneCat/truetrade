@@ -144,12 +144,12 @@ public class JOrder {
 	public boolean isFilled() {
 		return state == OrderState.filled;
 	}
-//	public String getOneCancelsAllGroup() {
-//		return oneCancelsAllGroup;
-//	}
-//	public void setOneCancelsAllGroup(String oneCancelsAllGroup) {
-//		this.oneCancelsAllGroup = oneCancelsAllGroup;
-//	}
+	public String getOneCancelsAllGroup() {
+		return oneCancelsAllGroup;
+	}
+	public void setOneCancelsAllGroup(String oneCancelsAllGroup) {
+		this.oneCancelsAllGroup = oneCancelsAllGroup;
+	}
 	public boolean isPartiallyFilled() {
 		return state == OrderState.partiallyFilled;
 	}
