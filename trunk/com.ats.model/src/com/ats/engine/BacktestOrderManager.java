@@ -31,6 +31,7 @@ public class BacktestOrderManager extends OrderManager implements TickListener {
 	
 	public synchronized void onTrade(Trade trade) {
 		List<JOrder> completedOrders = new ArrayList<JOrder>();
+		List<JOrder> cancelledOrders = new ArrayList<JOrder>();  // for OCA groups
 		
 		// copy all outstanding orders to prevent concurrent mod exception
 		List<JOrder> tmp = getOutstandingOrders(trade.getInstrument());
@@ -39,6 +40,15 @@ public class BacktestOrderManager extends OrderManager implements TickListener {
 		
 		// see if we should fake a trade
 		for(JOrder order : outstandingOrders) {
+			if( order.isDone() ) {
+				// how did we get here?
+				completedOrders.add(order);
+				continue;
+			}
+			if( completedOrders.contains(order) || cancelledOrders.contains(order)) {
+				// most likely a OCA group caused a cancel, so move on to the next
+				continue;
+			}
 			boolean placeTrade = false;
 			switch( order.getType() ) {
 			case market:
@@ -87,10 +97,26 @@ public class BacktestOrderManager extends OrderManager implements TickListener {
 				}
 				order.setAvgPrice(price);
 				fireExecution(order, exec);
+				
+				// check for OCA groups
+				if( order.getOneCancelsAllGroup() != null && order.getOneCancelsAllGroup().length() > 0 ) {
+					for(JOrder o : outstandingOrders) {
+						if( order == o ) {
+							// '==' is intentional, it really is the same object
+							continue;
+						}
+						if( order.getOneCancelsAllGroup().equals(o.getOneCancelsAllGroup()) && !o.isDone()) {
+							cancelledOrders.add(o);
+						}
+					}
+				}
 			}
 		}
 		for(JOrder order : completedOrders) {
 			completeOrder(order);
+		}
+		for(JOrder order : cancelledOrders) {
+			cancelOrder(order.getStrategy(), order);
 		}
 	}
 

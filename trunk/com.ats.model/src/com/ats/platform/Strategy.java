@@ -190,14 +190,18 @@ public abstract class Strategy implements TickListener, TradeListener {
 
     /*  helper methods to manage orders manually */
     
-    public void goFlat() {
+    public void goFlat(String message) {
     	cancelAllOrders();
     	Position pos = getPosition();
     	if( PositionSide.LONG.equals(pos.getSide() ) ) {
-    		sell(pos.getQuantity());
+    		sell(pos.getQuantity(), message);
     	} else if( PositionSide.SHORT.equals(pos.getSide() ) ) {
-    		buy(pos.getQuantity());
+    		buy(pos.getQuantity(), message);
     	}
+    }
+    
+    public void goFlat() {
+    	goFlat("");
     }
     
     public void goLong(int minSize) {
@@ -287,11 +291,17 @@ public abstract class Strategy implements TickListener, TradeListener {
     /**
      * issue a market order with specified number of shares
      */
+    public JOrder buyOrder(int quantity, String message) {
+    	return new JOrder(this, getInstrument(), OrderSide.BUY, OrderType.market, quantity, 0.0, 0.0, message);
+    }
     public JOrder buyOrder(int quantity) {
-    	return new JOrder(this, getInstrument(), OrderSide.BUY, OrderType.market, quantity, 0.0, 0.0, "");
+    	return buyOrder(quantity, "");
     }
     public void buy(int quantity) {
     	sendOrder(buyOrder(quantity));
+    }
+    public void buy(int quantity, String message) {
+    	sendOrder(buyOrder(quantity, message));
     }
     /**
      * issue a market order with the default number of shares
@@ -306,11 +316,17 @@ public abstract class Strategy implements TickListener, TradeListener {
     /**
      * issue a market order with specified number of shares
      */
+    public JOrder sellOrder(int quantity, String message) {
+    	return new JOrder(this, getInstrument(), OrderSide.SELL, OrderType.market, quantity, 0.0, 0.0, message);
+    }
     public JOrder sellOrder(int quantity) {
-    	return new JOrder(this, getInstrument(), OrderSide.SELL, OrderType.market, quantity, 0.0, 0.0, "");
+    	return sellOrder(quantity, "");
     }
     public void sell(int quantity) {
     	sendOrder(sellOrder(quantity));
+    }
+    public void sell(int quantity, String message) {
+    	sendOrder(sellOrder(quantity, message));
     }
     
     public JOrder buyLimitOrder(int quantity, double price ) {
