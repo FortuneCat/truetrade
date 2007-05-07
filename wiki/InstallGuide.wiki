@@ -9,8 +9,10 @@ This is the install guide.  *A work in progress*
 
 == Install from ZIP ==
 
-  # Download and install [http://java.sun.com/ Java 5+]
-  # Download and install [http://www.mysql.org/ MySQL v5+]
+Note that the ZIP files are limited.  You will not be able to create and run your own strategies.  Users are encouraged to use the source distribution (below).
+
+  # Download and install [http://java.sun.com/javase/downloads/index.jsp Java 6]
+  # Download and install [http://mysql.org/downloads/mysql/5.0.html#downloads MySQL v5+]
   # Configure the MySQL Database using the [http://truetrade.googlecode.com/svn/trunk/com.ats.model/src/create_tables.sql create_tables.sql] script
   # Download and unzip latest [http://code.google.com/p/truetrade/downloads/detail?name=TrueTradeClient.zip&can=2&q= TrueTrade Client Builder] file from the Downloads
   # Unpack the zip file and run {{{TrueTrade/TrueTrade.exe}}}.  It will probably generate lots of errors because your database hasn't been configured yet.
@@ -22,10 +24,21 @@ This is the install guide.  *A work in progress*
 
 == Install from Source ==
 
-  * Download and install Java 5+ (http://java.sun.com/)
-  * Download and install eclipse v3.2 (http://www.eclipse.org)
-  * Install Subclipse plugin (http://subclipse.tigris.org/) and Draw2d and GEF from eclipse.org
-  * Download and install MySQL v5 (http://www.mysql.org)
+  # Download and install [http://java.sun.com/javase/downloads/index.jsp Java 6]
+  * Download and install [http://www.eclipse.org/downloads/ eclipse v3.2]
+  * Install Subclipse plugin (http://subclipse.tigris.org/):
+    * In Eclipse, run Help > Software Updates > Find and Install...
+    * In the "Feature Updates" window, click "Search for new features to install" and click "Next"
+    * Click "New Remote Site", and in the dialog enter:
+      * Name: Subclipse Update Site
+      * URL: http://subclipse.tigris.org/update_1.2.x
+      Then make sure your new update site is selected and click Finish
+    * In the "Search Results" dialog, expand the "Subclipse Update site" entry and select "Subclipse" and follow the rest of the wizard.
+  * Install and [http://www.eclipse.org/gef/ Draw2d and GEF] from eclipse.org:
+    * Download [http://www.eclipse.org/downloads/download.php?file=/tools/gef/downloads/drops/R-3.2.2-200702081315/GEF-runtime-3.2.2.zip GEF v3.2.2 Runtime] 
+    * Extract the zip into your eclipse directory.  The ZIP file has a features and plugin folder which should extract into your eclipse's features and plugin folder.
+    * After extracting the ZIP, restart eclipse.
+  * Download and install [http://mysql.org/downloads/mysql/5.0.html#downloads MySQL v5+]
   * Start Eclipse and select a new directory for the ATS workspace:
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/1-select-workspace.png
   When Eclipse starts, you will have a blank workspace:
