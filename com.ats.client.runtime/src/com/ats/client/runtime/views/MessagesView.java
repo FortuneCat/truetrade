@@ -1,16 +1,11 @@
 package com.ats.client.runtime.views;
 
-import java.util.ArrayList;
-
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.apache.log4j.spi.LoggingEvent;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -18,7 +13,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -147,16 +141,9 @@ public class MessagesView  extends ViewPart {
 		
 	}
 
-	class MessageProvider extends LabelProvider implements IColorProvider {
+	class MessageProvider extends LabelProvider {
 		public String getText(Object element) {
 			return element.toString();
-		}
-		// TODO: color only works with a table viewer or the fat TextViewer
-		public Color getBackground(Object element) {
-			return ColorConstants.lightBlue;
-		}
-		public Color getForeground(Object element) {
-			return ColorConstants.darkBlue;
 		}
 	}
 
