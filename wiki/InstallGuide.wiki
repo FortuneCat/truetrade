@@ -60,7 +60,7 @@ http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/all
     * itext-1.4.3.jar
     * jfreechart-1.0.2.jar
     * ibatis-2.3.0.677.jar
-  * move the ibatis jar to the {{{lib}}} directory under the {{{com.ats.model}}} project, move all of the others to the {{{lib}}} directory under the {{{com.ats.resources}}} project.
+  * move the ibatis jar to the {{{lib}}} directory under the {{{com.ats.model}}} project, move all of the others to the {{{lib}}} directory under the {{{com.ats.resources}}} project.  When you have moved all of the JARs, "right click the project > Refresh" to get Eclipse to pick up the new JARs.
   * Many errors will go away, but some remain.  To fix these, go to "Window > Preferences > Java > Compiler" and set the "Compiler compliance level" to 5.0.  When you click OK, it will ask to do a full rebuild, click OK.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/java-compiler-prefs.png
   If you still have any errors, do a "Team > Update" to get the latest source.
@@ -76,7 +76,6 @@ http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/run
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/run-pulldown.png
     
   * Now you can add instruments and strategies (there are sample strategies in the com.ats.model project under com.ats.strategy).
-
 
 
 
