@@ -78,4 +78,23 @@ http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/run
   * Now you can add instruments and strategies (there are sample strategies in the com.ats.model project under com.ats.strategy).
 
 
+== Common Problems ==
+
+  * If you have installed MySQL and ran the create_tables.sql script but you see NullPointerExceptions appear in the TrueTradeClient when you start it up, check the Eclipse console.  If you see messages like:
+{{{
+java.io.FileNotFoundException
+MESSAGE: \\.\pipe\MySQL (The system cannot find the file specified)
+
+STACKTRACE:
+
+java.io.FileNotFoundException: \\.\pipe\MySQL (The system cannot find the file specified
+	at java.io.RandomAccessFile.open(Native Method)
+	at java.io.RandomAccessFile.(Unknown Source)
+	at java.io.RandomAccessFile.(Unknown Source)
+	at com.mysql.jdbc.NamedPipeSocketFactory$NamedPipeSocket.(NamedPipeSocketFactory.java:57)
+}}}
+  Then you will need to remove the NamedPipeSocketFactory from the MySQL URL.  In the TrueTrade Client, run "Windows > Preferences > Databases" and change the URL to {{{jdbc:mysql://localhost/ats}}}  (i.e.: remove the "?" and everything after it)
+
+
+
 
