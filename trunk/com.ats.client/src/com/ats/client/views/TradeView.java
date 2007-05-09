@@ -97,7 +97,7 @@ public class TradeView extends ViewPart implements ISelectionProvider {
         gridLayout.horizontalSpacing = gridLayout.verticalSpacing = 0;
         content.setLayout(gridLayout);
         
-        tableViewer = new TableViewer(content, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER );
+        tableViewer = new TableViewer(content, SWT.SINGLE | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER );
         tableViewer.setContentProvider(new TradeContentProvider());
         tableViewer.setLabelProvider(new TradeLabelProvider());
         tableViewer.setInput(trades);
@@ -196,22 +196,22 @@ public class TradeView extends ViewPart implements ISelectionProvider {
 				ret = Integer.toString(trade.getTotalBuyQty()); 
 				break;
 			case 6:  // Avg buy price
-				ret = Double.toString(trade.getAvgBuyPrice());
+				ret = Utils.doubleDecForm.format(trade.getAvgBuyPrice());
 				break;
 			case 7:  // avg sell size
 				ret = Integer.toString(trade.getTotalSellQty());
 				break;
 			case 8:  // avg sell price
-				ret = Double.toString(trade.getAvgSellPrice());
+				ret = Utils.doubleDecForm.format(trade.getAvgSellPrice());
 				break;
 			case 9:  // Gross P&L
-				ret = Double.toString(trade.getRealizedPnL());
+				ret = Utils.doubleDecForm.format(trade.getRealizedPnL());
 				break;
 			case 10: // Entry Text
-				trade.getExecutions().get(0).getOrder().getText();
+				ret = trade.getExecutions().get(0).getOrder().getText();
 				break;
 			case 11: // Exit Text
-				trade.getExecutions().get(trade.getExecutions().size()-1).getOrder().getText();
+				ret = trade.getExecutions().get(trade.getExecutions().size()-1).getOrder().getText();
 				break;
 			}
 			return ret;

@@ -357,10 +357,10 @@ public class ChartView extends ViewPart {
 				x += scrollpane.getViewport().getHorizontalRangeModel().getValue();
 				// center it
 				x -= (scrollpane.getViewport().getBounds().width/2);
-				logger.debug("Selected figure has bounds.x=" + fig.getBounds().x
-						+ ", viewport.bounds().width=" + scrollpane.getViewport().getBounds().width
-						+ ", normalized amount=" + (fig.getBounds().x + scrollpane.getViewport().getHorizontalRangeModel().getValue())
-						);
+//				logger.debug("Selected figure has bounds.x=" + fig.getBounds().x
+//						+ ", viewport.bounds().width=" + scrollpane.getViewport().getBounds().width
+//						+ ", normalized amount=" + (fig.getBounds().x + scrollpane.getViewport().getHorizontalRangeModel().getValue())
+//						);
 				// check for boundary cases
 				x = Math.max(5, x);
 //				x = Math.min(x, scrollpane.getViewport().getHorizontalRangeModel().getMaximum());

@@ -10,6 +10,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,6 +36,7 @@ import com.ats.client.dialogs.SelectInstrumentDialog;
 import com.ats.client.perspectives.BacktestPerspective;
 import com.ats.client.wizards.DownloadHistDataWizard;
 import com.ats.client.wizards.NewStrategyWizard;
+import com.ats.client.wizards.OptimizeWizard;
 import com.ats.db.PlatformDAO;
 import com.ats.engine.BacktestFactory;
 import com.ats.engine.StrategyDefinition;
@@ -49,6 +51,7 @@ public class StrategyView extends ViewPart implements ISelectionProvider {
 	private Action addStrategyAction;
 	private Action addInstrumentAction;
 	private Action runStrategyAction;
+	private Action optimizeStrategyAction;
 	private Action deleteInstrumentAction;
 	private Action runtimeAction;
 	private List<StrategyDefinition> strategies;
@@ -260,15 +263,37 @@ public class StrategyView extends ViewPart implements ISelectionProvider {
         runStrategyAction.setText("Run strategy...");
         runStrategyAction.setImageDescriptor(Activator.getImageDescriptor("/icons/tsuiterun.gif"));
 
+		optimizeStrategyAction = new Action() {
+			public void run() {
+				try {
+					StrategyDefinition strat = getSelectedStrategy();
+					if( strat == null ) {
+						return;
+					}
+					OptimizeWizard wiz = new OptimizeWizard();
+					WizardDialog dlg = new WizardDialog(viewer.getControl().getShell(), wiz);
+					if( dlg.open() == WizardDialog.OK ) {
+						// TODO: optimize!
+					}
+				} catch( Exception e) {
+					logger.error("Could not open optimize wizard", e);
+				}
+			}
+		};
+        optimizeStrategyAction.setText("Optimize strategy...");
+
         MenuManager menuMgr = new MenuManager("#popupMenu", "popupMenu"); //$NON-NLS-1$ //$NON-NLS-2$
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager menuManager)
             {
             	menuManager.add(addStrategyAction);
+            	menuManager.add(new Separator());
             	menuManager.add(addInstrumentAction);
             	menuManager.add(deleteInstrumentAction);
             	menuManager.add(runtimeAction);
+            	menuManager.add(new Separator());
+            	menuManager.add(optimizeStrategyAction);
             	menuManager.add(runStrategyAction);
             }
         });
