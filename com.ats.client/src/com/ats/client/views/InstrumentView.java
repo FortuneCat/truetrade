@@ -7,6 +7,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -102,6 +103,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
             public void menuAboutToShow(IMenuManager menuManager)
             {
             	menuManager.add(addContractAction);
+            	menuManager.add(new Separator());
             	menuManager.add(importDataAction);
             	menuManager.add(downloadDataAction);
             }

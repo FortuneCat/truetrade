@@ -1,6 +1,8 @@
 package com.ats.client.wizards;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.CellEditor;
@@ -10,12 +12,15 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableTreeEditor;
-import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,10 +34,15 @@ import org.eclipse.swt.nebula.widgets.compositetable.RowFocusAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 import com.ats.engine.StrategyDefinition;
 
@@ -48,7 +58,7 @@ public class ParamValuesPage extends WizardPage {
 	//private String paramNames[];
 	
 	private Text totalTrials;
-	private TableTreeViewer ttviewer;
+	private TreeViewer tviewer;
 	
 	public ParamValuesPage() {
 		super("Parameter Selection");
@@ -60,8 +70,19 @@ public class ParamValuesPage extends WizardPage {
 	public void setStratDefParams(final StrategyDefinition strategyDefinition,
 			final String[] selectedParamNames) {
 		if( strategyDefinition.equals(stratDef)) {
-			// no action needs to be taken
-			return;
+			// see if paramNames are the same
+			if( selectedParamNames.length == values.size() ) {
+				List<String> paramNames = Arrays.asList(selectedParamNames);
+				boolean foundAll = true;
+				for(ParamValues val : values ) {
+					if( ! paramNames.contains(val.paramName) ) {
+						foundAll = false;
+					}
+				}
+				if( foundAll ) {
+					return;
+				}
+			}
 		}
 		this.stratDef = strategyDefinition;
 		values = new ArrayList<ParamValues>(selectedParamNames.length);
@@ -87,8 +108,8 @@ public class ParamValuesPage extends WizardPage {
 		}
 		calcNumTrials();
 		
-		ttviewer.setInput(values);
-		ttviewer.expandAll();
+		tviewer.setInput(values);
+		tviewer.expandAll();
 	}
 	
 	private void calcNumTrials() {
@@ -114,158 +135,124 @@ public class ParamValuesPage extends WizardPage {
 		gdata.grabExcessHorizontalSpace = true;
 		totalTrials.setLayoutData(gdata);
 		
-		ttviewer = new TableTreeViewer(content, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		tviewer = new TreeViewer(content, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		gdata = new GridData(GridData.FILL_BOTH);
 		gdata.horizontalSpan = 2;
-		ttviewer.getTableTree().setLayoutData(gdata);
+		tviewer.getTree().setLayoutData(gdata);
 
-		ttviewer.setContentProvider(new ParamValuesContentProvider());
-		ttviewer.setLabelProvider(new ParamValuesLabelProvider());
-		ttviewer.setInput(values);
-		ttviewer.setColumnProperties(new String[]{ PARAM_NAME, PARAM_VALUE });
+		tviewer.setContentProvider(new ParamValuesContentProvider());
+		tviewer.setLabelProvider(new ParamValuesLabelProvider());
+		tviewer.setInput(values);
+		tviewer.setColumnProperties(new String[]{ PARAM_NAME, PARAM_VALUE });
 		
-		// CellEditors don't work using the TableTreeEditor!  Have to use this
-		// TableTreeEditor hack.  Bleh.  Maybe later releases of the Eclipse
-		// framework will improve.
+		configureTreeEditor();
 		
 		
-		final TableTreeEditor editor = new TableTreeEditor(ttviewer.getTableTree());
-		//The editor must have the same size as the cell and must
-		//not be any smaller than 50 pixels.
-		editor.horizontalAlignment = SWT.LEFT;
-		editor.grabHorizontal = true;
-		editor.minimumWidth = 50;
-		// editing the second column
-		final int EDITABLECOLUMN = 1;
-		
-		ttviewer.getTableTree().addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				// Clean up any previous editor control
-				Control oldEditor = editor.getEditor();
-				if (oldEditor != null) oldEditor.dispose();
-		
-				// Identify the selected row
-				TableTreeItem item = (TableTreeItem)e.item;
-				if (item == null) return;
-		
-				// The control that will be the editor must be a child of the Table
-				Text newEditor = new Text(ttviewer.getTableTree().getTable(), SWT.NONE);
-				newEditor.setText(item.getText(EDITABLECOLUMN));
-				newEditor.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent evt) {
-						Text text = (Text)editor.getEditor();
-						ParamValueItem item = (ParamValueItem)((TableTreeItem)editor.getItem()).getData();
-						String value = text.getText();
-						logger.debug("before modifyText, values=" + ParamValuesPage.this.values.toString());
-						try {
-							boolean isInt = (item.values.initVal instanceof Integer);
-							// tried trinary operator, but kept getting bugs.  Works with an
-							// if/else, no idea why.
-							Number val =  null;
-							if( isInt ) {
-								val = Integer.parseInt(value);
-							} else {
-								val = Double.parseDouble(value);
-							}
-							switch( item.type ) {
-							case start:
-								item.values.start = val;
-								break;
-							case finish:
-								item.values.finish = val;
-								break;
-							case stepSize:
-								item.values.stepSize = val;
-								break;
-							}
-						} catch( Exception e) {
-							logger.debug("Parse exception: " + e);
-						}
-						logger.debug("before modifyText, values=" + ParamValuesPage.this.values.toString());
-						String res = "";
-						switch( item.type ) {
-						case start:
-							res = item.values.start.toString();
-							break;
-						case finish:
-							res = item.values.finish.toString();
-							break;
-						case stepSize:
-							res = item.values.stepSize.toString();
-							break;
-						}
-						editor.getItem().setText(EDITABLECOLUMN, res);
-					}
-				});
-				newEditor.selectAll();
-				newEditor.setFocus();
-				editor.setEditor(newEditor, item, EDITABLECOLUMN);
-			}
-		});
-		
-
-/*		
-		ttviewer.setCellEditors(new CellEditor[]{
-				null,
-				new TextCellEditor(parent)
-		});
-		ttviewer.setCellModifier(new ICellModifier() {
-			public boolean canModify(Object element, String property) {
-				return ( (element instanceof ParamValueItem) && PARAM_VALUE.equals(property));
-			}
-			public Object getValue(Object element, String property) {
-				ParamValueItem item = (ParamValueItem)element;
-				switch( item.type ) {
-				case start:
-					return item.values.start.toString();
-				case finish:
-					return item.values.finish.toString();
-				case stepSize:
-					return "" + item.values.stepSize;
-				}
-				logger.debug("get value returning null");
-				return null;
-			}
-			public void modify(final Object element, String property, Object obvalue) {
-				ParamValueItem item = (ParamValueItem)((TableTreeItem)element).getData();
-				String value = (String)obvalue;
-				logger.debug("Modify prop[" + property + "], set to " + value);
-				try {
-					boolean isInt = (item.values.initVal instanceof Integer);
-					
-					switch( item.type ) {
-					case start:
-						item.values.start = isInt ? Integer.parseInt(value) : Double.parseDouble(value);
-						break;
-					case finish:
-						item.values.finish = isInt ? Integer.parseInt(value) : Double.parseDouble(value);
-						break;
-					case stepSize:
-						item.values.stepSize = isInt ? Integer.parseInt(value) : Double.parseDouble(value);
-						break;
-					}
-				} catch( Exception e) {
-					logger.debug("Parse exception: " + e);
-				}
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						ttviewer.refresh(element);
-					}
-				});
-			}
-		});
-*/		
-		Table table = ttviewer.getTableTree().getTable();
-		TableColumn col = new TableColumn(table, SWT.LEFT);
+		Tree tree = tviewer.getTree();
+		TreeColumn col = new TreeColumn(tree, SWT.LEFT);
 		col.setText(PARAM_NAME);
 		col.setWidth(130);
-		col = new TableColumn(table, SWT.LEFT);
+		col = new TreeColumn(tree, SWT.LEFT);
 		col.setText(PARAM_VALUE);
 		col.setWidth(150);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
+		tree.setLinesVisible(true);
+		tree.setHeaderVisible(true);
 		
 		setControl(content);
+	}
+
+	private void configureTreeEditor() {
+		final int EDITABLECOLUMN = 1;
+
+		// if only CellEditors would work, but they don't.  They never get focus!
+		// So we have to do this beastly work-around hack.
+		
+		final TreeEditor editor = new TreeEditor(tviewer.getTree());
+		editor.horizontalAlignment = SWT.LEFT;
+		editor.grabHorizontal = true;
+		// do editing on cell selection
+		tviewer.getTree().addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				Tree tree = tviewer.getTree();
+				final TreeItem item = tree.getSelection()[0];
+				if( !(item.getData() instanceof ParamValueItem) ) {
+					return;
+				}
+				if( ((ParamValueItem)item.getData()).type == ParamValueType.numTrades ) {
+					return;
+				}
+				
+				final Text text = new Text(tree, SWT.NONE);
+				text.setText(item.getText(EDITABLECOLUMN));
+				text.selectAll();
+				text.setFocus();
+				
+				text.addFocusListener(new FocusAdapter() {
+					public void focusLost(FocusEvent event) {
+						setValueFromEditor(item, text);
+						text.dispose();
+					}
+
+				});
+				// If they hit Enter, set the text into the tree and end the
+				// editing session. If they hit Escape, ignore the text and end the
+				// editing session
+				text.addKeyListener(new KeyAdapter() {
+					public void keyPressed(KeyEvent event) {
+						switch (event.keyCode) {
+						case SWT.CR:
+							// Enter hit--set the text into the tree 
+							setValueFromEditor(item, text);
+							text.dispose();
+							break;
+						case SWT.ESC:
+							// End editing session
+							text.dispose();
+							break;
+						}
+					}
+				});
+
+				// Set the text field into the editor
+				editor.setEditor(text, item, EDITABLECOLUMN);
+			}
+			private void setValueFromEditor(final TreeItem item, final Text text) {
+				ParamValueItem pvi = ((ParamValueItem) item.getData());
+				String res = "";
+				try {
+					boolean isInt = (pvi.values.initVal instanceof Integer);
+					// tried trinary operator, but kept getting
+					// bugs. Works with an if/else, no idea why.
+					Number val = null;
+					if (isInt) {
+						val = Integer.parseInt(text.getText());
+					} else {
+						val = Double.parseDouble(text.getText());
+					}
+					switch (pvi.type) {
+					case start:
+						pvi.values.start = val;
+						res = pvi.values.start.toString();
+						break;
+					case finish:
+						pvi.values.finish = val;
+						res = pvi.values.finish.toString();
+						break;
+					case stepSize:
+						pvi.values.stepSize = val;
+						res = pvi.values.stepSize.toString();
+						break;
+					}
+				} catch (Exception e) {
+					logger.debug("Parse exception: " + e);
+				}
+				logger.debug("before modifyText, values="
+						+ ParamValuesPage.this.values.toString());
+				if( ! "".equals(res)) {
+					item.setText(EDITABLECOLUMN, res);
+				}
+			}
+		});
 	}
 }
 enum ParamValueType {
