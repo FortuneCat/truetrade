@@ -26,6 +26,9 @@ public class OptimizeWizard extends Wizard {
 	private ParamValuesPage paramValuesPage;
 	private SelectOptimizerPage selectOptimizerPage;
 	
+	private StrategyDefinition stratDef;
+	private java.util.List<ParamValues> values;
+	
 	public OptimizeWizard() {
 		setWindowTitle("Optimize Strategy");
 		setNeedsProgressMonitor(true);
@@ -47,7 +50,8 @@ public class OptimizeWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		if( page instanceof SelectStrategyPage ) {
-			selectParamsPage.setStrategyDefinition(selectStrategyPage.getStrategyDefinition());
+			stratDef = selectStrategyPage.getStrategyDefinition();
+			selectParamsPage.setStrategyDefinition(stratDef);
 		} else if( page instanceof SelectParamsPage ) {
 			paramValuesPage.setStratDefParams(selectStrategyPage
 					.getStrategyDefinition(), selectParamsPage
@@ -59,9 +63,17 @@ public class OptimizeWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
+		values = paramValuesPage.getParamValues();
+		return true;
 	}
+	
+	public java.util.List<ParamValues> getParamValues() {
+		return values;
+	}
+	public StrategyDefinition getStrategyDefinition() {
+		return stratDef;
+	}
+	
 }
 
 class SelectStrategyPage extends WizardPage {

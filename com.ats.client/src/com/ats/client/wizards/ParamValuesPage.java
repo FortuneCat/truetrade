@@ -239,6 +239,11 @@ public class ParamValuesPage extends WizardPage {
 			}
 		});
 	}
+
+	public List<ParamValues> getParamValues() {
+		return values;
+	}
+	
 }
 enum ParamValueType {
 	root,
