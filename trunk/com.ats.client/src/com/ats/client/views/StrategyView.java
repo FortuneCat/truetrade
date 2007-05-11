@@ -32,6 +32,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import com.ats.client.Activator;
 import com.ats.client.dialogs.AddStrategyDialog;
+import com.ats.client.dialogs.OptimizeDialog;
 import com.ats.client.dialogs.SelectInstrumentDialog;
 import com.ats.client.perspectives.BacktestPerspective;
 import com.ats.client.wizards.DownloadHistDataWizard;
@@ -250,7 +251,7 @@ public class StrategyView extends ViewPart implements ISelectionProvider {
 				if( strat == null ) {
 					return;
 				}
-				BacktestFactory.runBacktest(strat);
+				new BacktestFactory().runBacktest(strat);
 				try {
 					// go to the backtest perspective
 					PlatformUI.getWorkbench().showPerspective(BacktestPerspective.ID, 
@@ -273,7 +274,9 @@ public class StrategyView extends ViewPart implements ISelectionProvider {
 					OptimizeWizard wiz = new OptimizeWizard();
 					WizardDialog dlg = new WizardDialog(viewer.getControl().getShell(), wiz);
 					if( dlg.open() == WizardDialog.OK ) {
-						// TODO: optimize!
+						OptimizeDialog optDlg = new OptimizeDialog(viewer.getControl().getShell());
+						optDlg.setStrategyDefinition(wiz.getStrategyDefinition(), wiz.getParamValues());
+						optDlg.open();
 					}
 				} catch( Exception e) {
 					logger.error("Could not open optimize wizard", e);
