@@ -24,6 +24,7 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import com.ats.client.actions.OpenPreferencesAction;
+import com.ats.client.actions.OptimizeAction;
 import com.ats.client.preferences.BacktestOrderPage;
 
 /**
@@ -40,6 +41,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction aboutAction;
     private Action preferencesAction;
     private IWorkbenchAction helpAction;
+    private IWorkbenchAction optimizeAction;
 //    private IWorkbenchAction newWindowAction;
 //    private Action messagePopupAction;
     
@@ -66,6 +68,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
        	
        	helpAction = ActionFactory.HELP_CONTENTS.create(window);
        	register(helpAction);
+       	
+       	optimizeAction = new OptimizeAction(window);
+       	register(optimizeAction);
         
 //        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
 //        register(newWindowAction);
@@ -94,6 +99,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         fileMenu.add(exitAction);
         
         // Window
+        windowMenu.add(optimizeAction);
         windowMenu.add(preferencesAction);
         
         // Help

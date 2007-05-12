@@ -1,4 +1,7 @@
-package com.ats.client.dialogs;
+package com.ats.client.views;
+
+import org.eclipse.ui.part.ViewPart;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +10,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -15,17 +17,21 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.EditorPart;
 
+import com.ats.client.wizards.OptimizeWizard;
 import com.ats.client.wizards.ParamValues;
 import com.ats.engine.BacktestFactory;
 import com.ats.engine.BacktestListener;
@@ -35,15 +41,11 @@ import com.ats.utils.StrategyAnalyzer;
 import com.ats.utils.TradeStats;
 import com.ats.utils.Utils;
 
-/**
- * The dialog which runs the optimizer and then displays the aggregate results.
- * 
- * @author Adrian
- *
- */
-public class OptimizeDialog extends Dialog {
-	private static final Logger logger = Logger.getLogger(OptimizeDialog.class);
+public class OptimizationView extends ViewPart {
+	private static final Logger logger = Logger.getLogger(OptimizationView.class);
 	
+	public static final String ID = "com.ats.client.views.optimizationView";
+
 	/**
 	 * A fun little hack for displaying the columns but dodging the SWT requirement to
 	 * use Strings.  This lets you use a switch() block in the labels and dynamically
@@ -68,19 +70,50 @@ public class OptimizeDialog extends Dialog {
 	private TableViewer viewer;
 	private List<ParamValues> paramValues;
 	private StrategyDefinition stratDef;
-	private List<OptTrial> trials;
+	private List<OptTrial> trials = new ArrayList<OptTrial>();
 	private int maxTrials;
 	
+	public OptimizationView() {
+		super();
+	}
+	@Override
+	public void createPartControl(Composite parent) {
 
-	public OptimizeDialog(Shell parentShell) {
-		super(parentShell);
+		Composite content = new Composite(parent, SWT.NONE);
+
+		GridLayout contentLayout = new GridLayout();
+		contentLayout.numColumns = 2;
+		content.setLayout(contentLayout);
 		
+		viewer = new TableViewer(content, SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION );
+        viewer.setContentProvider(new OptExecContentProvider());
+        viewer.setLabelProvider(new OptExecLabelProvider());
+        viewer.setInput(trials);
+        
+        Table table = viewer.getTable();
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+        GridData gdata = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        gdata.heightHint = 350;
+        gdata.widthHint = 350;
+        table.setLayoutData(gdata);
+        
+        for(ColType colType : ColType.values() ) {
+        	if( colType == ColType.param ) {
+        		// special case
+        		continue;
+        	}
+            TableColumn column = new TableColumn(table, SWT.LEFT);
+            column.setText(colType.name);
+            column.setWidth(50);
+            viewer.setData(colType.name, colType);
+        }
+
+		launchOptimizer();
 	}
 
 	@Override
-	protected void configureShell(Shell shell) {
-		super.configureShell(shell);
-		shell.setText("Optimization Results");
+	public void setFocus() {
 	}
 	
 	
@@ -93,37 +126,52 @@ public class OptimizeDialog extends Dialog {
 			maxTrials *= val.numTrials;
 		}
 		trials = new ArrayList<OptTrial>(maxTrials);
+		viewer.setInput(trials);
+		
+		for( ParamValues val : paramValues ) {
+	        TableColumn column = new TableColumn(viewer.getTable(), SWT.LEFT);
+	        column.setText(val.paramName);
+	        column.setWidth(50);
+            viewer.setData(val.paramName, ColType.param);
+		}
 		
 	}
 	
 	private void launchOptimizer() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				try {
-					new ProgressMonitorDialog(getShell()).run(true, true,
-							new IRunnableWithProgress() {
-								public void run(IProgressMonitor monitor) {
-									monitor.beginTask("Optimizing...", trials.size());
-									runStrategy(monitor);
-									while (true) {
-										try {
-											// unsophisticated means of monitoring, I know.  I'm
-											// tired and this works.
-											Thread.sleep(1000);
-										} catch (InterruptedException e) {
-										}
-										if (monitor.isCanceled()
-												|| trials.size() >= maxTrials) {
-											break;
+		OptimizeWizard wiz = new OptimizeWizard();
+		WizardDialog dlg = new WizardDialog(getSite().getShell(), wiz);
+		if( dlg.open() == WizardDialog.OK ) {
+			setStrategyDefinition(wiz.getStrategyDefinition(), wiz.getParamValues());
+	
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					try {
+						new ProgressMonitorDialog(getSite().getShell()).run(true, true,
+								new IRunnableWithProgress() {
+									public void run(IProgressMonitor monitor) {
+										monitor.beginTask("Optimizing...", trials.size());
+										runStrategy(monitor);
+										while (true) {
+											try {
+												// unsophisticated means of monitoring, I know.  I'm
+												// tired and this works.
+												Thread.sleep(1000);
+											} catch (InterruptedException e) {
+											}
+											if (monitor.isCanceled()
+													|| trials.size() >= maxTrials) {
+												break;
+											}
 										}
 									}
-								}
-							});
-				} catch (Exception e) {
-					logger.error("Could not load progress monitor", e);
-				} 
+								});
+					} catch (Exception e) {
+						logger.error("Could not load progress monitor", e);
+					} 
+				}
+			});
 			}
-		});
+
 	}
 	
 	private synchronized void runStrategy(final IProgressMonitor monitor) {
@@ -182,61 +230,6 @@ public class OptimizeDialog extends Dialog {
 			}
 		});
 	}
-	
-	
-	@Override
-	protected Control createDialogArea(Composite parent) {
-
-		Composite content = new Composite(parent, SWT.NONE);
-
-		GridLayout contentLayout = new GridLayout();
-		contentLayout.numColumns = 2;
-		content.setLayout(contentLayout);
-		
-		viewer = new TableViewer(content, SWT.V_SCROLL | SWT.H_SCROLL | SWT.FULL_SELECTION );
-        viewer.setContentProvider(new OptExecContentProvider());
-        viewer.setLabelProvider(new OptExecLabelProvider());
-        viewer.setInput(trials);
-        
-        Table table = viewer.getTable();
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
-        GridData gdata = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-        gdata.heightHint = 350;
-        gdata.widthHint = 350;
-        table.setLayoutData(gdata);
-        
-        for(ColType colType : ColType.values() ) {
-        	if( colType == ColType.param ) {
-        		// special case
-        		continue;
-        	}
-            TableColumn column = new TableColumn(table, SWT.LEFT);
-            column.setText(colType.name);
-            column.setWidth(50);
-            viewer.setData(colType.name, colType);
-        }
-
-		for( ParamValues val : paramValues ) {
-	        TableColumn column = new TableColumn(viewer.getTable(), SWT.LEFT);
-	        column.setText(val.paramName);
-	        column.setWidth(50);
-            viewer.setData(val.paramName, ColType.param);
-		}
-        
-		
-		launchOptimizer();
-		
-		return content;
-	}
-
-
-	@Override
-	protected void cancelPressed() {
-		// TODO Auto-generated method stub
-		super.cancelPressed();
-	}
-
 
 	class OptExecLabelProvider implements ITableLabelProvider {
 		public Image getColumnImage(Object element, int columnIndex) {
@@ -292,6 +285,7 @@ public class OptimizeDialog extends Dialog {
 		public void removeListener(ILabelProviderListener listener) {
 		}
 	}
+
 }
 
 class OptTrial {
