@@ -5,8 +5,9 @@ public class TradeStats {
 	public int numTrades=0, numShares=0, numWinners=0, numLosers=0;
 	public double largestWinner=0, largestLoser=0;
 	public int numConsecWinners=0, numConsecLosers=0, maxConsecWinners=0, maxConsecLosers=0;
-	public double maxDrawdown = 0;
+	public double equityHigh = 0, maxDrawdown = 0, maxPerTradeLFT=0;
 	public int maxShares = 0;
+	public double commissions = 0.0;
 
 	public double getTotalGross() {
 		return grossProfit + grossLoss;

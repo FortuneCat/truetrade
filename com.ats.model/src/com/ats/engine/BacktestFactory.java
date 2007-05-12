@@ -29,7 +29,7 @@ public class BacktestFactory {
 	}
 	
 	public void runBacktest(StrategyDefinition definition, final BacktestListener listener) {
-		BacktestOrderManager orderManager = (BacktestOrderManager)Factory.getInstance().getOrderManager();
+		final BacktestOrderManager orderManager = (BacktestOrderManager)Factory.getInstance().getOrderManager();
 		orderManager.reset();
 		PositionManager.getInstance().reset();
 		Collection<Instrument> instrs = definition.getInstruments();
@@ -64,6 +64,8 @@ public class BacktestFactory {
 						}
 						if( isDone ) {
 							listener.testComplete();
+							orderManager.reset();
+							
 							break;
 						}
 					}

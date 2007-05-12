@@ -18,10 +18,19 @@ public class StrategyAnalyzer {
 		for(TradeSummary ts : trades) {
 			stats.maxShares = Math.max(ts.getTotalBuyQty(), stats.maxShares);
 			stats.maxShares = Math.max(ts.getTotalSellQty(), stats.maxShares);
-			stats.maxDrawdown = Math.max(stats.maxDrawdown, ts.getMaxDrawdown());
+			stats.maxPerTradeLFT = Math.max(stats.maxPerTradeLFT, ts.getLossFromTop());
 			stats.numTrades++;
 			stats.numShares += (ts.getTotalBuyQty() + ts.getTotalSellQty());
 			stats.grossUnrealized += ts.getUnrealizedProfit();
+			
+			// calc comission
+			if( Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_SHARE) ) {
+				stats.commissions += stats.numShares * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_SHARE_VALUE);
+			} else if( Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_ORDER) ) {
+				stats.commissions += stats.numTrades * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_ORDER_VALUE);
+			}
+
+			
 			if( ts.getRealizedPnL() > 0 ) {
 				stats.grossProfit += ts.getRealizedPnL();
 				stats.netProfit += ts.getRealizedPnL();
@@ -39,14 +48,10 @@ public class StrategyAnalyzer {
 				stats.numConsecLosers++;
 				stats.maxConsecLosers = Math.max(stats.maxConsecLosers, stats.numConsecLosers);
 			}
+			
+			stats.equityHigh = Math.max(stats.equityHigh, stats.getTotalNet());
+			stats.maxDrawdown = Math.min(stats.maxDrawdown, stats.equityHigh - stats.getTotalNet());
 		}
-		// calc comission
-//		double comission = 0.0;
-//		if( Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_SHARE) ) {
-//			comission = numShares * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_SHARE_VALUE);
-//		} else if( Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_ORDER) ) {
-//			comission = numTrades * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_ORDER_VALUE);
-//		}
 		
 		return stats;
 		
