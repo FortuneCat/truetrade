@@ -5,20 +5,33 @@ import org.eclipse.ui.part.ViewPart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,14 +42,23 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.EditorPart;
 
+import com.ats.client.Activator;
+import com.ats.client.actions.OptimizeAction;
+import com.ats.client.dialogs.SelectInstrumentDialog;
+import com.ats.client.perspectives.BacktestPerspective;
+import com.ats.client.wizards.NewStrategyWizard;
 import com.ats.client.wizards.OptimizeWizard;
 import com.ats.client.wizards.ParamValues;
+import com.ats.db.PlatformDAO;
 import com.ats.engine.BacktestFactory;
 import com.ats.engine.BacktestListener;
 import com.ats.engine.PositionManager;
 import com.ats.engine.StrategyDefinition;
+import com.ats.platform.Instrument;
 import com.ats.utils.StrategyAnalyzer;
 import com.ats.utils.TradeStats;
 import com.ats.utils.Utils;
@@ -72,10 +94,35 @@ public class OptimizationView extends ViewPart {
 	private StrategyDefinition stratDef;
 	private List<OptTrial> trials = new ArrayList<OptTrial>();
 	private int maxTrials;
+	private Action exportAction;
 	
 	public OptimizationView() {
 		super();
 	}
+	
+	private void createActions() {
+
+		exportAction = new Action() {
+			public void run() {
+				// TODO: complete this functionality
+			}
+		};
+		exportAction.setText("Export...");
+
+        MenuManager menuMgr = new MenuManager("#popupMenu", "popupMenu"); //$NON-NLS-1$ //$NON-NLS-2$
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(IMenuManager menuManager)
+            {
+            	menuManager.add(exportAction);
+            }
+        });
+        viewer.getTable().setMenu(menuMgr.createContextMenu(viewer.getTable()));
+
+		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		mgr.add(exportAction);
+	}
+	
 	@Override
 	public void createPartControl(Composite parent) {
 
@@ -89,6 +136,7 @@ public class OptimizationView extends ViewPart {
         viewer.setContentProvider(new OptExecContentProvider());
         viewer.setLabelProvider(new OptExecLabelProvider());
         viewer.setInput(trials);
+        viewer.setSorter(new OptSorter());
         
         Table table = viewer.getTable();
         table.setHeaderVisible(true);
@@ -103,12 +151,19 @@ public class OptimizationView extends ViewPart {
         		// special case
         		continue;
         	}
-            TableColumn column = new TableColumn(table, SWT.LEFT);
+            final TableColumn column = new TableColumn(table, SWT.LEFT);
             column.setText(colType.name);
             column.setWidth(50);
             viewer.setData(colType.name, colType);
+            column.addSelectionListener(new SelectionAdapter() {
+            	public void widgetSelected(SelectionEvent evt) {
+            		((OptSorter)viewer.getSorter()).doSort(column);
+            		viewer.refresh();
+            	}
+            });
         }
 
+        createActions();
 		launchOptimizer();
 	}
 
@@ -231,6 +286,61 @@ public class OptimizationView extends ViewPart {
 		});
 	}
 
+	class OptSorter extends  ViewerSorter {
+		  private TableColumn column;
+		  private boolean isAscending;
+		  private ColType type = ColType.netProfit;
+		  
+		  /**
+		   * Does the sort. If it's a different column from the previous sort, do an
+		   * ascending sort. If it's the same column as the last sort, toggle the sort
+		   * direction.
+		   * 
+		   * @param column
+		   */
+		  public void doSort(TableColumn column) {
+			if (column == this.column) {
+				// Same column as last sort; toggle the direction
+				isAscending = !isAscending;
+			} else {
+				// New column; do an ascending sort
+				this.column = column;
+				isAscending = true;
+			}
+			String colText = column.getText();
+			type = (ColType) viewer.getData(colText);
+		}
+
+		  /**
+			 * Compares the object for sorting
+			 */
+		  public int compare(Viewer viewer, Object o1, Object o2) {
+			OptTrial t1 = (OptTrial)o1;
+			OptTrial t2 = (OptTrial)o2;
+
+
+			// Determine which column and do the appropriate sort
+			int rc = 0;
+			switch(type) {
+			case netProfit:
+				rc = (int)(t1.stats.getTotalNet() - t2.stats.getTotalNet());
+				break;
+			case avgTrade:
+				rc = (int)(t1.stats.getAvgTrade() - t2.stats.getAvgTrade());
+				break;
+			case maxDrawdown:
+				rc = (int)(t1.stats.maxDrawdown - t2.stats.maxDrawdown);
+				break;
+			}
+
+			if (!isAscending) {
+				rc = -rc;
+			}
+
+			return rc;
+		}
+	}
+	
 	class OptExecLabelProvider implements ITableLabelProvider {
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;

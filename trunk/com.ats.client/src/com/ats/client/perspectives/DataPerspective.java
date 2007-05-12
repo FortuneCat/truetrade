@@ -18,10 +18,10 @@ public class DataPerspective implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 
 		layout.setEditorAreaVisible(false);
-		IFolderLayout folder = layout.createFolder("watchlistView", IPageLayout.LEFT, 0.25f, editorArea);
+		IFolderLayout folder = layout.createFolder("watchlistView", IPageLayout.LEFT, 0.20f, editorArea);
 		folder.addView(InstrumentView.ID);
 		
-		folder = layout.createFolder("strategyView", IPageLayout.RIGHT, 0.70f, editorArea);
+		folder = layout.createFolder("strategyView", IPageLayout.RIGHT, 0.75f, editorArea);
 		folder.addView(StrategyView.ID);
 
 		 // Bottom left: Outline view and Property Sheet view
