@@ -1,6 +1,8 @@
 package com.ats.engine;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.ats.db.PlatformDAO;
 import com.ats.platform.Bar;
@@ -18,7 +20,8 @@ import com.ats.platform.Trade;
 public class BacktestDataManager extends DataManager {
 
 	private TimeSpan span;
-
+	
+	private List<Instrument> current = new ArrayList<Instrument>();
 
 	public BacktestDataManager() {
 		super();
@@ -29,9 +32,21 @@ public class BacktestDataManager extends DataManager {
 		// for backtesting, we load historical data in the reqMktData() section
 		return series;
 	}
+	
+	private synchronized void addInstrument(Instrument instr) {
+		current.add(instr);
+	}
+	private synchronized void completedInstrument(Instrument instr) {
+		current.remove(instr);
+	}
+	
+	public synchronized boolean isComplete() {
+		return current.size() <= 0;
+	}
 
 	@Override
 	protected void reqMktData(final Instrument instrument) {
+		addInstrument(instrument);
 		
 		new Thread(new Runnable() {
 			public void run() {
@@ -42,8 +57,6 @@ public class BacktestDataManager extends DataManager {
 					Bar bar = series.itemAt(i);
 					
 					// fake trades using a zig-zag pattern
-					
-					// TODO: get tick size for the instrument
 					
 					// TODO: confirm sufficient liquidity exists to decompose like this
 
@@ -161,6 +174,7 @@ public class BacktestDataManager extends DataManager {
 					
 					//fireBar(instrument, bar);
 				}
+				completedInstrument(instrument);
 			}
 		}).start();
 		
@@ -192,5 +206,5 @@ public class BacktestDataManager extends DataManager {
 	public void setSpan(TimeSpan span) {
 		this.span = span;
 	}
-
+	
 }
