@@ -1,7 +1,10 @@
 package com.ats.engine;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import com.ats.platform.Instrument;
 
@@ -17,23 +20,57 @@ import com.ats.platform.Instrument;
  */
 public class BacktestFactory {
 	
-	public static void runBacktest(StrategyDefinition definition) {
+	public BacktestFactory() {
+		
+	}
+	
+	public void runBacktest(StrategyDefinition definition) {
+		runBacktest(definition, null);
+	}
+	
+	public void runBacktest(StrategyDefinition definition, final BacktestListener listener) {
 		BacktestOrderManager orderManager = (BacktestOrderManager)Factory.getInstance().getOrderManager();
 		orderManager.reset();
-		BacktestDataManager dataMgr = new BacktestDataManager();
-		dataMgr.setSpan(definition.getBacktestDataTimeSpan());
 		PositionManager.getInstance().reset();
 		Collection<Instrument> instrs = definition.getInstruments();
+		final List<BacktestDataManager> mgrs = new ArrayList<BacktestDataManager>();
 		Iterator<Instrument> it = instrs.iterator();
 		while( it.hasNext() ) {
 			Instrument instr = it.next();
 			// need to add the backtest order manager as a tick listener, but
 			// where best to do this?
+			BacktestDataManager dataMgr = new BacktestDataManager();
+			mgrs.add(dataMgr);
+			dataMgr.setSpan(definition.getBacktestDataTimeSpan());
 			dataMgr.addTickListener(instr, orderManager);
 			BacktestStrategyEngine bse = new BacktestStrategyEngine(definition, instr, orderManager, dataMgr);
 			Thread t = new Thread(bse);
 			t.start();
 		}
+		
+		if( listener != null ) {
+			new Thread(new Runnable() {
+				public void run() {
+					while( true ) {
+						try {
+							Thread.sleep(300);
+						} catch( Exception e) {}
+						boolean isDone = true;
+						for(BacktestDataManager mgr : mgrs ) {
+							if( ! mgr.isComplete() ) {
+								isDone = false;
+								break;
+							}
+						}
+						if( isDone ) {
+							listener.testComplete();
+							break;
+						}
+					}
+				}
+			}).start();
+		}
+		
 		
 		// TODO: if the order manager is persistent, we need to make sure that we call
 		// removeListener methods so that the other managers get garbage collected
