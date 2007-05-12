@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.gef.internal.InternalImages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -12,7 +11,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -23,7 +21,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -31,13 +28,10 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.ViewPart;
 
 import com.ats.client.Activator;
-import com.ats.client.dialogs.AddStrategyDialog;
-import com.ats.client.dialogs.OptimizeDialog;
+import com.ats.client.actions.OptimizeAction;
 import com.ats.client.dialogs.SelectInstrumentDialog;
 import com.ats.client.perspectives.BacktestPerspective;
-import com.ats.client.wizards.DownloadHistDataWizard;
 import com.ats.client.wizards.NewStrategyWizard;
-import com.ats.client.wizards.OptimizeWizard;
 import com.ats.db.PlatformDAO;
 import com.ats.engine.BacktestFactory;
 import com.ats.engine.StrategyDefinition;
@@ -271,13 +265,17 @@ public class StrategyView extends ViewPart implements ISelectionProvider {
 					if( strat == null ) {
 						return;
 					}
-					OptimizeWizard wiz = new OptimizeWizard();
-					WizardDialog dlg = new WizardDialog(viewer.getControl().getShell(), wiz);
-					if( dlg.open() == WizardDialog.OK ) {
-						OptimizeDialog optDlg = new OptimizeDialog(viewer.getControl().getShell());
-						optDlg.setStrategyDefinition(wiz.getStrategyDefinition(), wiz.getParamValues());
-						optDlg.open();
-					}
+//					OptimizeWizard wiz = new OptimizeWizard();
+//					WizardDialog dlg = new WizardDialog(viewer.getControl().getShell(), wiz);
+//					if( dlg.open() == WizardDialog.OK ) {
+//						OptimizationInput input = new OptimizationInput(wiz.getStrategyDefinition(), wiz.getParamValues());
+//						IWorkbenchPage page = getViewSite().getPage();
+//						try {
+//							page.openEditor(input, OptimizationEditor.ID);
+//						} catch( PartInitException e) {
+//							logger.error("Could not open optimization editor", e);
+//						}
+//					}
 				} catch( Exception e) {
 					logger.error("Could not open optimize wizard", e);
 				}
@@ -296,7 +294,8 @@ public class StrategyView extends ViewPart implements ISelectionProvider {
             	menuManager.add(deleteInstrumentAction);
             	menuManager.add(runtimeAction);
             	menuManager.add(new Separator());
-            	menuManager.add(optimizeStrategyAction);
+            	menuManager.add(new OptimizeAction(getViewSite().getWorkbenchWindow()));
+//            	menuManager.add(optimizeStrategyAction);
             	menuManager.add(runStrategyAction);
             }
         });

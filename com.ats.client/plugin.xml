@@ -62,6 +62,12 @@
             name="Available Data">
       </view>
       <view
+       		class="com.ats.client.views.OptimizationView"
+       		id="com.ats.client.views.optimizationView"
+            allowMultiple="true"
+            name="Optimization">
+      </view>
+      <view
        		class="com.ats.client.views.ChartView"
        		id="com.ats.client.views.chartView"
             name="Chart">
@@ -100,16 +106,10 @@
             id="com.ats.client.actions.openPreferencesAction">
       </command>
       <command
-            name="Open Mailbox"
-            description="Opens a mailbox"
+            name="Optimize"
+            description="Optimizes a strategy"
             categoryId="com.ats.client.category"
-            id="com.ats.client.open">
-      </command>
-      <command
-            name="Open Message Dialog"
-            description="Open a message dialog"
-            categoryId="com.ats.client.category"
-            id="com.ats.client.openMessage">
+            id="com.ats.client.actions.optimizeAction">
       </command>
    </extension>
    <extension
@@ -163,6 +163,15 @@
       <toc file="tocreference.xml"/>
       <toc file="tocsamples.xml"/>
       <toc file="toctasks.xml"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.ats.client.editors.OptimizationEditor"
+            default="true"
+            id="com.ats.client.editors.optimizationEditor"
+            icon="icons/sample2.gif"
+            name="Optimization Editor"/>
    </extension>
 
 </plugin>

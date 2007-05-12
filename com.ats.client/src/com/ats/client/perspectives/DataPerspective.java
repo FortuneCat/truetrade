@@ -6,6 +6,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 import com.ats.client.views.AvailableDataView;
 import com.ats.client.views.InstrumentView;
+import com.ats.client.views.OptimizationView;
 import com.ats.client.views.StrategyView;
 
 public class DataPerspective implements IPerspectiveFactory {
@@ -15,23 +16,7 @@ public class DataPerspective implements IPerspectiveFactory {
 		//layout.addPerspectiveShortcut(BacktestPerspective.ID);
 		
 		String editorArea = layout.getEditorArea();
-/*		
-//		 Top left: Resource Navigator view and Bookmarks view placeholder
-		 IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f,
-		    editorArea);
-		 topLeft.addView(IPageLayout.ID_RES_NAV);
-		 topLeft.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
-		 // Bottom left: Outline view and Property Sheet view
-		 IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f,
-		 	   "topLeft");
-		 bottomLeft.addView(IPageLayout.ID_OUTLINE);
-		 bottomLeft.addView(IPageLayout.ID_PROP_SHEET);
-
-		 // Bottom right: Task List view
-		 layout.addView(IPageLayout.ID_TASK_LIST, IPageLayout.BOTTOM, 0.66f, editorArea);
-*/		 
-		
 		layout.setEditorAreaVisible(false);
 		IFolderLayout folder = layout.createFolder("watchlistView", IPageLayout.LEFT, 0.25f, editorArea);
 		folder.addView(InstrumentView.ID);
@@ -47,6 +32,8 @@ public class DataPerspective implements IPerspectiveFactory {
 		
 		folder = layout.createFolder("availableDataView", IPageLayout.TOP, 0.8f, editorArea);
 		folder.addView(AvailableDataView.ID);
+		folder.addPlaceholder(OptimizationView.ID + ":*");
+		//folder.addView(OptimizationView.ID);
 		
 		//layout.addStandaloneView(ContractView.ID,  false, IPageLayout.RIGHT, 0.25f, editorArea);
 

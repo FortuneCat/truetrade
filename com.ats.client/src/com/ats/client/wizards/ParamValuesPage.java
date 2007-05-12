@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -98,9 +99,9 @@ public class ParamValuesPage extends WizardPage {
 	}
 	
 	private void calcNumTrials() {
-		int numTrials = 0;
+		int numTrials = 1;
 		for(ParamValues val : values) {
-			numTrials += val.numTrials;
+			numTrials *= val.numTrials;
 		}
 		totalTrials.setText("" + numTrials);
 	}
@@ -182,27 +183,27 @@ public class ParamValuesPage extends WizardPage {
 				// If they hit Enter, set the text into the tree and end the
 				// editing session. If they hit Escape, ignore the text and end the
 				// editing session
-				text.addKeyListener(new KeyAdapter() {
-					public void keyPressed(KeyEvent event) {
-						switch (event.keyCode) {
-						case SWT.CR:
-							// Enter hit--set the text into the tree 
-							setValueFromEditor(item, text);
-							text.dispose();
-							break;
-						case SWT.ESC:
-							// End editing session
-							text.dispose();
-							break;
-						}
-					}
-				});
+//				text.addKeyListener(new KeyAdapter() {
+//					public void keyPressed(KeyEvent event) {
+//						switch (event.keyCode) {
+//						case SWT.CR:
+//							// Enter hit--set the text into the tree 
+//							setValueFromEditor(item, text);
+//							text.dispose();
+//							break;
+//						case SWT.ESC:
+//							// End editing session
+//							text.dispose();
+//							break;
+//						}
+//					}
+//				});
 
 				// Set the text field into the editor
 				editor.setEditor(text, item, EDITABLECOLUMN);
 			}
 			private void setValueFromEditor(final TreeItem item, final Text text) {
-				ParamValueItem pvi = ((ParamValueItem) item.getData());
+				final ParamValueItem pvi = ((ParamValueItem) item.getData());
 				String res = "";
 				try {
 					boolean isInt = (pvi.values.initVal instanceof Integer);
@@ -228,13 +229,30 @@ public class ParamValuesPage extends WizardPage {
 						res = pvi.values.stepSize.toString();
 						break;
 					}
+					// reset the number of trials
+					if (isInt) {
+						pvi.values.numTrials = (pvi.values.finish.intValue() - pvi.values.start.intValue())
+								/ pvi.values.stepSize.intValue() + 1;
+					} else {
+						pvi.values.numTrials = (int) ((pvi.values.finish.doubleValue() 
+								- pvi.values.start.doubleValue()) / pvi.values.stepSize.doubleValue()) + 1;
+					}
 				} catch (Exception e) {
 					logger.debug("Parse exception: " + e);
 				}
+				
+				
 				logger.debug("before modifyText, values="
 						+ ParamValuesPage.this.values.toString());
 				if( ! "".equals(res)) {
 					item.setText(EDITABLECOLUMN, res);
+					for(TreeItem child : item.getParentItem().getItems()) {
+						ParamValueItem curr = ((ParamValueItem) child.getData());
+						if( curr.type == ParamValueType.numTrades ) {
+							child.setText(EDITABLECOLUMN, "" + curr.values.numTrials);
+						}
+					}
+					calcNumTrials();
 				}
 			}
 		});
