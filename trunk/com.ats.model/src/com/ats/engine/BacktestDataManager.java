@@ -38,6 +38,10 @@ public class BacktestDataManager extends DataManager {
 	}
 	private synchronized void completedInstrument(Instrument instr) {
 		current.remove(instr);
+		if( current.size() <= 0 ) {
+			// complete, so empty listeners
+			reset();
+		}
 	}
 	
 	public synchronized boolean isComplete() {
