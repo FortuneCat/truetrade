@@ -25,7 +25,7 @@ import com.ats.platform.JOrder.OrderState;
  * @author Adrian
  *
  */
-abstract class OrderManager {
+public abstract class OrderManager {
 	private static final Logger logger = Logger.getLogger(OrderManager.class);
 
 	
@@ -45,10 +45,10 @@ abstract class OrderManager {
 	private List<JOrder> completedOrders = new ArrayList<JOrder>();
 	
 	/**
-	 * default visibility - should only be run by the OrderManagerFactory
+	 * should only be run by the OrderManagerFactory
 	 *
 	 */
-	OrderManager() {
+	protected OrderManager() {
 		addExecutionListener(PositionManager.getInstance());
 	}
 	

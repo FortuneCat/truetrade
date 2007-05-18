@@ -1,4 +1,4 @@
-package com.ats.engine;
+package com.ats.engine.backtesting;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.ats.engine.Factory;
+import com.ats.engine.PositionManager;
+import com.ats.engine.StrategyDefinition;
 import com.ats.platform.Instrument;
 
 /**
