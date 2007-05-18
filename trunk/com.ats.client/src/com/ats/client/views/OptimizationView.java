@@ -45,19 +45,30 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.EditorPart;
+import org.jgap.Configuration;
+import org.jgap.Gene;
+import org.jgap.Genotype;
+import org.jgap.IChromosome;
+import org.jgap.InvalidConfigurationException;
+import org.jgap.impl.DefaultConfiguration;
+import org.jgap.impl.DoubleGene;
+import org.jgap.impl.IntegerGene;
+import org.jgap.impl.NumberGene;
 
 import com.ats.client.Activator;
 import com.ats.client.actions.OptimizeAction;
 import com.ats.client.dialogs.SelectInstrumentDialog;
 import com.ats.client.perspectives.BacktestPerspective;
+import com.ats.client.tools.BacktestFitnessFunction;
+import com.ats.client.tools.ParamValuesChromosome;
 import com.ats.client.wizards.NewStrategyWizard;
 import com.ats.client.wizards.OptimizeWizard;
 import com.ats.client.wizards.ParamValues;
 import com.ats.db.PlatformDAO;
-import com.ats.engine.BacktestFactory;
-import com.ats.engine.BacktestListener;
 import com.ats.engine.PositionManager;
 import com.ats.engine.StrategyDefinition;
+import com.ats.engine.backtesting.BacktestFactory;
+import com.ats.engine.backtesting.BacktestListener;
 import com.ats.platform.Instrument;
 import com.ats.utils.StrategyAnalyzer;
 import com.ats.utils.TradeStats;
@@ -193,42 +204,107 @@ public class OptimizationView extends ViewPart {
 	}
 	
 	private void launchOptimizer() {
-		OptimizeWizard wiz = new OptimizeWizard();
+		final OptimizeWizard wiz = new OptimizeWizard();
 		WizardDialog dlg = new WizardDialog(getSite().getShell(), wiz);
 		if( dlg.open() == WizardDialog.OK ) {
 			setStrategyDefinition(wiz.getStrategyDefinition(), wiz.getParamValues());
-	
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					try {
 						new ProgressMonitorDialog(getSite().getShell()).run(true, true,
 								new IRunnableWithProgress() {
 									public void run(IProgressMonitor monitor) {
-										monitor.beginTask("Optimizing...", trials.size());
-										runStrategy(monitor);
-										while (true) {
-											try {
-												// unsophisticated means of monitoring, I know.  I'm
-												// tired and this works.
-												Thread.sleep(1000);
-											} catch (InterruptedException e) {
-											}
-											if (monitor.isCanceled()
-													|| trials.size() >= maxTrials) {
-												break;
-											}
+										if( wiz.isBruteForce() ) {
+											runBruteForce(monitor);
+										} else {
+											runGeneticAlgorithm(monitor, wiz.getNumGATrials(), wiz.getNumOrganismsPerIter(), wiz.getNetProfitOffset());
 										}
 									}
-								});
-					} catch (Exception e) {
-						logger.error("Could not load progress monitor", e);
-					} 
+						});
+					} catch( Exception e ) {
+					}
 				}
 			});
-			}
+		}
 
 	}
-	
+	public void addOptimizationTrial(final Map<String, Number> params, TradeStats stats) {
+		final OptTrial trial = new OptTrial();
+		trial.stats = stats;
+		trial.paramVals = params;
+		trials.add(trial);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				viewer.add(trial);
+			}
+		});
+	}
+
+	private void runGeneticAlgorithm(IProgressMonitor monitor, int numGATrials, int numOrgsPerIter, double netProfitOffset) {
+		monitor.beginTask("Optimizing...", numGATrials);
+
+		Configuration.reset();
+		Configuration gaConf = new DefaultConfiguration();
+		gaConf.setPreservFittestIndividual(true);
+		gaConf.setKeepPopulationSizeConstant(false);
+		Genotype genotype = null;
+
+		try {
+			// the genes represent the number of steps away from the starting position.
+			// For simplicity, we start in the middle
+			Gene genes[] = new Gene[this.paramValues.size()];
+			for( int i = 0; i < genes.length; i++ ) {
+				ParamValues vals = paramValues.get(i);
+				genes[i] = new IntegerGene(gaConf, 0, vals.numTrials );
+				((NumberGene)genes[i]).setAllele(vals.numTrials / 2);
+			}
+			ParamValuesChromosome chromo = new ParamValuesChromosome(
+					gaConf, genes, stratDef, paramValues);
+			
+			gaConf.setSampleChromosome(chromo);
+			gaConf.setPopulationSize(numOrgsPerIter);
+			gaConf.setFitnessFunction(new BacktestFitnessFunction(this, stratDef, paramValues, netProfitOffset));
+			genotype = Genotype.randomInitialGenotype(gaConf);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < numGATrials; i++) {
+			try {
+				monitor.setTaskName("Trial " + (i+1) + " of " + numGATrials + "...");
+				genotype.evolve();
+			} catch( Exception e) {
+				e.printStackTrace();
+			}
+			monitor.worked(1);
+			if (monitor.isCanceled()) {
+				break;
+			}
+		}
+		// Print summary.
+		// --------------
+		IChromosome fittest = genotype.getFittestChromosome();
+//		System.out.println("Fittest Chromosome has fitness "
+//				+ fittest.getFitnessValue());
+
+	}
+
+	private void runBruteForce(IProgressMonitor monitor) {
+
+		monitor.beginTask("Optimizing...", trials.size());
+		runStrategy(monitor);
+		while (true) {
+			try {
+				// unsophisticated means of monitoring, I know. I'm
+				// tired and this works.
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+			if (monitor.isCanceled() || trials.size() >= maxTrials) {
+				break;
+			}
+		}
+	}
+
 	private synchronized void runStrategy(final IProgressMonitor monitor) {
 		if( trials.size() >= maxTrials ) {
 			monitor.done();
@@ -272,17 +348,10 @@ public class OptimizationView extends ViewPart {
 			public void testComplete() {
 				monitor.worked(1);
 				TradeStats stats = StrategyAnalyzer.calculateTradeStats(PositionManager.getInstance().getAllTrades());
-				final OptTrial trial = new OptTrial();
-				trial.stats = stats;
-				trial.paramVals = params;
-				trials.add(trial);
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						viewer.add(trial);
-					}
-				});
+				addOptimizationTrial(params, stats);
 				runStrategy(monitor);
 			}
+
 		});
 	}
 
