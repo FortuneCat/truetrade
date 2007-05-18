@@ -109,6 +109,9 @@ public class StrategyDefinition {
 	public Number getParameter(String paramName) {
 		return params.get(paramName);
 	}
+	public Map<String, Number> getParameterValues() {
+		return params;
+	}
 
 	public List<Instrument> getInstruments() {
 		return instruments;

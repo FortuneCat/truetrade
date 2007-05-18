@@ -1,10 +1,11 @@
-package com.ats.engine;
+package com.ats.engine.backtesting;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.ats.db.PlatformDAO;
+import com.ats.engine.DataManager;
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;

@@ -1,5 +1,8 @@
 package com.ats.engine;
 
+import com.ats.engine.backtesting.BacktestDataManager;
+import com.ats.engine.backtesting.BacktestOrderManager;
+
 public class Factory {
 	public enum RuntimeMode {
 		backtest,
