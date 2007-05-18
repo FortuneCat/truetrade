@@ -14,6 +14,7 @@ Eclipse-LazyStart: true
 Export-Package: com.ats.client.model,
  com.ats.db,
  com.ats.engine,
+ com.ats.engine.backtesting,
  com.ats.platform,
  com.ats.providers,
  com.ats.strategy,
