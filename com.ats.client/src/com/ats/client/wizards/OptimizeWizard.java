@@ -5,6 +5,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -14,6 +16,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Text;
 
 import com.ats.db.PlatformDAO;
 import com.ats.engine.StrategyDefinition;
@@ -25,9 +29,15 @@ public class OptimizeWizard extends Wizard {
 	private SelectParamsPage selectParamsPage;
 	private ParamValuesPage paramValuesPage;
 	private SelectOptimizerPage selectOptimizerPage;
+	private GAParamsPage gaParamsPage;
 	
 	private StrategyDefinition stratDef;
 	private java.util.List<ParamValues> values;
+	
+	private boolean isBruteForce;
+	private int numGATrials;
+	private int numOrganismsPerIter;
+	private double netProfitOffset;
 	
 	public OptimizeWizard() {
 		setWindowTitle("Optimize Strategy");
@@ -37,6 +47,7 @@ public class OptimizeWizard extends Wizard {
 		selectParamsPage = new SelectParamsPage();
 		paramValuesPage = new ParamValuesPage();
 		selectOptimizerPage = new SelectOptimizerPage();
+		gaParamsPage = new GAParamsPage();
 	}
 
 	@Override
@@ -45,6 +56,7 @@ public class OptimizeWizard extends Wizard {
 		addPage(selectParamsPage);
 		addPage(paramValuesPage);
 		addPage(selectOptimizerPage);
+		addPage(gaParamsPage);
 	}
 	
 	@Override
@@ -56,6 +68,15 @@ public class OptimizeWizard extends Wizard {
 			paramValuesPage.setStratDefParams(selectStrategyPage
 					.getStrategyDefinition(), selectParamsPage
 					.getSelectedParamNames());
+		} else if( page instanceof ParamValuesPage ) {
+			int numTrials = paramValuesPage.getNumTrials();
+			gaParamsPage.setNumTrials(numTrials);
+		} else if( page instanceof SelectOptimizerPage ) {
+			if( selectOptimizerPage.isBruteForce() ) {
+				return null;
+			} else {
+				return gaParamsPage;
+			}
 		}
 		return super.getNextPage(page);
 	}
@@ -64,6 +85,10 @@ public class OptimizeWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		values = paramValuesPage.getParamValues();
+		isBruteForce = selectOptimizerPage.isBruteForce();
+		numGATrials = gaParamsPage.getNumGATrials();
+		numOrganismsPerIter = gaParamsPage.getNumOrganismsPerIter();
+		netProfitOffset = gaParamsPage.getProfitOffset();
 		return true;
 	}
 	
@@ -72,6 +97,20 @@ public class OptimizeWizard extends Wizard {
 	}
 	public StrategyDefinition getStrategyDefinition() {
 		return stratDef;
+	}
+	public boolean isBruteForce() {
+		return isBruteForce;
+	}
+	public int getNumGATrials() {
+		return numGATrials;
+	}
+
+	public double getNetProfitOffset() {
+		return netProfitOffset;
+	}
+
+	public int getNumOrganismsPerIter() {
+		return numOrganismsPerIter;
 	}
 	
 }
@@ -279,13 +318,15 @@ class SelectOptimizerPage extends WizardPage {
 	private Button bruteForceBtn;
 	private Button geneticAlgBtn; 
 	
+//	private int numTrials = 100;
+		
 	public SelectOptimizerPage() {
 		super("Select Optimizer Method");
 		setTitle("Select Optimizer Method");
 		setDescription("Select the technique used by the optimizer.");
 		setPageComplete(true);
 	}
-
+	
 	public void createControl(Composite parent) {
 		Composite content = new Composite(parent, SWT.NULL);
 		
@@ -296,20 +337,126 @@ class SelectOptimizerPage extends WizardPage {
 		bruteForceBtn = new Button(content, SWT.RADIO);
 		bruteForceBtn.setText("Brue Force.");
 		bruteForceBtn.setSelection(true);
-		new Label(content, SWT.NONE).setText("     Will exhaustively try all alternatives");
-		new Label(content, SWT.NONE).setText("     Recommended for a small number of trials.");
+		Text text = new Text(content, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
+		text.setText("     Will exhaustively try all alternatives.\n"
+				   + "     Recommended for a small number of trials.");
+		bruteForceBtn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				setPageComplete(true);
+			}
+		});
 
 		geneticAlgBtn = new Button(content, SWT.RADIO);
 		geneticAlgBtn.setText("Genetic Algorithm.");
-		geneticAlgBtn.setEnabled(false);
 		GridData gdata = new GridData();
 		gdata.verticalIndent = 15;
 		geneticAlgBtn.setLayoutData(gdata);
-		new Label(content, SWT.NONE).setText("     Will search options looking for 'good enough' combinations");
-		new Label(content, SWT.NONE).setText("     Recommended for a large number of trials.");
-		new Label(content, SWT.NONE).setText("     Not currently supported.");
-
+		text = new Text(content, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
+		text.setText("     Will search options looking for 'good enough' combinations.\n"
+				   + "     Recommended only for a large number of trials.");
+		geneticAlgBtn.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				setPageComplete(true);
+			}
+		});
+		
 		setControl(content);
+	}
+	
+	public boolean isBruteForce() {
+		return bruteForceBtn.getSelection();
 	}
 }
 
+class GAParamsPage extends WizardPage {
+
+	private Scale gaScale;
+	private Text numTrialsText;
+	private Text numIterationsText;
+	private Text profitOffsetText;
+	
+	public GAParamsPage() {
+		super("Configure Genetic Analysis");
+		setTitle("Configure Genetic Analysis");
+		setDescription("Select the genetic analysis parameters.");
+		setPageComplete(true);
+	}
+
+	public void createControl(Composite parent) {
+		Composite content = new Composite(parent, SWT.NULL);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		content.setLayout(layout);
+		
+		Label label = new Label(content, SWT.NONE);
+		label.setText("Select the number of iterations for the genetic algorithm");
+		GridData gdata = new GridData();
+		gdata.verticalIndent = 10;
+		label.setLayoutData(gdata);
+
+		gaScale = new Scale(content, SWT.NONE);
+		gaScale.setMinimum(1);
+		gaScale.setMaximum(100);
+		gdata = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+		gaScale.setLayoutData(gdata);
+		numTrialsText = new Text(content, SWT.NONE);
+		numTrialsText.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+		numTrialsText.setEditable(false);
+		gaScale.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+			public void widgetSelected(SelectionEvent e) {
+				numTrialsText.setText(Integer.toString(gaScale.getSelection()));
+			}
+			
+		});
+		
+		label = new Label(content, SWT.NONE);
+		label.setText("Select the number of 'organisms' per iteration:");
+		gdata = new GridData();
+		gdata.verticalIndent = 10;
+		label.setLayoutData(gdata);
+		numIterationsText = new Text(content, SWT.BORDER);
+		numIterationsText.setText("10        ");
+		
+		Text text = new Text(content, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
+		text.setText("Select the net profit offset:\n"
+				   + "  The fitness function only works on positive net results\n"
+				   + "  and works best when there is a significant percentage difference\n"
+				   + "  between the results.  The offset will be added to net profit.\n"
+				   + "  (Use a negative number to decrease the net profit.)");
+		gdata = new GridData();
+		gdata.verticalIndent = 10;
+		text.setLayoutData(gdata);
+		profitOffsetText = new Text(content, SWT.BORDER);
+		profitOffsetText.setText("0.00           ");
+		
+
+		setControl(content);
+	}
+	public void setNumTrials(int numTrials) {
+		gaScale.setMaximum(numTrials);
+		gaScale.setSelection(numTrials/4);
+		numTrialsText.setText("" + gaScale.getSelection());
+	}
+
+	public int getNumGATrials() {
+		return gaScale.getSelection();
+	}
+	public int getNumOrganismsPerIter() {
+		try {
+			return Integer.parseInt(numIterationsText.getText());
+		} catch( Exception e) {
+			return 10;
+		}
+	}
+	public double getProfitOffset() {
+		try {
+			return Double.parseDouble(profitOffsetText.getText());
+		} catch( Exception e) {
+			return 0.0;
+		}
+	}
+	
+}

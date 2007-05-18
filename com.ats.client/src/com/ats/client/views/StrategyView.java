@@ -33,8 +33,8 @@ import com.ats.client.dialogs.SelectInstrumentDialog;
 import com.ats.client.perspectives.BacktestPerspective;
 import com.ats.client.wizards.NewStrategyWizard;
 import com.ats.db.PlatformDAO;
-import com.ats.engine.BacktestFactory;
 import com.ats.engine.StrategyDefinition;
+import com.ats.engine.backtesting.BacktestFactory;
 import com.ats.platform.Instrument;
 import com.ats.platform.Instrument.InstrumentType;
 

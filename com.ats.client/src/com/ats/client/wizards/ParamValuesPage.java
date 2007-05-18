@@ -106,6 +106,10 @@ public class ParamValuesPage extends WizardPage {
 		totalTrials.setText("" + numTrials);
 	}
 	
+	public int getNumTrials() {
+		return Integer.parseInt(totalTrials.getText());
+	}
+	
 	@SuppressWarnings("deprecation")
 	public void createControl(Composite parent) {
 		Composite content = new Composite(parent, SWT.NULL);
