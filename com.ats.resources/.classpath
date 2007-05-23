@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry path="src" kind="src"/>
+	<classpathentry path="lib/jgap.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/commons-lang-2.2.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/gnujaxp.jar" exported="true" kind="lib"/>
 	<classpathentry path="lib/httpunit.jar" exported="true" kind="lib"/>
