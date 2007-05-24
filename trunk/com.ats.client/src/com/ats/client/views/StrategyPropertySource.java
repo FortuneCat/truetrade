@@ -46,8 +46,6 @@ public class StrategyPropertySource implements IPropertySource {
 			classPD.setLabelProvider(new LabelProvider() {
 				public String getText(Object element) {
 					return element.toString();
-//					Class clazz = (Class)element;
-//					return clazz.getCanonicalName();
 				}
 			});
 			classPD.setDescription("Simple class name of strategy.");
@@ -69,12 +67,10 @@ public class StrategyPropertySource implements IPropertySource {
 	public Object getPropertyValue(Object id) {
 		if( ((String)id).startsWith("param_") ) {
 			String key = ((String)id).substring(6);
-			return stratDef.getParameter(key);
+			return stratDef.getParameter(key).toString();
 		} else if(id.equals("timeSpan")) {
 			// Combo box has to return the index of the selection
-//			return stratDef.getBacktestDataTimeSpan().toString();
 			return stratDef.getBacktestDataTimeSpanId();
-//			return Arrays.asList(TimeSpan.values()).indexOf(stratDef.getBacktestDataTimeSpan());
 		} else if( id.equals("stratClass")) {
 			return stratDef.getStrategyClassName();
 		} 
@@ -92,8 +88,16 @@ public class StrategyPropertySource implements IPropertySource {
 		boolean isDirty = false;
 		if( ((String)id).startsWith("param_") ) {
 			String key = ((String)id).substring(6);
-			stratDef.setParameter(key, (Number)value);
-			isDirty = true;
+			try {
+				if( stratDef.getParameter(key) instanceof Integer ) {
+					stratDef.setParameter(key, Integer.parseInt((String)value));
+				} else {
+					stratDef.setParameter(key, Double.parseDouble((String)value));
+				}
+				isDirty = true;
+			} catch( Exception e) {
+				// could not parse
+			}
 		} else if( id.equals("timeSpan")) {
 			stratDef.setBacktestDataTimeSpan(TimeSpan.values()[(Integer)value]);
 			isDirty = true;
