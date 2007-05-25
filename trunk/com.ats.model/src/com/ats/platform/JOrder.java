@@ -1,5 +1,8 @@
 package com.ats.platform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.naming.LimitExceededException;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -34,7 +37,7 @@ public class JOrder {
 		}
 	}
 	
-	private JOrder stopOrder;
+	private List<JOrder> triggerOrders = new ArrayList<JOrder>();
 	
 	private double avgPrice;
 	private int filledSize = 0;
@@ -260,12 +263,12 @@ public class JOrder {
 	public void setInstrument(Instrument instrument) {
 		this.instrument = instrument;
 	}
-	public JOrder getStopOrder() {
-		return stopOrder;
-	}
-	public void setStopOrder(JOrder exitOrder) {
-		this.stopOrder = exitOrder;
-	}
 
+	public void addTriggerOrder(JOrder order) {
+		triggerOrders.add(order);
+	}
+	public List<JOrder> getTriggerOrders() {
+		return triggerOrders;
+	}
 
 }

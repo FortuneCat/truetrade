@@ -215,7 +215,11 @@ public class PlatformDAO {
 			while (it.hasNext() ) {
 				Bar bar = it.next();
 				args.put("bar", bar);
-				sqlMap.insert("insertBar", args);
+				try {
+					sqlMap.insert("insertBar", args);
+				} catch( Exception e ) {
+					logger.warn("Could not insert bar: " + e);
+				}
 			}
 		} catch( Exception e ) {
 			logger.error("Could not insert bar", e);
