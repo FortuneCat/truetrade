@@ -2,7 +2,7 @@ package com.ats.strategy;
 
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
-import com.ats.platform.JSystemTraderException;
+import com.ats.platform.BaseSystemException;
 import com.ats.platform.Position;
 import com.ats.platform.Strategy;
 import com.ats.platform.TimeSpan;

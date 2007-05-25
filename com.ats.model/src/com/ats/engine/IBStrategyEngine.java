@@ -8,7 +8,7 @@ import java.util.List;
 import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;
 import com.ats.platform.JOrder;
-import com.ats.platform.JSystemTraderException;
+import com.ats.platform.BaseSystemException;
 import com.ats.platform.Strategy;
 import com.ib.client.Contract;
 

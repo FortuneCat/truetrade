@@ -105,10 +105,8 @@ public abstract class OrderManager {
 		
 		// issue stop order
 		// TODO: handle partial fills. Only significant for trailing stop orders
-		if( order.getStopOrder() != null ) {
-			JOrder stp = order.getStopOrder();
-			stp.setQuantity(order.getFilledSize());
-			placeOrder(order.getStrategy(), stp);
+		for( JOrder trigOrder : order.getTriggerOrders() ) {
+			placeOrder(order.getStrategy(), trigOrder);
 		}
 	}
 	

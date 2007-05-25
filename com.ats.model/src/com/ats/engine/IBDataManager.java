@@ -16,8 +16,9 @@ import org.apache.log4j.Logger;
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;
+import com.ats.platform.MessageListener;
 import com.ats.platform.Trade;
-public class IBDataManager extends DataManager {
+public class IBDataManager extends DataManager implements MessageListener {
 	private static final Logger logger = Logger.getLogger(IBDataManager.class);
 	
 	public static final String SHOW_TRADES = "TRADES";
@@ -80,6 +81,7 @@ public class IBDataManager extends DataManager {
 //		Thread t = new Thread(r);
 //		t.setDaemon(true);
 //		t.start();
+		IBWrapperAdapter.getWrapper().addMessageListener(this);
 	}
 	
 	public static final IBDataManager getInstance() {
@@ -151,6 +153,12 @@ public class IBDataManager extends DataManager {
 		}
 	}
 
+	public void reqHistData(Instrument instrument, BarSeries downSeries, Date startDate, Date endDate) {
+		// TODO obey the start and end dates
+		reqHistData(instrument, downSeries);
+		
+	}
+
 	
 	/**
 	 * blocking request for hist data
@@ -185,14 +193,20 @@ public class IBDataManager extends DataManager {
 		String endDateString = ibDateFormat.format(nyCal.getTime());
 		String priceType = instrument.isForex() ? SHOW_MIDPOINT : SHOW_TRADES;
 		logger.info("Requesting historical data for " + instrument + ", id=" + id);
-		IBHelper.getInstance().reqHistoricalData(id,
-				instrument,
-				endDateString,
-				series.getTimeSpan().getIbDuration(),
-				series.getTimeSpan().getIbBarParam(),
-				priceType,
-				1,
-				2);
+		try {
+			IBHelper.getInstance().reqHistoricalData(id,
+					instrument,
+					endDateString,
+					series.getTimeSpan().getIbDuration(),
+					series.getTimeSpan().getIbBarParam(),
+					priceType,
+					1,
+					2);
+		} catch( Exception e ) {
+			// typically a connection exception or other error
+			logger.error("Could not request historical data: " + e);
+			return null;
+		}
 		
 		// wait for the request to complete
 		// TODO: also stop when errors occur
@@ -246,4 +260,22 @@ public class IBDataManager extends DataManager {
 		
 		series.addHistory(bar);
 	}
+
+	public synchronized void error(int id, int errorCode, String errorMsg) {
+		if( errorCode == IBWrapperAdapter.ERCODE_NOT_CONNECTED  ) {
+			for( int i = 0; i < requestIsDone.size(); i++ ) {
+				requestIsDone.set(i, Boolean.TRUE);
+			}
+			notifyAll();
+		} else if( errorCode == IBWrapperAdapter.ERCODE_NO_SECURITY ) {
+			// TODO: need to be assured that the ID corresponds to our request,
+			// not some other subsystem!
+		}
+	}
+
+	public void updateNewsBulletin(int msgId, int msgType, String message, String origExchange) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

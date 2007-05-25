@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import com.ats.platform.Instrument;
-import com.ats.platform.JSystemTraderException;
+import com.ats.platform.BaseSystemException;
 import com.ats.platform.Strategy;
 import com.ats.utils.Utils;
 import com.ib.client.Contract;
@@ -62,7 +62,7 @@ public class IBHelper {
     	return socket;
     }
 
-    private void connect() throws ParseException, JSystemTraderException {
+    private void connect() throws ParseException, BaseSystemException {
         logger.info("Connecting to TWS");
         socket = new EClientSocket(IBWrapperAdapter.getWrapper());
 
@@ -72,7 +72,7 @@ public class IBHelper {
         
         socket.eConnect(host, port, clientID);
         if (!socket.isConnected()) {
-            throw new JSystemTraderException("Could not connect to TWS. See log for details.");
+            throw new BaseSystemException("Could not connect to TWS. See log for details.");
         }
 
         // Make sure that system clock is the same as TWS clock
@@ -148,7 +148,7 @@ public class IBHelper {
     }
 
     
-    public void realAccountCheck() throws JSystemTraderException {
+    public void realAccountCheck() throws BaseSystemException {
         getSocket().reqAccountUpdates(true, "");
 //
 //        try {

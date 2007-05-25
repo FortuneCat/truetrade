@@ -68,7 +68,7 @@ public class ImportDataManager {
 			break;
 		case InteractiveBrokers:
 			downSeries = new BarSeries(instrument, BarType.time, timeSpan);
-			IBDataManager.getInstance().reqHistData(instrument, downSeries);
+			IBDataManager.getInstance().reqHistData(instrument, downSeries, startDate, endDate);
 			break;
 		case OpenTick:
 			downSeries = OpenTickProvider.getInstance().getHistoricalData(instrument, timeSpan, startDate, endDate);

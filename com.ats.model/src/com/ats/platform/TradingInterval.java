@@ -31,7 +31,7 @@ public class TradingInterval {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
     private final Calendar open, close, grace;
 
-    public TradingInterval(String openTime, String closeTime, int graceTime) throws JSystemTraderException {
+    public TradingInterval(String openTime, String closeTime, int graceTime) throws BaseSystemException {
         open = getTime(openTime);
         close = getTime(closeTime);
         grace = (Calendar) close.clone();
@@ -41,11 +41,11 @@ public class TradingInterval {
         String msg = "Invalid trading interval " + this.toString();
         if (!close.after(open)) {
             msg += " Close time must be after open time.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
         if (!grace.after(open) || !grace.before(close)) {
             msg += " Grace time must be between open and close.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
     }
 
@@ -58,13 +58,13 @@ public class TradingInterval {
     }
 
 
-    private Calendar getTime(String time) throws JSystemTraderException {
+    private Calendar getTime(String time) throws BaseSystemException {
         int hours, minutes;
         StringTokenizer st = new StringTokenizer(time, ":");
         int tokens = st.countTokens();
         if (tokens != 2) {
             String msg = "Time " + time + " does not conform to the HH:MM format.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
 
         String hourToken = st.nextToken();
@@ -72,7 +72,7 @@ public class TradingInterval {
             hours = Integer.parseInt(hourToken);
         } catch (NumberFormatException nfe) {
             String msg = hourToken + " in " + time + " can not be parsed as hours.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
 
         String minuteToken = st.nextToken();
@@ -80,17 +80,17 @@ public class TradingInterval {
             minutes = Integer.parseInt(minuteToken);
         } catch (NumberFormatException nfe) {
             String msg = minuteToken + " in " + time + " can not be parsed as minutes.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
 
         if (hours < 0 || hours > 23) {
             String msg = "Specified hours: " + hours + ". Number of minutes must be in the [0..23] range.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
 
         if (minutes < 0 || minutes > 59) {
             String msg = "Specified minutes: " + minutes + ". Number of minutes must be in the [0..59] range.";
-            throw new JSystemTraderException(msg);
+            throw new BaseSystemException(msg);
         }
 
         Calendar period = Calendar.getInstance();

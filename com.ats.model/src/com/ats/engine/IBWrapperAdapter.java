@@ -16,6 +16,10 @@ import com.ib.client.Order;
  */
 public class IBWrapperAdapter extends EWrapperAdapter {
 	
+	public static final int ERCODE_NOT_CONNECTED = 504;
+	public static final int ERCODE_NO_SECURITY = 200;
+	
+	
 	private static IBOrderManager ibOrderManager;
 
 	private static final Logger logger = Logger.getLogger(IBWrapperAdapter.class);
@@ -120,7 +124,7 @@ public class IBWrapperAdapter extends EWrapperAdapter {
         try {
             String msg = id + " | " + errorCode + ": " + errorMsg;
             logger.info("Error: " + msg);
-
+            
             // check for a code which renders an order null
             if( errorCode >= 103 && errorCode <= 161  ) {
             	// a problem occured with the order
