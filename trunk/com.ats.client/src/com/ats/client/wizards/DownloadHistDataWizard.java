@@ -67,16 +67,22 @@ public class DownloadHistDataWizard extends Wizard {
 					for(Instrument instr : instruments ) {
 						// download data
 						monitor.subTask("Downloading " + instr.getSymbol());
-						BarSeries series = ImportDataManager.getInstance().downloadHistData(provider, instr, timeSpan, startDate, endDate);
-						BarSeries currSeries = PlatformDAO.getBarSeries(instr, timeSpan);
-						if( currSeries != null ) {
-							currSeries.addHistory(series);
-							PlatformDAO.insertBarSeries(currSeries);
-						} else {
-							PlatformDAO.insertBarSeries(series);
+						try {
+							BarSeries series = ImportDataManager.getInstance().downloadHistData(provider, instr, timeSpan, startDate, endDate);
+							BarSeries currSeries = PlatformDAO.getBarSeries(instr, timeSpan);
+							if( currSeries != null && series != null ) {
+								//currSeries.addHistory(series);
+								//PlatformDAO.insertBarSeries(currSeries);
+								PlatformDAO.insertBars(currSeries);
+							} else if( series != null ){
+								PlatformDAO.insertBarSeries(series);
+							}
+						} catch( Exception e) {
+							logger.error("Could not download data for " + instr.getSymbol());
 						}
 						monitor.worked(1);
 					}
+					monitor.done();
 				}
 			});
 		} catch( Exception e) {
