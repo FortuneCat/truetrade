@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -11,6 +12,7 @@ import org.eclipse.jface.preference.PreferenceStore;
 public class Utils {
 	private static final Logger logger = Logger.getLogger(Utils.class);
 	
+	public static final TimeZone nyseTimeZone = TimeZone.getTimeZone("America/New_York");
 	
 	public static final SimpleDateFormat timeAndDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	

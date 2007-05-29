@@ -50,14 +50,33 @@ public abstract class Strategy implements TickListener, TradeListener {
 //    	return "Strategy: " + getClass().getSimpleName() + ", instrument=" + instrument;
     }
     
-    public void addParam(String paramName, Number defValue) {
+    /**
+     * Subclasses can add parameters which may be set at build time.  This is most
+     * useful for backtesting, when many different parameters need to be tried.
+     * 
+     * @param paramName
+     * @param defValue
+     */
+    public final void addParam(String paramName, Number defValue) {
     	params.put(paramName, defValue);
     }
     
-    public Number getParam(String paramName) {
+    /**
+     * Subclasses may override to provide a custom instrument source.  By default,
+     * runtime instruments will be drawn from the database definition, but if there
+     * is an SIS, then the DB instruments will be ignored and the SIS will provide all
+     * instruments instead.  Backtesting will still use the DB Instruments.
+     * 
+     * @return
+     */
+    public StrategyInstrumentSource getInstrumentSource() {
+    	return null;
+    }
+    
+    public final Number getParam(String paramName) {
     	return params.get(paramName);
     }
-    public Set<String> getParamNames() {
+    public final Set<String> getParamNames() {
     	return params.keySet();
     }
 
@@ -104,7 +123,7 @@ public abstract class Strategy implements TickListener, TradeListener {
     
 
 
-    public boolean getOnlyRTHPriceBars() {
+    public final boolean getOnlyRTHPriceBars() {
         return onlyRTHPriceBars;
     }
 
@@ -112,7 +131,7 @@ public abstract class Strategy implements TickListener, TradeListener {
      * returns a price bar series with specified size
      * @return
      */
-    public BarSeries getSeries(TimeSpan span){
+    public final BarSeries getSeries(TimeSpan span){
     	return strategyEngine.getSeries(span); 
     }
     
@@ -120,11 +139,14 @@ public abstract class Strategy implements TickListener, TradeListener {
      * onBar() events will now be triggered with the specified size bars
      * @param barSizeInSecs
      */
-    public void requestTimeSeries(TimeSpan span) {
+    public final void requestTimeSeries(TimeSpan span) {
     	// as a side-effect, getSeries will update the given series
     	strategyEngine.requestSeries(span);
     }
 
+    /**
+     * Subclasses override to get events whenever a trade takes place
+     */
     public void onTrade(Trade trade) {
     }
 

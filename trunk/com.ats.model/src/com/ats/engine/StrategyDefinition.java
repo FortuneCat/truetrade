@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import com.ats.platform.Instrument;
 import com.ats.platform.Strategy;
+import com.ats.platform.StrategyInstrumentSource;
 import com.ats.platform.TimeSpan;
 
 /**
@@ -59,6 +60,19 @@ public class StrategyDefinition {
 	
 	public void removeInstrument(Instrument instrument) {
 		instruments.remove(instrument);
+	}
+	
+
+	public boolean hasStrategyInstrumentSource() {
+		return getStrategyInstrumentSource() != null;
+	}
+	
+	public StrategyInstrumentSource getStrategyInstrumentSource() {
+		try {
+			return ((Strategy)strategyClass.newInstance()).getInstrumentSource();
+		} catch( Exception e) {
+			return null;
+		}
 	}
 	
 //	public Class getStrategyClass() {

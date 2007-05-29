@@ -218,6 +218,7 @@ public class IBDataManager extends DataManager implements MessageListener {
 				// do nothing
 			}
 		}
+		logger.debug("Historical data complete for " + instrument);
 		
 		// the price series has been built.  Prepare for next req and return
 		isRequestActive = false;
@@ -246,6 +247,7 @@ public class IBDataManager extends DataManager implements MessageListener {
 			notifyAll();
 			return;
 		}
+		logger.debug("histData: id=" + reqId + ", date=" + date +", o=" + open + ", c=" + close);
 
 		// add a new PriceBar
 		// TODO: IB data for equities "starts" at the end of the prev day's trading.  Readjust

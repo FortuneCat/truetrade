@@ -5,8 +5,8 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 import com.ats.platform.Bar;
-import com.ats.platform.Position;
 import com.ats.platform.Strategy;
+import com.ats.platform.StrategyInstrumentSource;
 import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
 import com.ats.platform.Position.PositionSide;
@@ -21,17 +21,24 @@ public class RandomStrategy extends Strategy {
 	private static final Logger logger = Logger.getLogger(RandomStrategy.class);
 
 	static final Random rand = new Random(); 
+	private GapInstrumentSource gis;
 
 	public RandomStrategy() {
 		super();
+		gis = new GapInstrumentSource();
 	}
+	
+	@Override
+    public StrategyInstrumentSource getInstrumentSource() {
+    	return gis;
+    }
 	
 	@Override
 	public void init() {
 		requestTimeSeries(TimeSpan.min1);
 		
 		// TODO: allow default size calculation to come from the strategy
-		defaultSize = 1;
+		defaultSize = 100;
 	}
 	
 	@Override
