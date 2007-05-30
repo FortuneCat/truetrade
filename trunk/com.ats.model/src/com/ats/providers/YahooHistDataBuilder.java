@@ -76,20 +76,24 @@ public class YahooHistDataBuilder {
 				WebTable table = resp.getTableStartingWith("Date");
 				// start at 2nd row (data) and skip last row (disclaimer)
 				for (int i = 1; i < table.getRowCount()-1; i++) {
-					Bar hist = new Bar(BarType.time, TimeSpan.daily);
-					hist.setBeginTime(yahooDateForm.parse(table.getCellAsText(i, 0)));
-					hist.setEndTime(
-							new Date(hist.getBeginTime().getTime() + TimeSpan.daily.getSpanInMillis() - 1));
-					hist.setOpen(Double.parseDouble(table.getCellAsText(i, 1)));
-					hist.setHigh(Double.parseDouble(table.getCellAsText(i, 2)));
-					hist.setLow(Double.parseDouble(table.getCellAsText(i, 3)));
-					hist.setClose(Double.parseDouble(table.getCellAsText(i, 4)));
-					
-					String vol = table.getCellAsText(i, 5);
-					vol = vol.replaceAll(",", "");
-					hist.setVolume(Integer.parseInt(vol));
-					
-					series.addHistory(hist);
+					try {
+						Bar hist = new Bar(BarType.time, TimeSpan.daily);
+						hist.setBeginTime(yahooDateForm.parse(table.getCellAsText(i, 0)));
+						hist.setEndTime(
+								new Date(hist.getBeginTime().getTime() + TimeSpan.daily.getSpanInMillis() - 1));
+						hist.setOpen(Double.parseDouble(table.getCellAsText(i, 1)));
+						hist.setHigh(Double.parseDouble(table.getCellAsText(i, 2)));
+						hist.setLow(Double.parseDouble(table.getCellAsText(i, 3)));
+						hist.setClose(Double.parseDouble(table.getCellAsText(i, 4)));
+						
+						String vol = table.getCellAsText(i, 5);
+						vol = vol.replaceAll(",", "");
+						hist.setVolume(Integer.parseInt(vol));
+						
+						series.addHistory(hist);
+					} catch( Exception e ) {
+						// a parse error, most likely a dividend or a stock split.  Ignore
+					}
 				}
 				
 				WebLink link = resp.getLinkWith("Next");
