@@ -1,5 +1,7 @@
 package com.ats.client.views;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -9,6 +11,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -38,6 +41,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 	private Action addContractAction;
 	private Action importDataAction;
 	private Action downloadDataAction;
+	private Action deleteAction;
 	
 	private List<Instrument> instruments;
 	
@@ -80,6 +84,49 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 		};
 		addContractAction.setText("Add Instrument...");
 		
+		deleteAction = new Action() {
+			public void run() {
+				IStructuredSelection structSel = (IStructuredSelection)viewer.getSelection();
+				List<Instrument> selInstr = new ArrayList<Instrument>();
+				Iterator iter = structSel.iterator();
+				while( iter.hasNext() ) {
+					TreeObject sel = (TreeObject)iter.next();
+					if( sel.getObject() instanceof Instrument ) {
+						selInstr.add((Instrument)sel.getObject());
+					}
+				}
+				if( selInstr.size() > 0 ) {
+					String message = "Are you sure you wish to delete the\n"
+						+ "following instruments:\n";
+					for( Instrument instr : selInstr ) {
+						message += "\n    " + instr.getSymbol();
+					}
+					boolean confirm = MessageDialog.openQuestion(viewer
+							.getTree().getShell(), "Confirm Delete", message);
+					if( confirm ) {
+						// delete
+						for(Instrument instr : selInstr ) {
+							try {
+								PlatformDAO.deleteInstrument(instr);
+							} catch( Exception e ) {
+								logger.error("Could not delete instrument: " + instr.getSymbol());
+							}
+						}
+						// could locate each individual node and delete it, but this is sure a whole
+						// lot easier, and there are no slip-ups
+						instruments = PlatformDAO.getAllInstruments();
+						viewer.setInput(buildTree());
+						
+//						AvailableDataView ev = (AvailableDataView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(AvailableDataView.ID);
+//						ev.refresh();
+//						viewer.refresh(root);
+
+					}
+				}
+			}
+		};
+		deleteAction.setText("Delete Instrument...");
+		
 		importDataAction = new Action() {
 			public void run() {
 				WizardDialog dlg = new WizardDialog(viewer.getTree().getShell(), new ImportDataWizard());
@@ -103,6 +150,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
             public void menuAboutToShow(IMenuManager menuManager)
             {
             	menuManager.add(addContractAction);
+            	menuManager.add(deleteAction);
             	menuManager.add(new Separator());
             	menuManager.add(importDataAction);
             	menuManager.add(downloadDataAction);
