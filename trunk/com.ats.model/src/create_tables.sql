@@ -63,6 +63,7 @@ create table bar (
 	begin_time datetime,
 	end_time datetime,
 	bar_series_id int,
+	unique(bar_series_id, timespan_id, begin_time),
 	primary key(id)
 );
 
