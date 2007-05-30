@@ -63,4 +63,19 @@
 			id = #id#
 	</update>
 	
+	
+	<delete id="deleteInstrFromStrat" parameterClass="int">
+		delete from stdef_instr_pr where instrument_id = #instrumentId# ;
+	</delete>
+	<delete id="deleteInstrBars" parameterClass="int">
+		delete from bar where bar_series_id in (select id from bar_series where instrument_id = #instrumentId#);
+	</delete>
+	<delete id="deleteInstrBarseries" parameterClass="int">
+		delete from bar_series where instrument_id = #instrumentId# ;
+	</delete>
+	<delete id="deleteInstr" parameterClass="int">
+		delete from instrument where id=#instrumentId#;
+	</delete>
+	
+	
 </sqlMap>

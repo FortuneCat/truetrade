@@ -41,13 +41,26 @@ public class PlatformDAO {
 			logger.error("Could not insert instrument", e);
 		}
 	}
-	
+
 	public static void updateInstrument(Instrument curr) {
 		try {
 			SqlMapClient sqlMap = SqlMapUtil.getInstance().getSqlClient();
 			sqlMap.update("updateInstrument", curr);
 		} catch( Exception e ) {
 			logger.error("Could not update instrument", e);
+		}
+	}
+	public static void deleteInstrument(Instrument instr) {
+		try {
+			SqlMapClient sqlMap = SqlMapUtil.getInstance().getSqlClient();
+			sqlMap.startTransaction();
+			sqlMap.delete("deleteInstrFromStrat", instr.getId());
+			sqlMap.delete("deleteInstrBars", instr.getId());
+			sqlMap.delete("deleteInstrBarseries", instr.getId());
+			sqlMap.delete("deleteInstr", instr.getId());
+			sqlMap.commitTransaction();
+		} catch( Exception e ) {
+			logger.error("Could not delete instrument", e);
 		}
 	}
 	
@@ -225,9 +238,6 @@ public class PlatformDAO {
 			logger.error("Could not insert bar", e);
 		}
 	}
-	
-	
 
-	
 	
 }
