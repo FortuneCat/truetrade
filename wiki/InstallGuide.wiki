@@ -35,9 +35,12 @@ Note that the ZIP files are limited.  You will not be able to create and run you
       Then make sure your new update site is selected and click Finish
     * In the "Search Results" dialog, expand the "Subclipse Update site" entry and select "Subclipse" and follow the rest of the wizard.
   * Install and [http://www.eclipse.org/gef/ Draw2d and GEF] from eclipse.org:
-    * Download [http://www.eclipse.org/downloads/download.php?file=/tools/gef/downloads/drops/R-3.2.2-200702081315/GEF-runtime-3.2.2.zip GEF v3.2.2 Runtime] 
-    * Extract the zip into your eclipse directory.  The ZIP file has a features and plugin folder which should extract into your eclipse's features and plugin folder.
-    * After extracting the ZIP, restart eclipse.
+    * In Eclipse, run Help > Software Updates > Find and Install...
+    * In the "Feature Updates" window, click on "Search for new features to install" and click "Next"
+    * Select "Callisto Discovery Site" and click "Finish".  It will present a list of mirrors so select one close to you and click OK.
+    * In the search results, expand "Callisto Discover Site" and expand "Models and Model Development" and select "Graphical Modeling Framework".  You will get an error about requirements, so click "Select Required" and click "Next".  Complete the rest of the wizard.
+http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/TrueTradeGEF.jpg
+
   * Download and install [http://mysql.org/downloads/mysql/5.0.html#downloads MySQL v5+]
   * Start Eclipse and select a new directory for the ATS workspace:
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/1-select-workspace.png
