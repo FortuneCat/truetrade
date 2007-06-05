@@ -21,8 +21,8 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
-import com.ats.engine.IBHelper;
-import com.ats.engine.IBWrapperAdapter;
+import com.ats.engine.ib.IBHelper;
+import com.ats.engine.ib.IBWrapperAdapter;
 import com.ats.platform.MessageListener;
 
 public class MessagesView  extends ViewPart {
