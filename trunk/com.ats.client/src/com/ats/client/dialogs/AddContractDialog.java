@@ -13,7 +13,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -74,6 +76,25 @@ public class AddContractDialog extends Dialog {
         	typeCombo.setData(type.toString(), type);
         }
         typeCombo.setText(InstrumentType.stock.toString());
+        typeCombo.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				InstrumentType instrumentType = InstrumentType.valueOf(typeCombo.getText());
+				switch( instrumentType ) {
+				case stock:
+					exchangeCombo.setText("SMART");
+					tickSizeText.setText("0.01");
+					break;
+				case forex:
+					exchangeCombo.setText("IDEALPRO");
+					tickSizeText.setText("0.0001");
+					break;
+				case future:
+					exchangeCombo.setText("GLOBEX");
+					tickSizeText.setText("0.25");
+					break;
+				}
+			}
+        });
 
         exchangeCombo = new Combo(content, SWT.READ_ONLY);
         exchangeCombo.setLayoutData(new GridData(0, 0, false, false, 1, 1));
