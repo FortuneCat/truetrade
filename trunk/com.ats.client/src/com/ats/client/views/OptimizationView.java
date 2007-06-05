@@ -58,6 +58,7 @@ import org.jgap.impl.NumberGene;
 import com.ats.client.Activator;
 import com.ats.client.actions.OptimizeAction;
 import com.ats.client.dialogs.SelectInstrumentDialog;
+import com.ats.client.dialogs.VisualizeDialog;
 import com.ats.client.perspectives.BacktestPerspective;
 import com.ats.client.tools.BacktestFitnessFunction;
 import com.ats.client.tools.ParamValuesChromosome;
@@ -106,6 +107,7 @@ public class OptimizationView extends ViewPart {
 	private List<OptTrial> trials = new ArrayList<OptTrial>();
 	private int maxTrials;
 	private Action exportAction;
+	private Action visualizeAction;
 	
 	public OptimizationView() {
 		super();
@@ -120,18 +122,30 @@ public class OptimizationView extends ViewPart {
 		};
 		exportAction.setText("Export...");
 
+		visualizeAction = new Action() {
+			public void run() {
+				VisualizeDialog dlg = new VisualizeDialog(viewer.getTable().getShell());
+				dlg.setTrials(trials);
+				dlg.setXparam("Short Period");
+				dlg.setYparam("Long Period");
+				dlg.open();
+			}
+		};
+		visualizeAction.setText("Visualize...");
+
         MenuManager menuMgr = new MenuManager("#popupMenu", "popupMenu"); //$NON-NLS-1$ //$NON-NLS-2$
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager menuManager)
             {
+            	menuManager.add(visualizeAction);
             	menuManager.add(exportAction);
             }
         });
         viewer.getTable().setMenu(menuMgr.createContextMenu(viewer.getTable()));
 
-		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
-		mgr.add(exportAction);
+//		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+//		mgr.add(exportAction);
 	}
 	
 	@Override
@@ -465,11 +479,6 @@ public class OptimizationView extends ViewPart {
 		}
 	}
 
-}
-
-class OptTrial {
-	public Map<String, Number> paramVals = new HashMap<String, Number>();
-	public TradeStats stats;
 }
 
 class OptExecContentProvider implements IStructuredContentProvider {

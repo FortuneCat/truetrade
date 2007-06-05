@@ -2,6 +2,7 @@ package com.ats.client.wizards;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,6 +36,8 @@ public class ImportDataWizard extends Wizard {
 	private InstrumentPage instrumentPage;
 	TemplatePage templatePage;
 	SelectFilePage selectFilePage;
+	private Instrument instrument;
+
 	
 	public ImportDataWizard() {
 		setWindowTitle("Import data");
@@ -44,9 +47,15 @@ public class ImportDataWizard extends Wizard {
 		selectFilePage = new SelectFilePage();
 		templatePage = new TemplatePage();
 	}
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
+	}
+
 	
 	public void addPages() {
-		addPage(instrumentPage);
+		if( instrument == null ) {
+			addPage(instrumentPage);
+		}
 		addPage(selectFilePage);
 		addPage(templatePage);
 	}
@@ -54,7 +63,10 @@ public class ImportDataWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		final ImportTemplate template = templatePage.getImportTemplate();
-		final Instrument instrument = instrumentPage.getInstruments().get(0);
+		//final Instrument instrument = instrumentPage.getInstruments().get(0);
+		if( instrument == null ) {
+			instrument = instrumentPage.getInstruments().get(0);
+		}
 		final String fileName = selectFilePage.getFile().getAbsolutePath();
 		// TODO: check for errors
 		try {

@@ -83,7 +83,7 @@ public class ExecutionView extends ViewPart implements ISelectionProvider {
         gridLayout.horizontalSpacing = gridLayout.verticalSpacing = 0;
         content.setLayout(gridLayout);
         
-        tableViewer = new TableViewer(content, SWT.SINGLE );
+        tableViewer = new TableViewer(content, SWT.SINGLE | SWT.FULL_SELECTION );
         tableViewer.setContentProvider(new ExecContentProvider());
         tableViewer.setLabelProvider(new ExecLabelProvider());
         tableViewer.setInput(executions);
