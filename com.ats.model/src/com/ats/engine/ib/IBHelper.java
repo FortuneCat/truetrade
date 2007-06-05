@@ -1,4 +1,4 @@
-package com.ats.engine;
+package com.ats.engine.ib;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -27,6 +27,7 @@ public class IBHelper {
     private final Map<Integer, Strategy> strategies;
     protected static int strategyID, orderID;
     private int serverVersion;
+    private int nextId = 1;
 
 	private String accountCode;
 //    private static final IBWrapperAdapter wrapper = IBWrapperAdapter.getWrapper();
@@ -45,6 +46,13 @@ public class IBHelper {
     
     public static IBHelper getInstance() {
     	return instance;
+    }
+    
+    public synchronized int getNextId() {
+    	return nextId++;
+    }
+    public synchronized void setNextId(int id) {
+    	this.nextId = Math.max(nextId, id);
     }
 
 //    public Map<Integer, OrderStatus> getOrders() {

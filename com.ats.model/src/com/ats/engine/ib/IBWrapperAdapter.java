@@ -1,10 +1,11 @@
-package com.ats.engine;
+package com.ats.engine.ib;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.ats.engine.EWrapperAdapter;
 import com.ats.platform.MessageListener;
 import com.ib.client.Contract;
 import com.ib.client.ContractDetails;
@@ -121,23 +122,17 @@ public class IBWrapperAdapter extends EWrapperAdapter {
     }
 
     public void error(int id, int errorCode, String errorMsg) {
+        String msg = id + " | " + errorCode + ": " + errorMsg;
+        logger.info("Error: " + msg);
+    	if( id > 0 ) {
+    		IBRequest req = IBRequest.getRequest(id);
+    		if( req != null ) {
+    			req.setError(errorCode, errorMsg);
+    			return;
+    		}
+    	}
+    	
         try {
-            String msg = id + " | " + errorCode + ": " + errorMsg;
-            logger.info("Error: " + msg);
-            
-            // check for a code which renders an order null
-            if( errorCode >= 103 && errorCode <= 161  ) {
-            	// a problem occured with the order
-            	if( ibOrderManager != null ) {
-            		ibOrderManager.orderError(id, errorCode);
-            	}
-            	return;
-            }
-            if( errorCode >= 162 && errorCode <= 200 ) {
-            	// historical data problem
-            	return;
-            }
-            
             
 
             // Error 1101 is fired when connection between IB and TWS is restored
@@ -187,8 +182,7 @@ public class IBWrapperAdapter extends EWrapperAdapter {
 
 
     public void nextValidId(int orderID) {
-        //traderAssitant.setOrderID(orderID);
-    	IBOrderManager.setOrderID(orderID);
+    	IBHelper.getInstance().setNextId(orderID);
     }
 
 	@Override

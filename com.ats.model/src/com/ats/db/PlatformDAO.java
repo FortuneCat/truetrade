@@ -1,5 +1,6 @@
 package com.ats.db;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,8 +52,8 @@ public class PlatformDAO {
 		}
 	}
 	public static void deleteInstrument(Instrument instr) {
+		SqlMapClient sqlMap = SqlMapUtil.getInstance().getSqlClient();
 		try {
-			SqlMapClient sqlMap = SqlMapUtil.getInstance().getSqlClient();
 			sqlMap.startTransaction();
 			sqlMap.delete("deleteInstrFromStrat", instr.getId());
 			sqlMap.delete("deleteInstrBars", instr.getId());
@@ -61,6 +62,11 @@ public class PlatformDAO {
 			sqlMap.commitTransaction();
 		} catch( Exception e ) {
 			logger.error("Could not delete instrument", e);
+		} finally {
+			try {
+				sqlMap.endTransaction();
+			} catch (SQLException e) {
+			}
 		}
 	}
 	

@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.ats.engine.DataManager;
-import com.ats.engine.IBStrategyEngine;
 import com.ats.engine.OrderManager;
 import com.ats.engine.StrategyDefinition;
+import com.ats.engine.ib.IBStrategyEngine;
 
 /**
  * Supplies Instruments to strategies at runtime.

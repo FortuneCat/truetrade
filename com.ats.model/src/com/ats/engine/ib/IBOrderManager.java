@@ -1,10 +1,14 @@
-package com.ats.engine;
+package com.ats.engine.ib;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.ats.engine.JExecution;
+import com.ats.engine.OrderManager;
+import com.ats.engine.PositionManager;
+import com.ats.engine.ib.IBRequest.RequestState;
 import com.ats.platform.JOrder;
 import com.ats.platform.Strategy;
 import com.ats.platform.JOrder.OrderState;
@@ -19,12 +23,12 @@ import com.ib.client.Execution;
  * @author Adrian
  *
  */
-public class IBOrderManager extends OrderManager {
+public class IBOrderManager extends OrderManager implements RequestListener {
 	private static final Logger logger = Logger.getLogger(IBOrderManager.class);
 	
-    protected final Map<Integer, JOrder> orders = new HashMap<Integer, JOrder>();
+    //protected final Map<Integer, JOrder> orders = new HashMap<Integer, JOrder>();
 
-    private static int orderID = 0;
+    //private static int orderID = 0;
     
     public IBOrderManager() {
     	IBWrapperAdapter.setIBOrderManager(this);
@@ -32,32 +36,27 @@ public class IBOrderManager extends OrderManager {
     
     public void placeOrder(Strategy strategy, JOrder order) {
     	super.placeOrder(strategy, order);
-    	orderID++;
-    	orders.put(orderID, order);
     	order.setState(OrderState.pendingSubmit);
-    	IBHelper.getInstance().placeOrder(orderID, order.getInstrument().getContract(), order.buildIBOrder());
-    	String msg = order.getStrategy() + ": Placed order " + orderID;
-    	logger.info(msg);
+    	OrderRequest req = new OrderRequest(this, order);
+    	req.sendRequest();
+//    	orderID++;
+//    	orders.put(orderID, order);
 	}
     
     public synchronized void cancelOrder(JOrder order) {
     	IBHelper.getInstance().cancelOrder(order.getOrderId());
-    	logger.info(order.getStrategy() + ": Submitted cancel order " + orderID);
+    	logger.info(order.getStrategy() + ": Submitted cancel order " + order.getOrderId());
 	}
 
 
-    public static void setOrderID(int id) {
-        orderID = id;
-    }
-
+//    public static void setOrderID(int id) {
+//        orderID = id;
+//    }
+//
 
 	public void execDetails(int orderId2, Contract contract, Execution execution) {
-		JOrder order = orders.get(orderId2);
-		
-		if( order == null ) {
-			// must have come from outside of the system
-			return;
-		}
+		OrderRequest req = (OrderRequest)IBRequest.getRequest(orderId2);
+		JOrder order = req.getOrder();
 		
 		order.addExecution(execution);
 		JExecution jexec = new JExecution(execution);
@@ -79,7 +78,8 @@ public class IBOrderManager extends OrderManager {
 
 
 	public void orderStatus(int orderId2, String status, int filled, int remaining, double avgFillPrice, int permId, int parentId, double lastFillPrice, int clientId2) {
-		JOrder order = orders.get(orderId2);
+		OrderRequest req = (OrderRequest)IBRequest.getRequest(orderId2);
+		JOrder order = req.getOrder();
 		
 		if( order == null ) {
 			logger.info("External order status change: " + orderId2 + " " + status + " clientid = " + clientId2);
@@ -95,20 +95,15 @@ public class IBOrderManager extends OrderManager {
 		} 
 	}
 
-	public synchronized void orderError(int orderId2, int code) {
-		JOrder order = orders.get(orderId2);
-		
-		if( order == null ) {
-			logger.info("External order error: " + orderId2 + " " + code);
-			return;
+	public void requestChanged(IBRequest request) {
+		if( request.getState() == RequestState.error ) {
+			JOrder order = ((OrderRequest)request).getOrder();
+			logger.info("Order id " + order.getOrderId() + " error with code " + request.getErrorCode());
+			// TODO: cancelled or a full error state?
+			order.setCancelled();
+			
+			completeOrder(order);
 		}
-		logger.info("Order id " + orderId2 + " error with code " + code);
-		// TODO: cancelled or a full error state?
-		order.setCancelled();
-		
-		// remove it from all outstanding lists
-		orders.remove(orderId2);
-		completeOrder(order);
 	}
 
 

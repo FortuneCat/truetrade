@@ -28,10 +28,10 @@ public class RandomStrategy extends Strategy {
 		gis = new GapInstrumentSource();
 	}
 	
-	@Override
-    public StrategyInstrumentSource getInstrumentSource() {
-    	return gis;
-    }
+//	@Override
+//    public StrategyInstrumentSource getInstrumentSource() {
+//    	return gis;
+//    }
 	
 	@Override
 	public void init() {
@@ -43,6 +43,7 @@ public class RandomStrategy extends Strategy {
 	
 	@Override
 	public void onTrade(Trade trade) {
+		logger.debug("Random trade: " + trade);
 	}
 	
 	@Override
