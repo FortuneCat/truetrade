@@ -33,6 +33,7 @@ public class DownloadHistDataWizard extends Wizard {
 	private InstrumentPage instrumentPage;
 	private DataTypePage dataTypePage;
 	private DateRangePage dateRangePage;
+	private List<Instrument> selectedInstruments;
 	
 	
 	public DownloadHistDataWizard() {
@@ -45,9 +46,15 @@ public class DownloadHistDataWizard extends Wizard {
 		dateRangePage = new DateRangePage();
 	}
 	
+	public void setSelectedInstruments(List<Instrument> selectedInstruments) {
+		this.selectedInstruments = selectedInstruments;
+	}
+	
 	public void addPages() {
 		addPage(providerPage);
-		addPage(instrumentPage);
+		if( selectedInstruments == null || selectedInstruments.size() <= 0 ) {
+			addPage(instrumentPage);
+		}
 		addPage(dataTypePage);
 		addPage(dateRangePage);
 	}
@@ -55,7 +62,10 @@ public class DownloadHistDataWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		final HistDataProvider provider = providerPage.getProvider();
-		final List<Instrument> instruments = instrumentPage.getInstruments();
+		//final List<Instrument> instruments = instrumentPage.getInstruments();
+		if( selectedInstruments == null || selectedInstruments.size() <= 0 ) {
+			selectedInstruments = instrumentPage.getInstruments();
+		}
 		final TimeSpan timeSpan = dataTypePage.getTimeSpan();
 		final Date startDate = dateRangePage.getStartDate();
 		final Date endDate = dateRangePage.getEndDate();
@@ -63,8 +73,8 @@ public class DownloadHistDataWizard extends Wizard {
 		try {
 			getContainer().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					monitor.beginTask("Download historical data", instruments.size());
-					for(Instrument instr : instruments ) {
+					monitor.beginTask("Download historical data", selectedInstruments.size());
+					for(Instrument instr : selectedInstruments ) {
 						// download data
 						monitor.subTask("Downloading " + instr.getSymbol());
 						try {

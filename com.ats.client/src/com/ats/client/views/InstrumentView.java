@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -44,6 +45,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 	private Action deleteAction;
 	
 	private List<Instrument> instruments;
+	private List<ISelectionChangedListener> selListeners = new ArrayList<ISelectionChangedListener>();
 	
 	private TreeParent root;
 	
@@ -62,20 +64,22 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 		
 		addContractAction = new Action() {
 			public void run() {
-				IStructuredSelection structSel = (IStructuredSelection)viewer.getSelection();
-				
-				TreeObject sel = (TreeObject)structSel.getFirstElement();
+//				IStructuredSelection structSel = (IStructuredSelection)viewer.getSelection();
+//				
+//				TreeObject sel = (TreeObject)structSel.getFirstElement();
                 AddContractDialog dlg = new AddContractDialog(viewer.getTree().getShell());
                 if (dlg.open() == Dialog.OK) {
                 	final Instrument instrument = dlg.getInstrument();
                 	PlatformDAO.insertInstrument(instrument);
             		Display.getDefault().asyncExec(new Runnable() {
             			public void run() {
-            				addInstrumentNode(root, instrument);
-            				if (viewer == null) {
-            					return;
-            				}
+            				buildTree();
+//            				addInstrumentNode(root, instrument);
+//            				if (viewer == null) {
+//            					return;
+//            				}
             				viewer.refresh(root);
+            				fireSelectionChanged(new SelectionChangedEvent(InstrumentView.this, null));
             			}
             		});
 
@@ -86,15 +90,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 		
 		deleteAction = new Action() {
 			public void run() {
-				IStructuredSelection structSel = (IStructuredSelection)viewer.getSelection();
-				List<Instrument> selInstr = new ArrayList<Instrument>();
-				Iterator iter = structSel.iterator();
-				while( iter.hasNext() ) {
-					TreeObject sel = (TreeObject)iter.next();
-					if( sel.getObject() instanceof Instrument ) {
-						selInstr.add((Instrument)sel.getObject());
-					}
-				}
+				List<Instrument> selInstr = getSelectedInstruments();
 				if( selInstr.size() > 0 ) {
 					String message = "Are you sure you wish to delete the\n"
 						+ "following instruments:\n";
@@ -114,31 +110,38 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 						}
 						// could locate each individual node and delete it, but this is sure a whole
 						// lot easier, and there are no slip-ups
-						instruments = PlatformDAO.getAllInstruments();
 						viewer.setInput(buildTree());
 						
-//						AvailableDataView ev = (AvailableDataView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(AvailableDataView.ID);
-//						ev.refresh();
-//						viewer.refresh(root);
-
+						// notify listeners that the input has changed
+        				fireSelectionChanged(new SelectionChangedEvent(InstrumentView.this, null));
 					}
 				}
 			}
+
 		};
 		deleteAction.setText("Delete Instrument...");
 		
 		importDataAction = new Action() {
 			public void run() {
-				WizardDialog dlg = new WizardDialog(viewer.getTree().getShell(), new ImportDataWizard());
+				ImportDataWizard wiz = new ImportDataWizard();
+				List<Instrument> insts = getSelectedInstruments();
+				if( insts.size() > 0 ) {
+					wiz.setInstrument(insts.get(0));
+				}
+				WizardDialog dlg = new WizardDialog(viewer.getTree().getShell(), wiz);
 				dlg.open();
+				fireSelectionChanged(new SelectionChangedEvent(InstrumentView.this, viewer.getSelection()));
 			}
 		};
 		importDataAction.setText("Import data...");
 		
 		downloadDataAction = new Action() {
 			public void run() {
-				WizardDialog dlg = new WizardDialog(viewer.getTree().getShell(), new DownloadHistDataWizard());
+				DownloadHistDataWizard wiz = new DownloadHistDataWizard();
+				wiz.setSelectedInstruments(getSelectedInstruments());
+				WizardDialog dlg = new WizardDialog(viewer.getTree().getShell(), wiz);
 				dlg.open();
+				fireSelectionChanged(new SelectionChangedEvent(InstrumentView.this, viewer.getSelection()));
 			}
 		};
 		downloadDataAction.setText("Download historical data...");
@@ -157,7 +160,20 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
             }
         });
         viewer.getControl().setMenu(menuMgr.createContextMenu(viewer.getControl()));
-}
+	}
+
+	private List<Instrument> getSelectedInstruments() {
+		IStructuredSelection structSel = (IStructuredSelection)viewer.getSelection();
+		List<Instrument> selInstr = new ArrayList<Instrument>();
+		Iterator iter = structSel.iterator();
+		while( iter.hasNext() ) {
+			TreeObject sel = (TreeObject)iter.next();
+			if( sel.getObject() instanceof Instrument ) {
+				selInstr.add((Instrument)sel.getObject());
+			}
+		}
+		return selInstr;
+	}
 
 	/**
      * This is a callback that will allow us to create the viewer and initialize
@@ -169,8 +185,21 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 		viewer.setContentProvider(new TreeViewContentProvider());
 		viewer.setLabelProvider(new TreeViewLabelProvider());
 		viewer.setInput(buildTree());
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				fireSelectionChanged(event);
+			}
+		});
 		
 		createActions();
+	}
+	
+	private void fireSelectionChanged(SelectionChangedEvent event) {
+		synchronized(selListeners) {
+			for(ISelectionChangedListener l : selListeners) {
+				l.selectionChanged(event);
+			}
+		}
 	}
 
 	/**
@@ -182,6 +211,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 	
 	private TreeParent buildTree() {
 		root = new TreeParent("root");
+		instruments = PlatformDAO.getAllInstruments();
 		
 		for( Instrument instrument : instruments ) {
 			addInstrumentNode(root, instrument);
@@ -204,7 +234,10 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 	}
 
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		viewer.addSelectionChangedListener(listener);
+		synchronized(selListeners) {
+			//viewer.addSelectionChangedListener(listener);
+			selListeners.add(listener);
+		}
 	}
 
 
@@ -214,7 +247,10 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
 
 
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		viewer.removeSelectionChangedListener(listener);
+		synchronized(selListeners) {
+			//viewer.addSelectionChangedListener(listener);
+			selListeners.remove(listener);
+		}
 	}
 
 
