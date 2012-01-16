@@ -2,11 +2,10 @@ package com.ats.strategy;
 
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
-import com.ats.platform.BaseSystemException;
 import com.ats.platform.Position;
+import com.ats.platform.Position.PositionSide;
 import com.ats.platform.Strategy;
 import com.ats.platform.TimeSpan;
-import com.ats.platform.Position.PositionSide;
 
 /**
  * This sample strategy trades the S&P E-Mini futures contract using a combination
@@ -34,7 +33,7 @@ public class TrendArbitrageStrategy extends Strategy {
         addParam(ENTRY, 5.5);
         addParam(EXIT, 1.5);
         
-//        // define trading interval
+        // define trading interval
         
         defaultSize = 1;
     }
@@ -54,7 +53,7 @@ public class TrendArbitrageStrategy extends Strategy {
      */
     @Override
     public void onBar(Bar bar) {
-		BarSeries series = getSeries(TimeSpan.min5);
+		BarSeries series = getSeries(TimeSpan.daily);
 		double fastTrend = calcNoiseAdjustedTrend(series, fastTrendLength);
 		double slowTrend = calcNoiseAdjustedTrend(series, slowTrendLength);
 

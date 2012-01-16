@@ -70,9 +70,10 @@ public class Bar implements Comparable {
     	this.segmentEnd = new Date(segmentStart.getTime() + span.getSpanInMillis() - 1);
     }
     
-    public Bar(BarType barType, int duration, long date, double open, double high,
+    public Bar(BarType barType, TimeSpan span, int duration, long date, double open, double high,
 			double low, double close, int volume) {
     	this.barType = barType;
+    	this.span = span;
     	this.beginTime = new Date(date);
     	this.endTime = beginTime;
     	this.segmentStart = getSegmentStart(beginTime, span); 

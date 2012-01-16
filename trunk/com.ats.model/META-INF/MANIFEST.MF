@@ -9,7 +9,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt,
  org.eclipse.jface,
- com.ats.resources
+ com.ats.resources,
+ org.junit
 Eclipse-LazyStart: true
 Export-Package: com.ats.client.model,
  com.ats.db,

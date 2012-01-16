@@ -1,16 +1,12 @@
 package com.ats.strategy;
 
-import java.util.Random;
-
 import org.apache.log4j.Logger;
 
 import com.ats.platform.Bar;
 import com.ats.platform.BarSeries;
-import com.ats.platform.JOrder;
 import com.ats.platform.Strategy;
 import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
-import com.ats.platform.Position.PositionSide;
 
 /**
  * testing strategy which will buy when the bar moves above the previous bar high,
@@ -22,11 +18,10 @@ import com.ats.platform.Position.PositionSide;
 public class CloseAboveStrategy extends Strategy {
 	private static final Logger logger = Logger.getLogger(CloseAboveStrategy.class);
 	
-	private int period = 5;
-	
 	private double prevHigh;
 	private double prevLow;
 	private double tickSize;
+	private int period = 5;
 	
 	private double dollarRisk = 1000;
 	private double maxPosnDollar = 50000;

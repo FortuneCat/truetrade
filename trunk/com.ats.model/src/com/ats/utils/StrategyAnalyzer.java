@@ -1,8 +1,5 @@
 package com.ats.utils;
 
-import static com.ats.utils.Utils.currencyForm;
-import static com.ats.utils.Utils.doubleDecForm;
-
 import java.util.Collection;
 
 import com.ats.engine.TradeSummary;
@@ -28,8 +25,9 @@ public class StrategyAnalyzer {
 				stats.commissions += stats.numShares * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_SHARE_VALUE);
 			} else if( Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_ORDER) ) {
 				stats.commissions += stats.numTrades * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_ORDER_VALUE);
-			}
-
+			} else if (Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_TRANS) ) {
+				stats.commissions += (ts.getAvgBuyPrice() * ts.getTotalBuyQty() + ts.getAvgSellPrice() * ts.getTotalSellQty()) * Utils.getPreferenceStore().getDouble(Utils.COMMISSION_TRANS_VALUE) / 100;
+			} 
 			
 			if( ts.getRealizedPnL() > 0 ) {
 				stats.grossProfit += ts.getRealizedPnL();

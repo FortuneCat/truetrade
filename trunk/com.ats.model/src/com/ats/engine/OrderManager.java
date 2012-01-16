@@ -1,7 +1,6 @@
 package com.ats.engine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,8 @@ import org.apache.log4j.Logger;
 
 import com.ats.platform.Instrument;
 import com.ats.platform.JOrder;
-import com.ats.platform.Strategy;
 import com.ats.platform.JOrder.OrderState;
+import com.ats.platform.Strategy;
 
 /**
  * Manages orders for the strategies.

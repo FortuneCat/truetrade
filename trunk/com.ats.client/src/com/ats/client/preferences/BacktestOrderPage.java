@@ -1,10 +1,10 @@
 package com.ats.client.preferences;
 
+import static com.ats.utils.Utils.*;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -12,8 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-
-import static com.ats.utils.Utils.*;
 
 public class BacktestOrderPage extends PreferencePage  {
 	
@@ -27,6 +25,8 @@ public class BacktestOrderPage extends PreferencePage  {
 	private Text perShareText;
 	private Button perOrderBtn;
 	private Text perOrderText;
+	private Button perTransBtn;
+	private Text perTransText;
 	
 	public BacktestOrderPage() {
 		super();
@@ -46,8 +46,10 @@ public class BacktestOrderPage extends PreferencePage  {
 		prefStore.setDefault(SLIPPAGE_TICK, false);
 		prefStore.setDefault(COMMISSION_SHARE, true);
 		prefStore.setDefault(COMMISSION_ORDER, false);
+		prefStore.setDefault(COMMISSION_TRANS, false);
 		prefStore.setDefault(SLIPPAGE_PERCENT_VALUE, 0.2);
 		prefStore.setDefault(COMMISSION_SHARE_VALUE, 0.01);
+		prefStore.setDefault(COMMISSION_TRANS_VALUE, 0.38);
 		
 		// slippage
 		Group group = new Group(contents, SWT.NONE);
@@ -122,8 +124,15 @@ public class BacktestOrderPage extends PreferencePage  {
 		gdata.widthHint = 100;
 		perOrderText.setLayoutData(gdata);
 
+		perTransBtn = new Button(group, SWT.RADIO);
+		perTransBtn.setText("percent of transaction");
+		perTransBtn.setSelection(prefStore.getBoolean(COMMISSION_TRANS));
 		
-		
+		perTransText = new Text(group, SWT.BORDER);
+		perTransText.setText(prefStore.getString(COMMISSION_TRANS_VALUE));
+		gdata = new GridData();
+		gdata.widthHint = 100;
+		perTransText.setLayoutData(gdata);
 		
 		return contents;
 	}
@@ -153,6 +162,10 @@ public class BacktestOrderPage extends PreferencePage  {
 		try {
 			prefStore.setValue(COMMISSION_ORDER, perOrderBtn.getSelection());
 			prefStore.setValue(COMMISSION_ORDER_VALUE, Double.parseDouble(perOrderText.getText()));
+		} catch( Exception e) {}
+		try {
+			prefStore.setValue(COMMISSION_TRANS, perTransBtn.getSelection());
+			prefStore.setValue(COMMISSION_TRANS_VALUE, Double.parseDouble(perTransText.getText()));
 		} catch( Exception e) {}
 		
 		return true;

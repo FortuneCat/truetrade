@@ -22,7 +22,6 @@ import com.ats.engine.TradeSummary;
 import com.ats.platform.Position;
 import com.ats.utils.StrategyAnalyzer;
 import com.ats.utils.TradeStats;
-import com.ats.utils.Utils;
 
 public class StrategySummaryView extends ViewPart  {
 	public static final String ID = "com.ats.client.views.strategySummaryView";
@@ -90,7 +89,7 @@ public class StrategySummaryView extends ViewPart  {
 		
 		double totalGross = stats.getTotalGross();
 		double totalNet = stats.getTotalNet();
-		final StringBuffer text = new StringBuffer();
+		final StringBuilder text = new StringBuilder();
 		text.append("<html><head></head><body>");
 		text.append("<table border=\"1\" style=\"font-family:verdana;font-size:70%;\" cellpadding=\"4\"><tr>");
 		

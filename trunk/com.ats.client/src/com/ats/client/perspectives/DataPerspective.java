@@ -3,6 +3,7 @@ package com.ats.client.perspectives;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.internal.progress.ProgressView;
 
 import com.ats.client.views.AvailableDataView;
 import com.ats.client.views.InstrumentView;
@@ -28,6 +29,7 @@ public class DataPerspective implements IPerspectiveFactory {
 		 folder = layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.65f,
 		 	   editorArea);
 		 folder.addView(IPageLayout.ID_PROP_SHEET);
+		 folder.addView("org.eclipse.ui.views.ProgressView");
 		
 		
 		folder = layout.createFolder("availableDataView", IPageLayout.TOP, 0.8f, editorArea);

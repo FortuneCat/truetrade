@@ -1,9 +1,6 @@
 package com.ats.engine.ib;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 import com.ats.engine.DataManager;
 import com.ats.engine.OrderManager;
@@ -12,9 +9,6 @@ import com.ats.engine.StrategyEngine;
 import com.ats.platform.BarSeries;
 import com.ats.platform.Instrument;
 import com.ats.platform.JOrder;
-import com.ats.platform.BaseSystemException;
-import com.ats.platform.Strategy;
-import com.ib.client.Contract;
 
 public class IBStrategyEngine extends StrategyEngine {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");

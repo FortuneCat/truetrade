@@ -23,7 +23,7 @@ public abstract class DataManager {
 	/** all of the current market data requests */
 	private List<Instrument> mktDataRequests = new ArrayList<Instrument>();
 	
-	/** the bar series.  Tey include all time scales for which a listener has
+	/** the bar series.  They include all time scales for which a listener has
 	 * requested.  This means that, if two strategies are running with the
 	 * same instrument, they will both get the same onBar() messages.  Each listener
 	 * is responsible for filtering out extraneous onBar() messages.
