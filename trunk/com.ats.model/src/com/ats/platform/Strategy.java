@@ -279,6 +279,9 @@ public abstract class Strategy implements TickListener, TradeListener {
     	}
 	}
     
+	/**
+	 * Cancels all orders in pending state
+	 */
     public void cancelAllOrders() {
 //    	logger.debug("cancelAllOrders for strategy[" + this + "], outstandingOrders=" + getOutstandingOrders());
     	for(JOrder order : getOutstandingOrders() ) {
