@@ -12,7 +12,7 @@ import java.util.*;
  * initiated during the grace period, which is the specified as the number of
  * minutes before the "close" time. All times must be defined in military
  * time local to the timezone of the computer where JSystemTrader is running.
- * A strategy may have more han one trading interval, but the intervals may not
+ * A strategy may have more than one trading interval, but the intervals may not
  * overlap.
  *
  * Example: suppose the strategy defines two trading intervals:
