@@ -24,4 +24,6 @@ public class TradeStats {
 	public double getAvgTrade() {
 		return getTotalNet()/numTrades;
 	}
+	
+	//TODO calculate return on account
 }

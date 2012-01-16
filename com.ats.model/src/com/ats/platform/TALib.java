@@ -1,5 +1,7 @@
 package com.ats.platform;
 
+import java.util.Arrays;
+
 import com.tictactec.ta.lib.Core;
 import com.tictactec.ta.lib.MAType;
 import com.tictactec.ta.lib.MInteger;
@@ -9,7 +11,7 @@ import com.tictactec.ta.lib.RetCode;
  * Utility class to handle technical analysis
  * 
  * @author Adrian
- *
+ * @author Krzysztof Kazmierczyk
  */
 public class TALib {
 	private static final Core core = new Core();
@@ -109,4 +111,53 @@ public class TALib {
 		return outNbElement.value;
 	}
 
+	public static double[] fi(BarSeries series, int startIdx, int endIdx,
+			int period) {
+		double[] close = series.getDoubleData(BarField.close);
+		double[] vol = series.getDoubleData(BarField.volume);
+		double[] fi = new double[close.length - 1];
+		for (int i = 1; i < close.length; i++) {
+			fi[i - 1] = (close[i] - close[i - 1]) * vol[i];
+		}
+		if (period == 1) {
+			return Arrays.copyOfRange(fi, Math.max(startIdx - 1, 0), endIdx);
+		} else {
+			MInteger outBegIdx = new MInteger();
+			MInteger outNbElement = new MInteger();
+			double outReal[] = new double[fi.length];
+
+			RetCode code = core.ema(startIdx - 1, endIdx - 1, fi, period, outBegIdx,
+					outNbElement, outReal);
+			if (code != RetCode.Success) {
+				return null;
+			}
+			double ret[] = new double[outNbElement.value];
+			for (int i = 0; i < ret.length; i++) {
+				ret[i] = outReal[i];
+			}
+			return ret;
+		}
+	}
+	
+	public static double [] ebull (BarSeries series, int startIdx, int endIdx,
+			int period) {
+		double [] ema = ema(series, BarField.close, period, startIdx, endIdx);
+		double [] high = series.getDoubleData(BarField.high);
+		double result [] = new double [endIdx - startIdx + 1];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = high[startIdx + i] - ema[i]; 
+		}
+		return result;
+	}
+	
+	public static double [] ebear (BarSeries series, int startIdx, int endIdx,
+			int period) {
+		double [] ema = ema(series, BarField.close, period, startIdx, endIdx);
+		double [] low = series.getDoubleData(BarField.low);
+		double result [] = new double [endIdx - startIdx + 1];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = low[startIdx + i] - ema[i]; 
+		}
+		return result;
+	}
 }

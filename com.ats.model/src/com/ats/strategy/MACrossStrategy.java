@@ -30,10 +30,8 @@ public class MACrossStrategy extends Strategy {
 	
 	@Override
 	public void init() {
-//		requestTimeSeries(TimeSpan.daily);
-//		requestTimeSeries(TimeSpan.min30);
 		requestTimeSeries(TimeSpan.daily);
-		requestTimeSeries(TimeSpan.min30);
+//		requestTimeSeries(TimeSpan.min30);
 		
 		slowPeriod = getParam("Slow Period").intValue();
 		fastPeriod = getParam("Fast Period").intValue();
@@ -68,10 +66,10 @@ public class MACrossStrategy extends Strategy {
 		double prevSlow = slow[slow.length-2];
 		
 		if( currFast > currSlow && prevFast <= prevSlow ) {
-			goLong(100);
+			goLong(defaultSize);
 			return;
 		} else if( currFast < currSlow && prevFast >= prevSlow ) {
-			goShort(100);
+			goShort(defaultSize);
 			return;
 		}
 		

@@ -3,9 +3,9 @@ package com.ats.client.perspectives;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.internal.progress.ProgressView;
 
 import com.ats.client.views.ChartView;
-import com.ats.client.views.InstrumentView;
 import com.ats.client.views.EquityView;
 import com.ats.client.views.ExecutionView;
 import com.ats.client.views.JFreeChartView;
@@ -26,12 +26,14 @@ public class BacktestPerspective implements IPerspectiveFactory {
 		folder = layout.createFolder("strategyView", IPageLayout.TOP, 0.75f,
 				editorArea);
 		folder.addView(ChartView.ID);
+		//folder.addView(JFreeChartView.ID);
 		folder.addView(EquityView.ID);
 		folder.addView(StrategySummaryView.ID);
 		
 		folder = layout.createFolder("execDetails", IPageLayout.BOTTOM, 0.25F, editorArea);
 		folder.addView(ExecutionView.ID);
 		folder.addView(TradeView.ID);
+		folder.addView("org.eclipse.ui.views.ProgressView");
 		
 		layout.addPerspectiveShortcut(DataPerspective.ID);
 

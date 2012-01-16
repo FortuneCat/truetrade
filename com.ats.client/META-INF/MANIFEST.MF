@@ -10,9 +10,7 @@ Require-Bundle: com.ats.model,
  com.ats.resources,
  org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.draw2d,
  org.eclipse.ui.views,
- org.eclipse.gef,
- org.apache.lucene
+ org.eclipse.gef
 Eclipse-LazyStart: true
 Bundle-ClassPath: .

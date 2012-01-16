@@ -1,31 +1,25 @@
 package com.ats.client.views;
 
-import org.eclipse.ui.part.ViewPart;
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -39,38 +33,24 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.ViewPart;
 import org.jgap.Configuration;
 import org.jgap.Gene;
 import org.jgap.Genotype;
 import org.jgap.IChromosome;
-import org.jgap.InvalidConfigurationException;
 import org.jgap.impl.DefaultConfiguration;
-import org.jgap.impl.DoubleGene;
 import org.jgap.impl.IntegerGene;
 import org.jgap.impl.NumberGene;
 
-import com.ats.client.Activator;
-import com.ats.client.actions.OptimizeAction;
-import com.ats.client.dialogs.SelectInstrumentDialog;
 import com.ats.client.dialogs.VisualizeDialog;
-import com.ats.client.perspectives.BacktestPerspective;
 import com.ats.client.tools.BacktestFitnessFunction;
 import com.ats.client.tools.ParamValuesChromosome;
-import com.ats.client.wizards.NewStrategyWizard;
 import com.ats.client.wizards.OptimizeWizard;
 import com.ats.client.wizards.ParamValues;
-import com.ats.db.PlatformDAO;
 import com.ats.engine.PositionManager;
 import com.ats.engine.StrategyDefinition;
 import com.ats.engine.backtesting.BacktestFactory;
 import com.ats.engine.backtesting.BacktestListener;
-import com.ats.platform.Instrument;
 import com.ats.utils.StrategyAnalyzer;
 import com.ats.utils.TradeStats;
 import com.ats.utils.Utils;
@@ -126,8 +106,9 @@ public class OptimizationView extends ViewPart {
 			public void run() {
 				VisualizeDialog dlg = new VisualizeDialog(viewer.getTable().getShell());
 				dlg.setTrials(trials);
-				dlg.setXparam("Short Period");
-				dlg.setYparam("Long Period");
+				//TODO it works only for macross strategy.
+				dlg.setXparam("Fast Period");
+				dlg.setYparam("Slow Period");
 				dlg.open();
 			}
 		};
@@ -162,6 +143,12 @@ public class OptimizationView extends ViewPart {
         viewer.setLabelProvider(new OptExecLabelProvider());
         viewer.setInput(trials);
         viewer.setSorter(new OptSorter());
+        viewer.addDoubleClickListener(new IDoubleClickListener() {
+			
+			public void doubleClick(DoubleClickEvent event) {
+				//TODO open stats for given simulation
+			}
+		});
         
         Table table = viewer.getTable();
         table.setHeaderVisible(true);
@@ -222,7 +209,23 @@ public class OptimizationView extends ViewPart {
 		WizardDialog dlg = new WizardDialog(getSite().getShell(), wiz);
 		if( dlg.open() == WizardDialog.OK ) {
 			setStrategyDefinition(wiz.getStrategyDefinition(), wiz.getParamValues());
-			Display.getDefault().asyncExec(new Runnable() {
+			
+			Job job = new Job("Run optimization") {
+				@Override
+				protected IStatus run(final IProgressMonitor monitor) {
+							if( wiz.isBruteForce() ) {
+								runBruteForce(monitor);
+							} else {
+								runGeneticAlgorithm(monitor, wiz.getNumGATrials(), wiz.getNumOrganismsPerIter(), wiz.getNetProfitOffset());
+							}
+					return Status.OK_STATUS;
+				}
+			};
+			// Start the Job
+			job.setUser(true);
+			job.schedule();
+			
+			/*Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					try {
 						new ProgressMonitorDialog(getSite().getShell()).run(true, true,
@@ -238,7 +241,7 @@ public class OptimizationView extends ViewPart {
 					} catch( Exception e ) {
 					}
 				}
-			});
+			});*/
 		}
 
 	}
@@ -483,7 +486,7 @@ public class OptimizationView extends ViewPart {
 
 class OptExecContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object inputElement) {
-		return ((List)inputElement).toArray();
+		return ((List<?>)inputElement).toArray();
 	}
 	public void dispose() {
 	}

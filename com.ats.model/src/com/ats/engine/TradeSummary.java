@@ -112,8 +112,24 @@ public class TradeSummary implements TickListener, Comparable {
 	
 	public double getRealizedNetPnL() {
 		double grossPnL = getRealizedPnL();
-		double commission = Utils.getPreferenceStore().getDouble(Utils.COMMISSION_ORDER_VALUE);
-		double netPnL = grossPnL - (executions.size() * commission);
+		double commission = 0;
+		// calc comission
+		if (Utils.getPreferenceStore().getBoolean(Utils.COMMISSION_SHARE)) {
+			commission = (getTotalBuyQty() + getTotalSellQty())
+					* Utils.getPreferenceStore().getDouble(
+							Utils.COMMISSION_SHARE_VALUE);
+		} else if (Utils.getPreferenceStore()
+				.getBoolean(Utils.COMMISSION_ORDER)) {
+			commission = 1 * Utils.getPreferenceStore().getDouble(
+					Utils.COMMISSION_ORDER_VALUE);
+		} else if (Utils.getPreferenceStore()
+				.getBoolean(Utils.COMMISSION_TRANS)) {
+			commission = (getAvgBuyPrice() * getTotalBuyQty() + getAvgSellPrice()
+					* getTotalSellQty())
+					* Utils.getPreferenceStore().getDouble(
+							Utils.COMMISSION_TRANS_VALUE) / 100;
+		}
+		double netPnL = grossPnL - commission;
 		return netPnL;
 	}
 	

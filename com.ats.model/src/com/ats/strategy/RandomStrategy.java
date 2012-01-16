@@ -5,11 +5,10 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 import com.ats.platform.Bar;
+import com.ats.platform.Position.PositionSide;
 import com.ats.platform.Strategy;
-import com.ats.platform.StrategyInstrumentSource;
 import com.ats.platform.TimeSpan;
 import com.ats.platform.Trade;
-import com.ats.platform.Position.PositionSide;
 
 /**
  * Just for testing, takes entries & exits on a random basis.

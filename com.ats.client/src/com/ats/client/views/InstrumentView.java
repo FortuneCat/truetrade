@@ -74,7 +74,7 @@ public class InstrumentView extends ViewPart implements ISelectionProvider {
             		Display.getDefault().asyncExec(new Runnable() {
             			public void run() {
             				buildTree();
-//            				addInstrumentNode(root, instrument);
+            				addInstrumentNode(root, instrument);
 //            				if (viewer == null) {
 //            					return;
 //            				}

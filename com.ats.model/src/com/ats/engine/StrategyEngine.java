@@ -28,7 +28,7 @@ import com.ats.platform.Trade;
  * A StrategyRunner should be created for every mode in which the strategy
  * will process data: live/simulation and backtesting.  The StrategyRunner will be the
  * single focal point for all of the Strategy's interaction with the backend and su
- * must handle all order and data fuctions including supplying tick and bar data,
+ * must handle all order and data functions including supplying tick and bar data,
  * and handling orders.
  * 
  * The different handling of orders, different data sources etc. will be handled
