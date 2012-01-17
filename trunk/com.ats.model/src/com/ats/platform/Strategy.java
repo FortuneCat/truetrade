@@ -25,6 +25,7 @@ import com.ats.platform.Position.PositionSide;
 public abstract class Strategy implements TickListener, TradeListener {
 	private static final Logger logger = Logger.getLogger(Strategy.class);
 	
+	/** default volume to buy/sell */
     protected int defaultSize;
 
     private boolean onlyRTHPriceBars;
