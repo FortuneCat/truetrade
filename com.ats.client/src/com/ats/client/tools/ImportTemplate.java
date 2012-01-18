@@ -87,7 +87,7 @@ public class ImportTemplate implements java.io.Serializable {
 					} else if( i == closeCol ) {
 						bar.setClose(Double.parseDouble(currBlock));
 					} else if( i == volumeCol ) {
-						int vol = Integer.parseInt(currBlock);
+						int vol = (int)Double.parseDouble(currBlock);
 						if( volAsHundreds ) {
 							vol *= 100;
 						}
