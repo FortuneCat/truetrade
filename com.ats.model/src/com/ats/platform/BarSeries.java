@@ -146,6 +146,11 @@ public class BarSeries {
 	public synchronized Bar highestHigh(int from, int to) {
 		from = Math.min(from, bars.size()-1);
 		to = Math.max(to, 0);
+		if (from < to) {
+			final int tmp = from;
+			from = to;
+			to = from;
+		}
 		Bar ret = ago(from);
 		for( int i = from; i > to; i-- ) {
 			Bar curr = ago(i);
@@ -211,6 +216,11 @@ public class BarSeries {
 	public synchronized Bar lowestLow(int from, int to) {
 		from = Math.min(from, bars.size()-1);
 		to = Math.max(to, 0);
+		if (from < to) {
+			final int tmp = from;
+			from = to;
+			to = from;
+		}
 		Bar ret = ago(from);
 		for( int i = from; i > to; i-- ) {
 			Bar curr = ago(i);
