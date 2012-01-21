@@ -47,6 +47,7 @@ public class StrategyAnalyzer {
 				stats.maxConsecLosers = Math.max(stats.maxConsecLosers, stats.numConsecLosers);
 			}
 			
+			stats.profitFactor = (stats.grossLoss != 0) ? (stats.grossProfit / stats.grossLoss) : 0;
 			stats.equityHigh = Math.max(stats.equityHigh, stats.getTotalNet());
 			stats.maxDrawdown = Math.min(stats.maxDrawdown, stats.equityHigh - stats.getTotalNet());
 		}

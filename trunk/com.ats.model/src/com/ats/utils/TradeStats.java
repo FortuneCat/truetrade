@@ -8,6 +8,7 @@ public class TradeStats {
 	public double equityHigh = 0, maxDrawdown = 0, maxPerTradeLFT=0;
 	public int maxShares = 0;
 	public double commissions = 0.0;
+	public double profitFactor;
 
 	public double getTotalGross() {
 		return grossProfit + grossLoss;
