@@ -106,8 +106,8 @@ public class StrategySummaryView extends ViewPart  {
 		text.append("<td align=\"left\">Total trades</td><td align=\"right\"><b>" + stats.numTrades + "</b></td>");
 		text.append("<td align=\"left\">Total shares</td><td align=\"right\"><b>" + stats.numShares + "</b></td>");
 		text.append("</tr>\n<tr>");
-		text.append("<td align=\"left\">Number winning trades</td><td align=\"right\"><b>" + stats.numWinners + "(" + stats.numWinners * 100/stats.numTrades + "%)</b></td>");
-		text.append("<td align=\"left\">Number losing trades</td><td align=\"right\"><b>" + stats.numLosers + "(" + stats.numLosers * 100/stats.numTrades + "%)</b></td>");
+		text.append("<td align=\"left\">Number winning trades</td><td align=\"right\"><b>" + stats.numWinners + " (" + stats.numWinners * 100/stats.numTrades + "%)</b></td>");
+		text.append("<td align=\"left\">Number losing trades</td><td align=\"right\"><b>" + stats.numLosers + " (" + stats.numLosers * 100/stats.numTrades + "%)</b></td>");
 		text.append("</tr>\n<tr>");
 		text.append("<td align=\"left\">Largest winning trade</td><td align=\"right\"><b>$" + currencyForm.format(stats.largestWinner) + "</b></td>");
 		text.append("<td align=\"left\">Largest losing trade</td><td align=\"right\"><b>$" + currencyForm.format(stats.largestLoser) + "</b></td>");
