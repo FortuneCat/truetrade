@@ -31,7 +31,7 @@ public class StrategyAnalyzer {
 			
 			if( ts.getRealizedPnL() > 0 ) {
 				stats.grossProfit += ts.getRealizedPnL();
-				stats.netProfit += ts.getRealizedPnL();
+				stats.netProfit += ts.getRealizedNetPnL();
 				stats.numWinners++;
 				stats.largestWinner = Math.max(ts.getRealizedNetPnL(), stats.largestWinner);
 				stats.numConsecLosers = 0;
