@@ -13,6 +13,7 @@ import com.ats.platform.BarSeries;
 import com.ats.platform.BarType;
 import com.ats.platform.Instrument;
 import com.ats.platform.TimeSpan;
+import com.ats.strategy.TripleScreenStrategy;
 import com.ats.strategy.TripleScreenStrategy.TrendDirection;
 import com.ib.client.Contract;
 
@@ -23,14 +24,14 @@ public class TripleScreenStrategyTest {
 
 	private BarSeries series;
 	
-	private class DummyTripleScreenStrategy extends TripleScreenStrategy{
+	private class DummyTripleScreenStrategy extends TripleScreenStrategy {
 		
 		public TrendDirection longTrend;
 		public boolean shouldSubmitPosition = false;
 		public int openPositions = 0;
 		
 		public void setBuyMore(boolean value) {
-			this.buyMore = value;
+			this.openMore = value;
 		}
 		
 		public void setTradeShort(boolean value) {
@@ -50,18 +51,23 @@ public class TripleScreenStrategyTest {
 		}
 		
 		@Override
-		protected TrendDirection getLongTrend(Bar bar) {
+		protected TrendDirection getLongTrendDirection(Bar bar) {
 			return longTrend;
 		}
 		
 		@Override
-		protected boolean buySignalFromShortTrend(Bar bar) {
+		protected boolean isBuySignalFromShortTrend(Bar bar) {
 			return shouldSubmitPosition;
 		}
 		
 		@Override
 		protected void requestFlat(Bar bar) {
 			openPositions = 0;
+		}
+		
+		@Override
+		protected boolean hasOpenPosition() {
+			return openPositions != 0;
 		}
 	};
 	
