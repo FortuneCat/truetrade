@@ -117,7 +117,7 @@ public class EquityView extends ViewPart {
 		JFreeChart chart = ChartFactory.createXYLineChart(
 				"",
 				"Trade Number",
-				"Gross",
+				"Net profit",
 				pnlData,
 				PlotOrientation.VERTICAL,
 				false,
