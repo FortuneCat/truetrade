@@ -19,6 +19,7 @@ import com.ats.platform.Instrument;
  * out what all of the requirements are.
  * 
  * @author Adrian
+ * @author Krzysztof Kazmierczyk - fix Issue 54 (onOrderFilled is not executed when running optimization)
  *
  */
 public class BacktestFactory {
@@ -66,8 +67,8 @@ public class BacktestFactory {
 							}
 						}
 						if( isDone ) {
-							listener.testComplete();
 							orderManager.reset();
+							listener.testComplete();
 							
 							break;
 						}
