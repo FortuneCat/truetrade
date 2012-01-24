@@ -252,7 +252,9 @@ public class OptimizationView extends ViewPart {
 		trials.add(trial);
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				viewer.add(trial);
+				if (viewer != null) {
+					viewer.add(trial);
+				}
 			}
 		});
 	}
