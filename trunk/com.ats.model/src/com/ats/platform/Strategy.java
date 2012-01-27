@@ -11,12 +11,14 @@ import java.util.Set;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
+import org.eclipse.jface.preference.PreferenceStore;
 
 import com.ats.engine.PositionManager;
 import com.ats.engine.StrategyEngine;
 import com.ats.engine.TickListener;
 import com.ats.engine.TradeListener;
 import com.ats.platform.Position.PositionSide;
+import com.ats.utils.Utils;
 
 
 /**
@@ -35,12 +37,15 @@ public abstract class Strategy implements TickListener, TradeListener {
 
     private Map<String, Number> params = new HashMap<String, Number>();
 
+    protected double currentCapital;
+    
     public void updateIndicators(boolean isOptimized) {
     }
 
     public Strategy() {
 //        tradingSchedule = new TradingSchedule(this);
 //        indicators = new ArrayList<IndicatorHistory> ();
+    	currentCapital = Utils.getPreferenceStore().getDouble(Utils.INITIAL_CAPITAL_VALUE);
     }
     
     public String toString() {
@@ -170,7 +175,35 @@ public abstract class Strategy implements TickListener, TradeListener {
     
     public void onOrderDone(JOrder order) {}
     
-    public void onOrderFilled(JOrder order){}
+	public void onOrderFilled(JOrder order) {
+		
+		final PreferenceStore preferenceStore = Utils.getPreferenceStore();
+		
+		Position pos = getPosition();
+		final double price = order.getPrice() / getInstrument().getMultiplier();
+		if (order.getSide().equals(OrderSide.BUY) && pos.getSide().equals(PositionSide.LONG)
+			|| order.getSide().equals(OrderSide.SELL) && pos.getSide().equals(PositionSide.SHORT)) {
+			// We buy more. We should add
+			currentCapital -= price;
+			if( preferenceStore.getBoolean(Utils.COMMISSION_SHARE) ) {
+				currentCapital -= order.getQuantity() * preferenceStore.getDouble(Utils.COMMISSION_SHARE_VALUE);
+			} else if( preferenceStore.getBoolean(Utils.COMMISSION_ORDER) ) {
+				currentCapital -= preferenceStore.getDouble(Utils.COMMISSION_ORDER_VALUE);
+			} else if (preferenceStore.getBoolean(Utils.COMMISSION_TRANS) ) {
+				currentCapital -= order.getPrice() * order.getQuantity() * preferenceStore.getDouble(Utils.COMMISSION_TRANS_VALUE) / 100;
+			} 
+			
+			if (currentCapital < 0) logger.debug("Current capital below zero!");
+		} else {
+			
+			//FIXME this is incorrectly calculated when multiplier <> 1. 
+			currentCapital += price;
+			if (preferenceStore.getBoolean(Utils.COMMISSION_TRANS) ) {
+				currentCapital -= order.getPrice() * order.getQuantity() * preferenceStore.getDouble(Utils.COMMISSION_TRANS_VALUE) / 100;
+			} 
+		}
+    	
+    }
     
     public void onOrderRejected(JOrder order){}
     

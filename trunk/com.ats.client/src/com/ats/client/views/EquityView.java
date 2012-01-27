@@ -1,24 +1,14 @@
 package com.ats.client.views;
 
 import java.awt.Frame;
-import java.awt.Paint;
 import java.util.Collection;
-import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
@@ -39,10 +29,8 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.ats.engine.PositionManager;
 import com.ats.engine.TradeSummary;
 import com.ats.platform.Position;
-import com.ats.platform.Strategy;
 
 public class EquityView extends ViewPart {
 	public static final String ID = "com.ats.client.views.equityView";

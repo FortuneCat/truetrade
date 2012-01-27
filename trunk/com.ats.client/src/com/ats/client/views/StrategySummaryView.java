@@ -26,8 +26,6 @@ import com.ats.utils.TradeStats;
 public class StrategySummaryView extends ViewPart  {
 	public static final String ID = "com.ats.client.views.strategySummaryView";
 	
-	private Position position;
-	
 	private Browser browser;
 
 	@Override
@@ -129,10 +127,11 @@ public class StrategySummaryView extends ViewPart  {
 		text.append("</tr><td>&nbsp;</td><tr>");
 		text.append("<td align=\"left\">Profit factor</td><td align=\"right\"><b>" + (int)(-100 * stats.profitFactor)  + "%</b></td>");
 		text.append("</tr>\n<tr>");
-		text.append("<td align=\"left\">Max per-trade drawdown</td><td align=\"right\"><b>$" + currencyForm.format(stats.maxDrawdown) + "</b></td>");
+		text.append("<td align=\"left\">Max per-trade drawdown</td><td align=\"right\"><b>" + (int)(stats.maxDrawdown) + "%</b></td>");
 		text.append("<td align=\"left\">Account size required</td><td align=\"right\"><b>" + "&nbsp;" + "</b></td>");
 		text.append("</tr>\n<tr>");
-		text.append("<td align=\"left\">Return on account</td><td align=\"right\"><b>" + "&nbsp;" + "</b></td>");
+		double roi = stats.getReturnOnAccount() * 100;
+		text.append("<td align=\"left\">Return on account</td><td align=\"right\"><b>" + (int) roi + "%</b></td>");
 		text.append("<td align=\"left\">Max # contracts held</td><td align=\"right\"><b>" + stats.maxShares + "</b></td>");
 		text.append("</tr>\n");
 		text.append("</table>");

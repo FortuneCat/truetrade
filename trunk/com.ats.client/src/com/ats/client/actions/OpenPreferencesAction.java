@@ -3,11 +3,9 @@ package com.ats.client.actions;
 import java.io.IOException;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import com.ats.client.ICommandIds;
