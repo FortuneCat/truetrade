@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class BacktestOrderPage extends PreferencePage  {
@@ -27,6 +28,9 @@ public class BacktestOrderPage extends PreferencePage  {
 	private Text perOrderText;
 	private Button perTransBtn;
 	private Text perTransText;
+	
+	private Label initialCapitalLbl;
+	private Text initialCapitalText;
 	
 	public BacktestOrderPage() {
 		super();
@@ -134,6 +138,23 @@ public class BacktestOrderPage extends PreferencePage  {
 		gdata.widthHint = 100;
 		perTransText.setLayoutData(gdata);
 		
+		// Initial capital
+		group = new Group(contents, SWT.NONE);
+		group.setText("Initial capital");
+		groupLayout = new GridLayout(1, false);
+		groupLayout.numColumns = 2;
+		group.setLayout(groupLayout);
+		groupData = new GridData();
+		groupData.horizontalAlignment = SWT.FILL;
+		groupData.grabExcessHorizontalSpace = true;
+		group.setLayoutData(groupData);
+		
+		initialCapitalLbl = new Label(group, SWT.NONE);
+		initialCapitalLbl.setText("Initial capital");
+		
+		initialCapitalText = new Text(group, SWT.BORDER);
+		initialCapitalText.setText(prefStore.getString(INITIAL_CAPITAL_VALUE));
+		
 		return contents;
 	}
 	
@@ -166,6 +187,9 @@ public class BacktestOrderPage extends PreferencePage  {
 		try {
 			prefStore.setValue(COMMISSION_TRANS, perTransBtn.getSelection());
 			prefStore.setValue(COMMISSION_TRANS_VALUE, Double.parseDouble(perTransText.getText()));
+		} catch( Exception e) {}
+		try {
+			prefStore.setValue(INITIAL_CAPITAL_VALUE, Double.parseDouble(initialCapitalText.getText()));
 		} catch( Exception e) {}
 		
 		return true;

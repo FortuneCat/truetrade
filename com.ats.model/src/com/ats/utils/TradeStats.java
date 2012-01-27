@@ -26,5 +26,8 @@ public class TradeStats {
 		return getTotalNet()/numTrades;
 	}
 	
-	//TODO calculate return on account
+	public double getReturnOnAccount() {
+		final double initialCapital =  Utils.getPreferenceStore().getDouble(Utils.INITIAL_CAPITAL_VALUE);
+		return getTotalNet() / initialCapital;
+	}
 }

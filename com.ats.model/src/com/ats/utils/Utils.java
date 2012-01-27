@@ -34,7 +34,8 @@ public class Utils {
 	public static final String COMMISSION_ORDER_VALUE = "commission.perorder.value";
 	public static final String COMMISSION_TRANS = "commission.pertransaction";
 	public static final String COMMISSION_TRANS_VALUE = "commission.pertransaction.value";
-
+	
+	public static final String INITIAL_CAPITAL_VALUE = "initialcapital.value";
 
 	public static final String INTERACTIVE_BROKERS_HOST = "interactivebrokers.host";
 	public static final String INTERACTIVE_BROKERS_PORT = "interactivebrokers.port";

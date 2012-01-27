@@ -68,7 +68,7 @@ public class TradeSummary implements TickListener, Comparable {
 	}
 	
 
-	
+	@Deprecated
 	public double getMaxDrawdown() {
 		// TODO: should follow the drawdown as the trade progresses.  This is an
 		// inaccurate approximation
