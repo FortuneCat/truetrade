@@ -55,13 +55,18 @@ public abstract class TripleScreenStrategy extends Strategy {
 	protected abstract TrendDirection getLongTrendDirection(Bar bar);
 	protected abstract boolean isBuySignalFromShortTrend(Bar bar);
 	
+	private JOrder lastSubmittedOrder;
+	
 	protected void submitPosition(Bar bar) {
-		cancelAllOrders();
-		if (TrendDirection.RISING.equals(recentTrendNoFlat)) {
-			sendOrder(buyLimitOrder(1, bar.getHigh(), "long"));
-		} else {
-			sendOrder(sellLimitOrder(1, bar.getLow(), "short"));
+		if (lastSubmittedOrder != null && !lastSubmittedOrder.isDone()) {
+			lastSubmittedOrder.setCancelled();
 		}
+		if (TrendDirection.RISING.equals(recentTrendNoFlat)) {
+			lastSubmittedOrder = buyStopOrder(1, bar.getHigh(), "long");
+		} else {
+			lastSubmittedOrder = sellStopOrder(1, bar.getLow(), "short");
+		}
+		sendOrder(lastSubmittedOrder);
 	}
 	
 	/** This method is executed when trend changed direction and we should close our position */
@@ -123,6 +128,7 @@ public abstract class TripleScreenStrategy extends Strategy {
 	
 	@Override
 	public void onOrderFilled(JOrder order) {
+		super.onOrderFilled(order);
 		BarSeries series = getSeries(defaultTimespan);
 		final double avgDiff = (series.highestHigh(5).getHigh() - series
 				.lowestLow(5).getLow()); 
