@@ -58,12 +58,6 @@ http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/che
     * {{{com.ats.client}}}
     * {{com.ats.client.runtime}}}
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/all-imported.png
-  * The compile errors occur because we are still missing some JAR files.  Go to http://code.google.com/p/truetrade/downloads/list and download the "Missing lib" JARS into a temp directory:
-    * js.jar
-    * itext-1.4.3.jar
-    * jfreechart-1.0.2.jar
-    * ibatis-2.3.0.677.jar
-  * move the ibatis jar to the {{{lib}}} directory under the {{{com.ats.model}}} project, move all of the others to the {{{lib}}} directory under the {{{com.ats.resources}}} project.  When you have moved all of the JARs, "right click the project > Refresh" to get Eclipse to pick up the new JARs.
   * Many errors will go away, but some remain.  To fix these, go to "Window > Preferences > Java > Compiler" and set the "Compiler compliance level" to 5.0.  When you click OK, it will ask to do a full rebuild, click OK.
 http://truetrade.googlecode.com/svn/trunk/com.ats.client/html/gettingstarted/java-compiler-prefs.png
   If you still have any errors, do a "Team > Update" to get the latest source.
@@ -97,7 +91,5 @@ java.io.FileNotFoundException: \\.\pipe\MySQL (The system cannot find the file s
 	at com.mysql.jdbc.NamedPipeSocketFactory$NamedPipeSocket.(NamedPipeSocketFactory.java:57)
 }}}
   Then you will need to remove the NamedPipeSocketFactory from the MySQL URL.  In the TrueTrade Client, run "Windows > Preferences > Databases" and change the URL to {{{jdbc:mysql://localhost/ats}}}  (i.e.: remove the "?" and everything after it)
-
-
 
 
