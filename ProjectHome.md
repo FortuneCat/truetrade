@@ -1,0 +1,3 @@
+TrueTrade is a framework for developing, testing and running automatic trading systems.  It is intended to provide support for a wide range of orders, financial instruments and time scales.  It provides tooling for backtesting the strategy against historical data, and a separate tool for running the strategies in live mode.  Strategies currently require some Java coding experience, though this may change at a later date.
+
+It is no longer being actively supported.  Thanks to everyone for their interest and help.  If you would like to take over maintenance, please contact me.
